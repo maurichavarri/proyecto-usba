@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
+const alias = "Sede"
+
 const cols = {
     id: { 
         type: DataTypes.INTEGER, 
@@ -22,6 +24,6 @@ const config = {
     timestamps: false
 }
 
-const Sede = sequelize.define('Sede', cols, config);
+const Sede = sequelize.define(alias, cols, config);
 
 export default Sede;
