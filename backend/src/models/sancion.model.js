@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
+const alias = "Sancion"
+
 const cols = {
     id: { 
         type: DataTypes.INTEGER, 
@@ -16,6 +18,6 @@ const config = {
     timestamps: false
 }
 
-const Sancion = sequelize.define('Sancion', cols, config);
+const Sancion = sequelize.define(alias, cols, config);
 
 export default Sancion;

@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
+const alias = "Usuario"
+
 const cols = {
     id: { 
         type: DataTypes.INTEGER, 
@@ -22,6 +24,6 @@ const config = {
     timestamps: false
 }
 
-const Arbitro = sequelize.define('Arbitro', cols, config);
+const Arbitro = sequelize.define(alias, cols, config);
 
 export default Arbitro;

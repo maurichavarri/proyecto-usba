@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
+const alias = "Jugador"
+
 const cols = {
     id: {
         type: DataTypes.INTEGER, 
@@ -31,6 +33,6 @@ const config = {
     timestamps: false
 }
 
-const Jugador = sequelize.define('Jugador', cols, config);
+const Jugador = sequelize.define(alias, cols, config);
 
 export default Jugador;

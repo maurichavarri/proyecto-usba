@@ -11,9 +11,18 @@ import Partido from './partido.model.js';
 import Sancion from './sancion.model.js';
 
 // Relaciones
-// hasMany → “uno tiene muchos”
-// belongsTo → “muchos pertenecen a uno”
-// belongsToMany → “muchos a muchos”
+
+// 1 a 1 (hasOne o belongsTo)
+// 1 a M (hasMany o belongsTo)
+// M a N (belongsToMany)
+
+// ATENCION! Siempre que creamos una relación desde un modelo, debemos generar
+// la misma desde el otro con quien está relacionado. Si no lo hacemos, 
+// Sequelize no reconoce la asociación.
+
+// Usuario - Equipo
+Usuario.hasMany(Equipo, { foreignKey: 'id_usuario_creador' });   // 1 USUARIO puede tener muchos EQUIPOS
+Equipo.belongsTo(Usuario, { foreignKey: 'id_usuario_creador' }); // 1 EQUIPO es creado por 1 USUARIO 
 
 // Torneo - Categoria (muchos a muchos)
 Torneo.belongsToMany(Categoria, {
@@ -26,9 +35,11 @@ Categoria.belongsToMany(Torneo, {
   foreignKey: 'categoria_id'
 });
 
-// Usuario - Equipo
-Usuario.hasMany(Equipo, { foreignKey: 'id_usuario_creador' });
-Equipo.belongsTo(Usuario, { foreignKey: 'id_usuario_creador' });
+// TorneoCategoria - Torneo
+TorneoCategoria.belongsTo(Torneo, { foreignKey: 'torneo_id' });
+
+// TorneoCategoria - Categoria
+TorneoCategoria.belongsTo(Categoria, { foreignKey: 'categoria_id' });
 
 // Equipo - Jugador
 Equipo.hasMany(Jugador, { foreignKey: 'equipo_id' });
@@ -45,14 +56,12 @@ Inscripcion.belongsTo(TorneoCategoria, { foreignKey: 'torneo_categoria_id' });
 // Partido
 Partido.belongsTo(Inscripcion, { as: 'local', foreignKey: 'inscripcion_local_id' });
 Partido.belongsTo(Inscripcion, { as: 'visitante', foreignKey: 'inscripcion_visitante_id' });
-
 Partido.belongsTo(Sede, { foreignKey: 'sede_id' });
 Partido.belongsTo(Arbitro, { foreignKey: 'arbitro_id' });
 
 // Sanción
 Sancion.belongsTo(Jugador, { foreignKey: 'jugador_id' });
 Sancion.belongsTo(Partido, { foreignKey: 'partido_id' });
-
 
 export {
   Usuario,
