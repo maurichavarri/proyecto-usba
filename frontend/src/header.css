@@ -8,7 +8,7 @@
  
 .usba-header {
   background: #1a1a1a;
-  border-bottom: 3px solid #D4611A;
+  border-bottom: 3px solid #D27e00;
   font-family: 'Barlow', sans-serif;
   position: relative;
   width: 100%;
@@ -16,7 +16,7 @@
  
 /* Top bar */
 .top-bar {
-  background: #D4611A;
+  background: #d27e00;
   text-align: center;
   padding: 5px 0;
   font-size: 10px;
@@ -49,7 +49,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #D4611A;
+  border: 2px solid #D27e00;
   background: #252525;
   display: flex;
   align-items: center;
@@ -77,7 +77,7 @@
  
 .logo-sub {
   font-size: 8px;
-  color: #D4611A;
+  color: #D27e00;
   letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: 600;
@@ -115,13 +115,13 @@
 }
  
 .hamburger:hover {
-  border-color: #D4611A;
+  border-color: #D27e00;
 }
  
 .hamburger .bar {
   width: 100%;
   height: 2px;
-  background: #D4611A;
+  background: #D27e00;
   border-radius: 2px;
   transition: all 0.3s ease;
   display: block;
@@ -167,11 +167,11 @@
 .mobile-menu ul a.active {
   color: #f5f0e8;
   background: rgba(212, 97, 26, 0.08);
-  border-left-color: #D4611A;
+  border-left-color: #D27e00;
 }
  
 .mobile-menu ul a.active {
-  color: #D4611A;
+  color: #D27e00;
 }
  
 .mobile-actions {
@@ -193,7 +193,7 @@
 .btn-secondary {
   background: transparent;
   border: 1.5px solid rgba(212, 97, 26, 0.5);
-  color: #D4611A;
+  color: #D27e00;
   border-radius: 6px;
   font-family: 'Barlow', sans-serif;
   font-weight: 600;
@@ -202,12 +202,12 @@
 }
  
 .btn-secondary:hover {
-  border-color: #D4611A;
+  border-color: #D27e00;
   background: rgba(212, 97, 26, 0.1);
 }
  
 .btn-primary {
-  background: #D4611A;
+  background: #D27e00;
   border: none;
   color: #1a1a1a;
   border-radius: 6px;
@@ -220,7 +220,7 @@
 }
  
 .btn-primary:hover {
-  background: #e06d20;
+  background: #D27e00;
 }
  
 /* Divider y sub-bar — ocultos en mobile */
@@ -276,7 +276,7 @@
     background: rgba(212, 97, 26, 0.12);
   }
  
-  .nav-links a.active { color: #D4611A; }
+  .nav-links a.active { color: #D27e00; }
  
   .nav-links a.active::after {
     content: '';
@@ -285,7 +285,7 @@
     left: 12px;
     right: 12px;
     height: 2px;
-    background: #D4611A;
+    background: #D27e00;
     border-radius: 2px;
   }
  
@@ -330,7 +330,7 @@
     color: #555;
   }
  
-  .breadcrumb span { color: #D4611A; }
+  .breadcrumb span { color: #D27e00; }
  
   .season-tag {
     font-size: 10px;
@@ -392,4 +392,27 @@
     );
   background-size: 20px 20px;
   /* dejá el resto igual */
+}
+.admin-saludo {
+  font-size: 12px;
+  color: #D27e00;
+  font-weight: 600;
+}
+
+.btn-logout {
+  padding: 7px 16px;
+  background: transparent;
+  border: 1.5px solid rgba(224, 85, 85, 0.4);
+  color: #e05555;
+  border-radius: 6px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  border-color: #e05555;
+  background: rgba(224, 85, 85, 0.1);
 }
