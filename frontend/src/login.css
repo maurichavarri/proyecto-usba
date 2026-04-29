@@ -16,6 +16,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Logo */
@@ -30,7 +31,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 2px solid #D27e00;
+  border: 2px solid #D4611A;
   background: #252525;
   display: flex;
   align-items: center;
@@ -54,7 +55,7 @@
 
 .login-logo-sub {
   font-size: 9px;
-  color: #D27e00;
+  color: #D4611A;
   letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: 600;
@@ -75,7 +76,7 @@
   background: transparent;
   border: none;
   border-radius: 6px;
-  color: #555;
+  color: #888;
   font-family: 'Barlow', sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -83,8 +84,13 @@
   transition: all 0.2s;
 }
 
+.login-tab:hover:not(.active) {
+  color: #bbb;
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .login-tab.active {
-  background: #D27e00;
+  background: #D4611A;
   color: #1a1a1a;
 }
 
@@ -104,7 +110,7 @@
 .form-group label {
   font-size: 11px;
   font-weight: 600;
-  color: #666;
+  color: #888;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   font-family: 'Barlow', sans-serif;
@@ -119,13 +125,14 @@
   font-family: 'Barlow', sans-serif;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group input::placeholder { color: #333; }
+.form-group input::placeholder { color: #444; }
 
 .form-group input:focus {
   border-color: rgba(212, 97, 26, 0.5);
+  box-shadow: 0 0 0 3px rgba(212, 97, 26, 0.08);
 }
 
 .error {
@@ -146,7 +153,7 @@
 
 .btn-login {
   padding: 11px;
-  background: #D27e00;
+  background: #D4611A;
   border: none;
   border-radius: 7px;
   color: #1a1a1a;
@@ -155,26 +162,29 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
   margin-top: 4px;
 }
 
-.btn-login:hover { background: #D27e00; }
+.btn-login:hover { background: #e06d20; }
+.btn-login:active { transform: scale(0.98); }
+
 .form-control {
   background: #1a1a1a !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   color: #f5f0e8 !important;
   border-radius: 7px !important;
   font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-control:focus {
   border-color: rgba(212, 97, 26, 0.5) !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 3px rgba(212, 97, 26, 0.08) !important;
   background: #1a1a1a !important;
   color: #f5f0e8 !important;
 }
 
 .form-control::placeholder {
-  color: #333 !important;
+  color: #444 !important;
 }

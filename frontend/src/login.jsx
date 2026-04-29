@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './Login.css';
 
 // Credenciales de admin hardcodeadas (podés cambiarlas o conectar a una DB)
-const ADMIN_EMAIL = 'admin@usba.com';
+const ADMIN_EMAIL = 'admin_usba@gmail.com';
 const ADMIN_PASSWORD = 'admin123';
 
 const Login = ({ onlogin }) => {
