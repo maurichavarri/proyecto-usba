@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -44,4 +45,16 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
   </StrictMode>
+=======
+import { BrowserRouter } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/css/index.css';
+
+createRoot(document.getElementById('root')).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+>>>>>>> 60f98c40492c93a12e66736f2cc05d1f83e7d1e8
 );

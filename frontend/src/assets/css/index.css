@@ -1,0 +1,35 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BASE */
+html, body, #root {
+  height: 100%;
+}
+
+/* BODY */
+body {
+  font-family: system-ui, Arial, sans-serif;
+  background-color: #f8f9fa; /* fondo claro tipo Bootstrap */
+  color: #212529;
+}
+
+/* LINKS */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* LAYOUT GLOBAL */
+.app-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
