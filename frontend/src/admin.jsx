@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import './Admin.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 const Admin = () => {
   const [seccion, setSeccion] = useState('categorias');
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './Login.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Credenciales de admin hardcodeadas (podés cambiarlas o conectar a una DB)
 const ADMIN_EMAIL = 'admin_usba@gmail.com';

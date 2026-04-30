@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './header.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 const Header = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const admin = JSON.parse(localStorage.getItem('usba_admin_logueado') || 'null');
