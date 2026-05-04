@@ -12,15 +12,15 @@ const Header = () => {
             </div>
 
             {/* Navbar */}
-            <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom px-3">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark border-bottom px-3">
                 <div className="container-fluid">
 
                     {/* Logo */}
-                    <Link className="navbar-brand d-flex align-items-center" to="/">
+                    <Link className="navbar-brand d-flex align-items-center text-white" to="/" onClick={() => setMenuAbierto(false)}>
                         <span className="fs-4 me-2">🏀</span>
                         <div className="d-flex flex-column lh-sm">
                             <strong>U.S.B.A</strong>
-                            <small className="text-muted">Básquet Amateur</small>
+                            <small className="text-white-50">Básquet Amateur</small>
                         </div>
                     </Link>
 
@@ -28,40 +28,40 @@ const Header = () => {
                     <button
                         className="navbar-toggler"
                         type="button"
+                        aria-controls="navbarNav"
+                        aria-expanded={menuAbierto}
+                        aria-label="Toggle navigation"
                         onClick={() => setMenuAbierto(!menuAbierto)}
                     >
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
                     {/* Contenido colapsable */}
-                    <div className={`collapse navbar-collapse ${menuAbierto ? "show" : ""}`}>
+                    <div id="navbarNav" className={`collapse navbar-collapse ${menuAbierto ? "show" : ""}`}>
 
                         {/* Links */}
                         <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/">Inicio</Link>
+                                <Link className="nav-link text-white" to="/" onClick={() => setMenuAbierto(false)}>Inicio</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/torneos">Torneos</Link>
+                                <Link className="nav-link text-white" to="/torneos" onClick={() => setMenuAbierto(false)}>Torneos</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/categorias">Categorías</Link>
+                                <Link className="nav-link text-white" to="/categorias" onClick={() => setMenuAbierto(false)}>Categorías</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/anuncios">Anuncios</Link>
+                                <Link className="nav-link text-white" to="/anuncios" onClick={() => setMenuAbierto(false)}>Anuncios</Link>
                             </li>
-                            {/*<li className="nav-item">
-                                <Link className="nav-link" to="/contactos">Contactos</Link>
-                            </li>*/}
                         </ul>
 
                         {/* Botones */}
                         <div className="d-flex gap-2">
-                            <Link to="/ingresar">
-                                <button className="btn btn-outline-dark">Ingresar</button>
+                            <Link to="/ingresar" onClick={() => setMenuAbierto(false)}>
+                                <button className="btn btn-outline-light">Ingresar</button>
                             </Link>
-                            <Link to="/inscribirse">
-                                <button className="btn btn-dark">Inscribirse</button>
+                            <Link to="/inscribirse" onClick={() => setMenuAbierto(false)}>
+                                <button className="btn btn-light">Inscribirse</button>
                             </Link>
                         </div>
 

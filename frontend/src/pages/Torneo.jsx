@@ -10,7 +10,7 @@ const Torneo = () => {
             <h2 className="mb-3">Torneos</h2>
             <div className="row g-3">
                 {data.map((torneo, i) => (
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-4">
                         <Card
                             titulo={torneo.nombre}
                             imagen={img}
