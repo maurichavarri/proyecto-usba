@@ -1,0 +1,267 @@
+.torneos-section {
+  padding: 2rem 1rem;
+  min-height: 100vh;
+}
+
+.torneos-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Hero */
+.torneos-hero {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+
+.torneos-badge {
+  display: inline-block;
+  background: rgba(212, 97, 26, 0.15);
+  border: 1px solid rgba(212, 97, 26, 0.4);
+  color: rgba(210, 126, 0,);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.torneos-titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  color: #f5f0e8;
+  letter-spacing: 3px;
+  margin: 0 0 8px;
+}
+
+.torneos-sub {
+  font-size: 13px;
+  color: #666;
+  letter-spacing: 1px;
+}
+
+/* Card */
+.torneos-card {
+  background: #202020;
+  border: 1px solid rgba(212, 97, 26, 0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(212, 97, 26, 0.1);
+}
+
+.card-titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: #f5f0e8;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.tab {
+  padding: 5px 14px;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.tab.active {
+  background: #D4611A;
+  color: #1a1a1a;
+}
+
+/* Partidos */
+.partidos-lista {
+  display: flex;
+  flex-direction: column;
+}
+
+.partido-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.partido-item:last-child {
+  border-bottom: none;
+}
+
+.partido-fecha {
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.fecha-dia {
+  font-size: 11px;
+  color: #555;
+  font-weight: 500;
+}
+
+.fecha-hora {
+  font-size: 16px;
+color: rgba(210, 126, 0,);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+}
+
+.partido-equipos {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 8px;
+  min-width: 0;
+}
+
+.equipo {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b0b0a8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.equipo.derecha {
+  text-align: right;
+}
+
+.equipo.ganador {
+  color: #f5f0e8;
+  font-weight: 600;
+}
+
+.partido-centro {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.vs {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  color: #444;
+  letter-spacing: 1px;
+}
+
+.resultado {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+
+
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.partido-cancha {
+  font-size: 11px;
+  color: #444;
+  min-width: 60px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Tabla de posiciones */
+.tabla-wrap {
+  overflow-x: auto;
+}
+
+.tabla-posiciones {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabla-posiciones th {
+  padding: 10px 12px;
+  text-align: center;
+  color: #555;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.th-equipo { text-align: left; }
+
+.tabla-posiciones td {
+  padding: 12px;
+  text-align: center;
+  color: #b0b0a8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.tabla-posiciones tr:last-child td { border-bottom: none; }
+
+.tabla-posiciones tr.clasificado td { background: rgba(212, 97, 26, 0.04); }
+
+.td-pos { width: 40px; }
+
+.pos-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  background: #2a2a2a;
+  color: #666;
+}
+
+.pos-badge.top {
+  background: rgba(212, 97, 26, 0.2);
+  color: rgba(210, 126, 0,);
+}
+
+.td-equipo { text-align: left; color: #f5f0e8; font-weight: 500; }
+.td-pg { color: #f5f0e8; font-weight: 600; }
+.positivo { color: #4caf50; }
+.negativo { color: #e05555; }
+
+.tabla-leyenda {
+  font-size: 11px;
+  color: #555;
+  padding: 10px 1.25rem;
+  margin: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .torneos-section { padding: 2rem 2rem; }
+  .torneos-titulo { font-size: 56px; }
+  .partido-item { flex-wrap: nowrap; }
+}
