@@ -10,7 +10,7 @@ const Categoria = () => {
             <h2 className="mb-3">Categorias</h2>
             <div className="row g-3">
                 {data.map((categoria, i) => (
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-4">
                         <Card
                             titulo={categoria.nombre}
                             imagen={img}

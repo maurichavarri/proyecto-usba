@@ -10,7 +10,7 @@ const Anuncio = () => {
             <h2 className="mb-3">Anuncios</h2>
             <div className="row g-3">
                 {data.map((anuncio, i) => (
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-4">
                         <Card
                             titulo={anuncio.titulo}
                             imagen={img}
