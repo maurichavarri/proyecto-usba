@@ -8,6 +8,11 @@ import Torneo from "./pages/Torneo";
 import Categoria from "./pages/Categoria";
 import Anuncio from "./pages/Anuncio";
 import AnuncioDetalle from "./pages/AnuncioDetalle";
+import Login from "./pages/Login"
+import Register from "./pages/Register"
+import Panel from "./pages/Panel"
+
+import ProtectedRoute from "./routes/ProtectedRoute"
 
 function App() {
   return (
@@ -21,6 +26,9 @@ function App() {
           <Route path="/categorias" element={<Categoria />} />
           <Route path="/anuncios" element={<Anuncio />} />
           <Route path="/anuncios/:id" element={<AnuncioDetalle />} />
+          <Route path="/auth/ingresar" element={<Login />} />
+          <Route path="/auth/inscribirse" element={<Register />} />
+          <Route path="/panel" element={<ProtectedRoute roles={["delegado"]}><Panel /></ProtectedRoute>} />
         </Routes>
       </main>
 
