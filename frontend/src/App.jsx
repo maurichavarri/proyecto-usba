@@ -5,6 +5,8 @@ import Footer from "./components/Footer";
 // Páginas
 import Home from "./pages/Home";
 import Torneo from "./pages/Torneo";
+import TorneoCategorias from "./pages/TorneoCategorias";
+import TorneoCategoriaDetalle from "./pages/TorneoCategoriaDetalle";
 import Categoria from "./pages/Categoria";
 import Anuncio from "./pages/Anuncio";
 import AnuncioDetalle from "./pages/AnuncioDetalle";
@@ -23,6 +25,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/torneos" element={<Torneo />} />
+          <Route path="/torneos/:torneoId/categorias" element={<TorneoCategorias />} />
+          <Route path="/torneos/:torneoId/categorias/:categoriaId" element={<TorneoCategoriaDetalle />} />
           <Route path="/categorias" element={<Categoria />} />
           <Route path="/anuncios" element={<Anuncio />} />
           <Route path="/anuncios/:id" element={<AnuncioDetalle />} />
