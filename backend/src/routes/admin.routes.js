@@ -17,3 +17,5 @@ router.patch('/inscripciones/:id', verifyToken, verifyRole('admin'), actualizarE
 router.post('/fixture/generar/:torneoCategoriaId', verifyToken, verifyRole('admin'), generarFixture);
 router.get('/fixture/:torneoCategoriaId', verifyToken, verifyRole('admin'), obtenerPartidosPorTorneoCategoria);
 router.patch('/partidos/:id', verifyToken, verifyRole('admin'), actualizarPartido);
+
+export default router;
