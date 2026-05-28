@@ -95,7 +95,7 @@ const Header = () => {
                                         </span>
 
                                         {/* Panel */}
-                                        <Link to="/panel" onClick={() => setMenuAbierto(false)}>
+                                        <Link to={`/panel/${usuario.rol}`} onClick={() => setMenuAbierto(false)}>
                                             <button className="btn btn-light">
                                                 Panel
                                             </button>

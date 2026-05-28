@@ -12,7 +12,7 @@ const Home = () => {
   const imagenesCarrusel = [img, img1, img2];
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 mb-5">
 
       {/* Carrusel */}
       <div className="mb-5">

@@ -35,7 +35,7 @@ export const crearTorneo = async (req, res, next) => {
     try {
         // Guardamos en un objeto literal la información de req.body.
         const { nombre, fecha_inicio, fecha_fin } = req.body;
-        
+
         // Validaciones
         if (!nombre || !fecha_inicio || !fecha_fin) {
             return res.status(400).json({
@@ -72,10 +72,10 @@ export const crearTorneo = async (req, res, next) => {
 };
 
 export const actualizarTorneo = async (req, res, next) => {
-    try{
+    try {
         // Guardamos en un objeto literal la información de req.body.
         const { nombre, fecha_inicio, fecha_fin } = req.body;
-        
+
         // Obtenemos un torneo a través de la clave primaria que se encuentra en la ruta.
         const torneo = await Torneo.findByPk(req.params.id);
 
