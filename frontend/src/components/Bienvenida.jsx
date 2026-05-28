@@ -21,7 +21,7 @@ const Bienvenida = () => {
             pasión del básquet en un ambiente competitivo y amistoso.
           </p>
           {/* 👇 Este botón redirige a /register */}
-          <Link to="/inscribirse" className="btn btn-dark">
+          <Link to="/auth/inscribirse" className="btn btn-dark">
             Inscribirse al torneo
           </Link>
         </div>

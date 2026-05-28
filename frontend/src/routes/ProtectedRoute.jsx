@@ -6,17 +6,20 @@ const ProtectedRoute = ({ children, roles = [] }) => {
     const token = getToken();
     const usuario = getUsuario();
 
-    // Sin login
+    // Sin token
     if (!token) {
-        return <Navigate to="/auth/ingresar" replace />;
+        return (
+            <Navigate to="/auth/ingresar" replace/>
+        );
     }
 
-    // Verificar roles
+    // Sin permisos
     if (
-        roles.length > 0 &&
-        !roles.includes(usuario?.rol)
+        roles.length > 0 && !roles.includes(usuario?.rol)
     ) {
-        return <Navigate to="/" replace />;
+        return (
+            <Navigate to="/" replace/>
+        );
     }
 
     return children;
