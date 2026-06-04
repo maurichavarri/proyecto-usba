@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import equipos from "./equipos";
 
 // Páginas
 import Home from "./pages/Home";
@@ -51,6 +52,10 @@ function App() {
           <Route path="/panel/admin/torneos" element={<ProtectedRoute roles={["admin"]}><AdminTorneos /></ProtectedRoute>} />
           <Route path="/panel/admin/torneos/crear" element={<ProtectedRoute roles={["admin"]}><CrearTorneo /></ProtectedRoute>} />
           <Route path="/panel/admin/torneos/editar/:id" element={<ProtectedRoute roles={["admin"]}><EditarTorneo /></ProtectedRoute>} />
+          <Route path="/equipos" element={<equipos />} />
+          <Route path="/equipos/categoria/:categoriaId" element={<equipos />} />
+          <Route path="/equipos/torneo/:torneoId" element={<equipos />} />
+          <Route path="/equipo/:id" element={<EquipoDetalle />} />
         </Routes>
       </main>
 
