@@ -29,7 +29,7 @@ const DashboardAdmin = () => {
                                 to="/panel/admin/torneos"
                                 className="btn btn-dark"
                             >
-                                Ver
+                                Gestionar
                             </Link>
                         </div>
                     </div>
@@ -41,13 +41,13 @@ const DashboardAdmin = () => {
                         <div className="card-body">
                             <h5>Categorías</h5>
                             <p>
-                                Crear y Administrar categorías.
+                                Crear y administrar categorías.
                             </p>
                             <Link
                                 to="/panel/admin/categorias"
                                 className="btn btn-dark"
                             >
-                                Ver
+                                Gestionar
                             </Link>
                         </div>
                     </div>
@@ -57,9 +57,9 @@ const DashboardAdmin = () => {
                 <div className="col-md-4">
                     <div className="card shadow-sm h-100">
                         <div className="card-body">
-                            <h5>Torneo-Categorías</h5>
+                            <h5>Torneo-Categorías / Fixtures</h5>
                             <p>
-                                Asignar Categorías a Torneos.
+                                Asignar categorías a torneos.
                             </p>
                             <Link
                                 to="/panel/admin/torneo-categorias"
@@ -83,7 +83,43 @@ const DashboardAdmin = () => {
                                 to="/panel/admin/anuncios"
                                 className="btn btn-dark"
                             >
-                                Anuncios
+                                Gestionar
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Sedes */}
+                <div className="col-md-4">
+                    <div className="card shadow-sm h-100">
+                        <div className="card-body">
+                            <h5>Sedes</h5>
+                            <p>
+                                Crear y administrar sedes.
+                            </p>
+                            <Link
+                                to="/panel/admin/sedes"
+                                className="btn btn-dark"
+                            >
+                                Gestionar
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Arbitros */}
+                <div className="col-md-4">
+                    <div className="card shadow-sm h-100">
+                        <div className="card-body">
+                            <h5>Arbitros</h5>
+                            <p>
+                                Registrar y administrar arbitros.
+                            </p>
+                            <Link
+                                to="/panel/admin/arbitros"
+                                className="btn btn-dark"
+                            >
+                                Gestionar
                             </Link>
                         </div>
                     </div>

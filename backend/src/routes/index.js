@@ -12,6 +12,9 @@ import equipoRoutes from './equipo.routes.js';
 import jugadorRoutes from './jugador.routes.js';
 import inscripcionRoutes from './inscripcion.routes.js';
 
+import sedeRoutes from './sede.routes.js';
+import arbitroRoutes from './arbitro.routes.js';
+
 import adminRoutes from './admin.routes.js';
 
 const router = Router();
@@ -32,5 +35,7 @@ router.use('/delegado/inscripciones', inscripcionRoutes);
 
 // Admin
 router.use('/admin', adminRoutes);
+router.use('/sedes', sedeRoutes);
+router.use('/arbitros', arbitroRoutes);
 
 export default router;

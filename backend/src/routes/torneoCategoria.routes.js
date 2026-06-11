@@ -1,19 +1,30 @@
 import { Router } from 'express';
-import { crearTorneoCategoria } from '../controllers/torneoCategoria.controller.js';
-import { getTorneoCategorias } from '../controllers/torneoCategoria.controller.js'
-import { getDetalle } from '../controllers/torneoCategoria.controller.js'
-import { generarFixtureController } from '../controllers/torneoCategoria.controller.js'
-import { getFixture } from '../controllers/torneoCategoria.controller.js'
+import {
+    crearTorneoCategoria,
+    getTorneoCategorias,
+    getDetalle,
+    generarFixtureController,
+    getFixture
+} from '../controllers/torneoCategoria.controller.js';
 
 import verifyToken from '../middlewares/verifyToken.js';
 import verifyRole from '../middlewares/verifyRole.js';
 
 const router = Router();
 
+// Crear relación torneo-categoría
 router.post('/', verifyToken, verifyRole('admin'), crearTorneoCategoria);
+
+// Obtener todas
 router.get('/', getTorneoCategorias);
+
+// Obtener detalle
 router.get('/:id', getDetalle);
-router.get('/:id/fixture', generarFixtureController);
-router.post('/:id/fixture', getFixture)
+
+// Generar fixture
+router.post('/:id/fixture', verifyToken, verifyRole('admin'), generarFixtureController);
+
+// Obtener fixture
+router.get('/:id/fixture', getFixture);
 
 export default router;

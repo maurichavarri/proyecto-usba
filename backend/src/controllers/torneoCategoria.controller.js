@@ -56,10 +56,12 @@ export const getTorneoCategorias = async (req, res, next) => {
             include: [
                 {
                     model: Torneo,
+                    as: 'torneo',
                     attributes: ['id', 'nombre']
                 },
                 {
                     model: Categoria,
+                    as: 'categoria',
                     attributes: ['id', 'nombre']
                 }
             ]
@@ -114,7 +116,10 @@ export const getFixture = async (req, res, next) => {
                     include: [{ model: Equipo, attributes: ['nombre'] }]
                 }
             ],
-            order: [['fecha', 'ASC']]
+            order: [
+                ['jornada', 'ASC'],
+                ['fecha', 'ASC']
+            ]
         });
 
         res.json(partidos);

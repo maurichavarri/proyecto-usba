@@ -37,10 +37,16 @@ Categoria.belongsToMany(Torneo, {
 });
 
 // TorneoCategoria - Torneo
-TorneoCategoria.belongsTo(Torneo, { foreignKey: 'torneo_id' });
+TorneoCategoria.belongsTo(Torneo, {
+  foreignKey: 'torneo_id',
+  as: 'torneo'
+});
 
 // TorneoCategoria - Categoria
-TorneoCategoria.belongsTo(Categoria, { foreignKey: 'categoria_id' });
+TorneoCategoria.belongsTo(Categoria, { 
+  foreignKey: 'categoria_id',
+  as: 'categoria'
+});
 
 // Equipo - Jugador
 Equipo.hasMany(Jugador, { foreignKey: 'equipo_id' });
@@ -51,8 +57,15 @@ Equipo.hasMany(Inscripcion, { foreignKey: 'equipo_id' });
 Inscripcion.belongsTo(Equipo, { foreignKey: 'equipo_id' });
 
 // TorneoCategoria - Inscripción
-TorneoCategoria.hasMany(Inscripcion, { foreignKey: 'torneo_categoria_id' });
-Inscripcion.belongsTo(TorneoCategoria, { foreignKey: 'torneo_categoria_id' });
+TorneoCategoria.hasMany(Inscripcion, {
+    foreignKey: 'torneo_categoria_id',
+    as: 'inscripciones'
+});
+
+Inscripcion.belongsTo(TorneoCategoria, {
+    foreignKey: 'torneo_categoria_id',
+    as: 'torneoCategoria'
+});
 
 // Partido
 Partido.belongsTo(Inscripcion, { as: 'local', foreignKey: 'inscripcion_local_id' });

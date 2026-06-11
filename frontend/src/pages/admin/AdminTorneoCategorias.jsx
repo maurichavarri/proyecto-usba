@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const AdminTorneoCategorias = () => {
 
     const [torneos, setTorneos] = useState([]);
     const [categorias, setCategorias] = useState([]);
+    const [torneoCategorias, setTorneoCategorias] = useState([]);
 
     const [torneoId, setTorneoId] = useState("");
     const [categoriaId, setCategoriaId] = useState("");
@@ -34,9 +36,21 @@ const AdminTorneoCategorias = () => {
         }
     };
 
+    // Obtener relaciones torneo-categoría
+    const obtenerTorneoCategorias = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
+            const data = await response.json();
+            setTorneoCategorias(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         obtenerTorneos();
         obtenerCategorias();
+        obtenerTorneoCategorias();
     }, []);
 
     // Crear relación
@@ -57,9 +71,24 @@ const AdminTorneoCategorias = () => {
                     })
                 }
             );
+
             const data = await response.json();
-            console.log(data);
+
+            if (!response.ok) {
+                alert(data.message);
+                return;
+            }
+
             alert("Relación creada correctamente");
+
+            // Limpiar formulario
+            setTorneoId("");
+            setCategoriaId("");
+            setArancel("");
+
+            // Refrescar lista
+            obtenerTorneoCategorias();
+
         } catch (error) {
             console.error(error);
             alert("Error al crear relación");
@@ -68,22 +97,36 @@ const AdminTorneoCategorias = () => {
 
     return (
         <div className="container mt-5 mb-5">
-            <h2>Asignar Categoría a Torneo</h2>
+
+            <h2 className="mb-4">
+                Asignar Categoría a Torneo
+            </h2>
+
             <form onSubmit={handleSubmit}>
+
                 {/* Torneo */}
                 <div className="mb-3">
-                    <label className="form-label">Torneo</label>
+
+                    <label className="form-label">
+                        Torneo
+                    </label>
+
                     <select
                         className="form-select"
                         value={torneoId}
-                        onChange={(e) => setTorneoId(e.target.value)}
+                        onChange={(e) =>
+                            setTorneoId(e.target.value)
+                        }
                         required
                     >
+
                         <option value="">
                             Seleccionar torneo
                         </option>
+
                         {
                             torneos.map((torneo) => (
+
                                 <option
                                     key={torneo.id}
                                     value={torneo.id}
@@ -94,24 +137,32 @@ const AdminTorneoCategorias = () => {
                         }
 
                     </select>
+
                 </div>
 
                 {/* Categoría */}
                 <div className="mb-3">
+
                     <label className="form-label">
                         Categoría
                     </label>
+
                     <select
                         className="form-select"
                         value={categoriaId}
-                        onChange={(e) => setCategoriaId(e.target.value)}
+                        onChange={(e) =>
+                            setCategoriaId(e.target.value)
+                        }
                         required
                     >
+
                         <option value="">
                             Seleccionar categoría
                         </option>
+
                         {
                             categorias.map((categoria) => (
+
                                 <option
                                     key={categoria.id}
                                     value={categoria.id}
@@ -120,21 +171,28 @@ const AdminTorneoCategorias = () => {
                                 </option>
                             ))
                         }
+
                     </select>
+
                 </div>
 
                 {/* Arancel */}
-                <div className="mb-3">
+                <div className="mb-4">
+
                     <label className="form-label">
                         Arancel
                     </label>
+
                     <input
                         type="number"
                         className="form-control"
                         value={arancel}
-                        onChange={(e) => setArancel(e.target.value)}
+                        onChange={(e) =>
+                            setArancel(e.target.value)
+                        }
                         required
                     />
+
                 </div>
 
                 <button
@@ -143,7 +201,70 @@ const AdminTorneoCategorias = () => {
                 >
                     Guardar
                 </button>
+
             </form>
+
+            <hr className="my-5" />
+
+            <h3 className="mb-4">
+                Torneos - Categorías
+            </h3>
+
+            <div className="table-responsive">
+
+                <table className="table table-bordered">
+
+                    <thead>
+
+                        <tr>
+                            <th>Torneo</th>
+                            <th>Categoría</th>
+                            <th>Arancel</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {
+                            torneoCategorias.map((tc) => (
+                                
+                                <tr key={tc.id}>
+
+                                    <td>
+                                        {tc.torneo?.nombre}
+                                    </td>
+
+                                    <td>
+                                        {tc.categoria?.nombre}
+                                    </td>
+
+                                    <td>
+                                        ${tc.arancel}
+                                    </td>
+
+                                    <td className="d-flex gap-2">
+
+                                        <Link
+                                            to={`/panel/admin/fixture/${tc.id}`}
+                                            className="btn btn-dark btn-sm"
+                                        >
+                                            Ver Fixture
+                                        </Link>
+
+                                    </td>
+
+                                </tr>
+                            ))
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
         </div>
     );
 };
