@@ -23,6 +23,15 @@ import AdminTorneos from "./pages/admin/torneos/AdminTorneos";
 import AdminTorneoCategorias from "./pages/admin/AdminTorneoCategorias";
 import CrearTorneo from "./pages/admin/torneos/CrearTorneo";
 import EditarTorneo from "./pages/admin/torneos/EditarTorneo";
+import AdminCategorias from './pages/admin/categorias/AdminCategorias';
+import CrearCategoria from './pages/admin/categorias/CrearCategoria';
+import EditarCategoria from './pages/admin/categorias/EditarCategoria';
+import AdminAnuncios from './pages/admin/anuncios/AdminAnuncios';
+import CrearAnuncio from './pages/admin/anuncios/CrearAnuncio';
+import EditarAnuncio from './pages/admin/anuncios/EditarAnuncio';
+import AdminFixture from './pages/admin/AdminFixture';
+import AdminSedes from "./pages/admin/AdminSedes";
+import AdminArbitros from "./pages/admin/AdminArbitros";
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 
@@ -51,6 +60,15 @@ function App() {
           <Route path="/panel/admin/torneos" element={<ProtectedRoute roles={["admin"]}><AdminTorneos /></ProtectedRoute>} />
           <Route path="/panel/admin/torneos/crear" element={<ProtectedRoute roles={["admin"]}><CrearTorneo /></ProtectedRoute>} />
           <Route path="/panel/admin/torneos/editar/:id" element={<ProtectedRoute roles={["admin"]}><EditarTorneo /></ProtectedRoute>} />
+          <Route path="/panel/admin/categorias" element={<ProtectedRoute roles={["admin"]}><AdminCategorias /></ProtectedRoute>} />
+          <Route path="/panel/admin/categorias/crear" element={<ProtectedRoute roles={["admin"]}><CrearCategoria /></ProtectedRoute>} />
+          <Route path="/panel/admin/categorias/editar/:id" element={<ProtectedRoute roles={["admin"]}><EditarCategoria /></ProtectedRoute>} />
+          <Route path="/panel/admin/anuncios" element={<ProtectedRoute roles={['admin']}><AdminAnuncios /></ProtectedRoute>} />
+          <Route path="/panel/admin/anuncios/crear" element={<ProtectedRoute roles={['admin']}><CrearAnuncio /></ProtectedRoute>} />
+          <Route path="/panel/admin/anuncios/editar/:id" element={<ProtectedRoute roles={['admin']}><EditarAnuncio /></ProtectedRoute>} />
+          <Route path="/panel/admin/fixture/:id" element={<ProtectedRoute roles={['admin']}><AdminFixture /></ProtectedRoute>} />
+          <Route path="/panel/admin/sedes" element={<ProtectedRoute roles={['admin']}><AdminSedes /></ProtectedRoute>} />
+          <Route path="/panel/admin/arbitros" element={<ProtectedRoute roles={['admin']}><AdminArbitros /></ProtectedRoute>} />
         </Routes>
       </main>
 

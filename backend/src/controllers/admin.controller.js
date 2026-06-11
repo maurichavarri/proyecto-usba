@@ -9,25 +9,32 @@ import Arbitro from '../models/arbitro.model.js';
 
 export const obtenerInscripcionesAdmin = async (req, res, next) => {
     try {
-        const inscripciones =
-            await Inscripcion.findAll({
-                include: [
-                    {
-                        model: Equipo
-                    },
-                    {
-                        model: TorneoCategoria,
-                        include: [
-                            {
-                                model: Torneo
-                            },
-                            {
-                                model: Categoria
-                            }
-                        ]
-                    }
-                ]
-            });
+        const inscripciones = await Inscripcion.findAll({
+            include: [
+                {
+                    model: Equipo,
+                    attributes: ['id', 'nombre']
+                },
+                {
+                    model: TorneoCategoria,
+                    as: 'torneoCategoria',
+                    include: [
+                        {
+                            model: Torneo,
+                            as: 'torneo',
+                            attributes: ['id', 'nombre']
+                        },
+                        {
+                            model: Categoria,
+                            as: 'categoria',
+                            attributes: ['id', 'nombre']
+                        }
+                    ]
+                }
+            ],
+
+            order: [['fecha', 'DESC']]
+        });
 
         res.json(inscripciones);
 
@@ -196,12 +203,12 @@ export const obtenerPartidosPorTorneoCategoria = async (req, res, next) => {
                 include: [
                     {
                         model: Inscripcion,
-                        as: 'Local',
+                        as: 'local',
                         include: [Equipo]
                     },
                     {
                         model: Inscripcion,
-                        as: 'Visitante',
+                        as: 'visitante',
                         include: [Equipo]
                     },
                     {
@@ -226,20 +233,23 @@ export const obtenerPartidosPorTorneoCategoria = async (req, res, next) => {
 export const actualizarPartido = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const {fecha, sede_id, arbitro_id} = req.body;
+        const { fecha, sede_id, arbitro_id, puntaje_local, puntaje_visitante, estado } = req.body;
+
         const partido = await Partido.findByPk(id);
 
         if (!partido) {
             return res.status(404).json({
-                message:
-                    'Partido no encontrado'
+                message: 'Partido no encontrado'
             });
         }
 
         await partido.update({
             fecha,
             sede_id,
-            arbitro_id
+            arbitro_id,
+            puntaje_local,
+            puntaje_visitante,
+            estado
         });
 
         res.json({

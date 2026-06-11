@@ -39,37 +39,32 @@ const MisEquipos = () => {
             <div className="d-flex justify-content-between align-items-center mb-2">
                 <h2>Mis Equipos</h2>
             </div>
-            {
-                equipos.length === 0
-                    ? (
-                        <p>No tienes equipos creados.</p>
-                    )
-                    : (
-                        <div className="row">
-                            {
-                                equipos.map((equipo) => (
-                                    <div key={equipo.id} className="col-md-4 mb-3">
-                                        <div className="card h-100 shadow-sm">
-                                            <div className="card-body">
-                                                <h5 className="card-title">
-                                                    {equipo.nombre}
-                                                </h5>
-                                                <p className="card-text">
-                                                    {equipo.descripcion}
-                                                </p>
-                                                <Link
-                                                    to={`/panel/delegado/equipos/${equipo.id}/jugadores`}
-                                                    className="btn btn-dark"
-                                                >
-                                                    Ver jugadores
-                                                </Link>
-                                            </div>
-                                        </div>
+            {equipos.length === 0 ? (<p>No tienes equipos creados.</p>) : (
+                <div className="row">
+                    {
+                        equipos.map((equipo) => (
+                            <div key={equipo.id} className="col-md-4 mb-3">
+                                <div className="card h-100 shadow-sm">
+                                    <div className="card-body">
+                                        <h5 className="card-title">
+                                            {equipo.nombre}
+                                        </h5>
+                                        <p className="card-text">
+                                            {equipo.descripcion}
+                                        </p>
+                                        <Link
+                                            to={`/panel/delegado/equipos/${equipo.id}/jugadores`}
+                                            className="btn btn-dark"
+                                        >
+                                            Ver jugadores
+                                        </Link>
                                     </div>
-                                ))
-                            }
-                        </div>
-                    )
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            )
             }
         </div>
     );

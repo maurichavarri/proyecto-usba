@@ -1,8 +1,4 @@
-import {
-    useEffect,
-    useState
-} from "react";
-
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const AdminTorneos = () => {
@@ -15,7 +11,14 @@ const AdminTorneos = () => {
 
     const obtenerTorneos = async () => {
         try {
-            const response = await fetch("http://localhost:3000/api/v1/torneos");
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:3000/api/v1/torneos/admin/todos",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             const data = await response.json();
             setTorneos(data);
         } catch (error) {
@@ -26,23 +29,14 @@ const AdminTorneos = () => {
     const cambiarEstado = async (id) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:3000/api/v1/torneos/${id}/estado`,
-                    {
-                        method: "PATCH",
-                        headers: {
-                            Authorization:
-                                `Bearer ${token}`
-                        }
+            await fetch(`http://localhost:3000/api/v1/torneos/${id}/estado`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`
                     }
-                );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message
-                );
-            }
+                }
+            );
 
             obtenerTorneos();
 
@@ -80,17 +74,13 @@ const AdminTorneos = () => {
                         <thead>
 
                             <tr>
-
                                 <th>Nombre</th>
-
                                 <th>Inicio</th>
-
+                                <th>Cierre inscripción</th>
                                 <th>Fin</th>
-
+                                <th>Inscripciones</th>
                                 <th>Estado</th>
-
                                 <th>Acciones</th>
-
                             </tr>
 
                         </thead>
@@ -102,21 +92,36 @@ const AdminTorneos = () => {
 
                                     <tr key={torneo.id}>
 
-                                        <td>
-                                            {torneo.nombre}
-                                        </td>
+                                        <td>{torneo.nombre}</td>
+
+                                        <td>{torneo.fecha_inicio}</td>
 
                                         <td>
-                                            {torneo.fecha_inicio}
+                                            {torneo.fecha_cierre_inscripcion}
                                         </td>
 
-                                        <td>
-                                            {torneo.fecha_fin}
-                                        </td>
+                                        <td>{torneo.fecha_fin}</td>
 
                                         <td>
-                                            {torneo.estado}
+                                            {
+                                                new Date() <=
+                                                    new Date(
+                                                        torneo.fecha_cierre_inscripcion
+                                                    )
+                                                    ? (
+                                                        <span className="badge bg-success">
+                                                            Abiertas
+                                                        </span>
+                                                    )
+                                                    : (
+                                                        <span className="badge bg-danger">
+                                                            Cerradas
+                                                        </span>
+                                                    )
+                                            }
                                         </td>
+
+                                        <td>{torneo.estado}</td>
 
                                         <td>
 

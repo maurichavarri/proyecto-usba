@@ -25,19 +25,21 @@ const Home = () => {
       {/* Anuncios */}
       <section className="mb-5">
         <h2 className="mb-3">Últimos anuncios</h2>
-        <div className="row g-4">
-          {data.slice(0, 10).map((anuncio, i) => (
-            <div className="col-6 col-md-3">
-              <Link to={`/anuncios/${anuncio.id}`}>
-                <Card
-                  titulo={anuncio.titulo}
-                  imagen={img}
-                  descripcion={anuncio.descripcion}
-                />
-              </Link>
-            </div>
-          ))}
-        </div>
+        {data.length === 0 ? (<p>No hay anuncios disponibles.</p>) : (
+          <div className="row g-4">
+            {data?.slice(0, 10).map((anuncio) => (
+              <div className="col-6 col-md-3" key={anuncio.id}>
+                <Link to={`/anuncios/${anuncio.id}`}>
+                  <Card
+                    titulo={anuncio.titulo}
+                    imagen={img}
+                    descripcion={anuncio.contenido}
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

@@ -14,7 +14,7 @@ const Anuncio = () => {
                         <Card
                             titulo={anuncio.titulo}
                             imagen={img}
-                            descripcion={anuncio.descripcion}
+                            descripcion={anuncio.contenido}
                         />
                     </div>
                 ))}
