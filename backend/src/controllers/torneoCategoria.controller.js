@@ -4,6 +4,8 @@ import { Partido, Equipo, Inscripcion } from '../models/index.js';
 import { getDetalleTorneoCategoria } from '../services/torneoCategoria.service.js';
 import { generarFixture } from '../services/fixture.service.js';
 
+import { Sequelize } from 'sequelize';
+
 export const crearTorneoCategoria = async (req, res, next) => {
     try {
         const { torneo_id, categoria_id, arancel } = req.body;
@@ -52,6 +54,7 @@ export const crearTorneoCategoria = async (req, res, next) => {
 
 export const getTorneoCategorias = async (req, res, next) => {
     try {
+
         const data = await TorneoCategoria.findAll({
             include: [
                 {
@@ -64,7 +67,22 @@ export const getTorneoCategorias = async (req, res, next) => {
                     as: 'categoria',
                     attributes: ['id', 'nombre']
                 }
-            ]
+            ],
+
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(`
+                            (
+                                SELECT COUNT(*)
+                                FROM inscripcion
+                                WHERE inscripcion.torneo_categoria_id = TorneoCategoria.id
+                            )
+                        `),
+                        'equipos_inscriptos'
+                    ]
+                ]
+            }
         });
 
         res.json(data);
