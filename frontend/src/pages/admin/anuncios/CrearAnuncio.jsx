@@ -1,141 +1,274 @@
-import {
-    useState
-} from "react";
-
-import {
-    useNavigate
-} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CrearAnuncio = () => {
 
-    const navigate =
-        useNavigate();
+    const navigate = useNavigate();
 
-    const [titulo, setTitulo] =
-        useState("");
+    const [showHelp, setShowHelp] = useState(false);
 
-    const [contenido, setContenido] =
-        useState("");
+    const [formData, setFormData] = useState({
+        titulo: "",
+        contenido: ""
+    });
 
-    const [mensaje, setMensaje] =
-        useState("");
+    const [mensaje, setMensaje] = useState("");
 
-    const handleSubmit =
-        async (e) => {
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
 
-            e.preventDefault();
+        setMensaje("");
+    };
 
-            try {
+    const validarFormulario = () => {
 
-                const token =
-                    localStorage.getItem("token");
+        if (!formData.titulo.trim()) {
+            return "El título es obligatorio.";
+        }
 
-                const response =
-                    await fetch(
-                        "http://localhost:3000/api/v1/anuncios/crear",
-                        {
-                            method: "POST",
+        if (!formData.contenido.trim()) {
+            return "El contenido es obligatorio.";
+        }
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json",
+        return "";
+    };
 
-                                Authorization:
-                                    `Bearer ${token}`
-                            },
+    const handleSubmit = async (e) => {
 
-                            body: JSON.stringify({
-                                titulo,
-                                contenido
-                            })
-                        }
-                    );
+        e.preventDefault();
 
-                const data =
-                    await response.json();
+        const error = validarFormulario();
 
-                if (!response.ok) {
+        if (error) {
+            setMensaje(error);
+            return;
+        }
 
-                    setMensaje(data.message);
+        try {
 
-                    return;
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(
+                "http://localhost:3000/api/v1/anuncios/crear",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+
+                    body: JSON.stringify(formData)
                 }
+            );
 
-                navigate(
-                    "/panel/admin/anuncios"
-                );
+            const data = await response.json();
 
-            } catch (error) {
-
-                console.error(error);
+            if (!response.ok) {
+                setMensaje(data.message);
+                return;
             }
-        };
+
+            navigate("/panel/admin/anuncios");
+
+        } catch (error) {
+            console.error(error);
+            setMensaje("Error al crear el anuncio.");
+        }
+    };
 
     return (
-        <div className="container mt-5 mb-5 col-md-8">
+        <div className="container mt-4 mb-5">
 
-            <h2 className="mb-4">
-                Crear anuncio
-            </h2>
+            <div className="col-md-8 mx-auto">
 
-            <form onSubmit={handleSubmit}>
+                {/* Título */}
+                <div className="d-flex align-items-center mb-2">
 
-                <div className="mb-3">
+                    <h2 className="me-2">
+                        Crear Anuncio
+                    </h2>
 
-                    <label>
-                        Título
-                    </label>
-
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={titulo}
-                        onChange={(e) => {
-
-                            setTitulo(
-                                e.target.value
-                            );
-
-                            setMensaje("");
+                    <span
+                        className="text-primary"
+                        style={{
+                            cursor: "pointer",
+                            fontSize: "1.2rem"
                         }}
-                    />
+                        onClick={() => setShowHelp(true)}
+                        title="Ayuda"
+                    >
+                        ❓
+                    </span>
 
                 </div>
 
-                <div className="mb-3">
+                {/* Breadcrumb */}
+                <nav
+                    className="mb-3"
+                    style={{ fontSize: "0.9rem" }}
+                >
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                            navigate("/panel/admin")
+                        }
+                    >
+                        Admin Dashboard
+                    </span>
 
-                    <label>
-                        Contenido
-                    </label>
+                    {" > "}
 
-                    <textarea
-                        className="form-control"
-                        rows="6"
-                        value={contenido}
-                        onChange={(e) => {
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                            navigate("/panel/admin/anuncios")
+                        }
+                    >
+                        Anuncios
+                    </span>
 
-                            setContenido(
-                                e.target.value
-                            );
+                    {" > "}
 
-                            setMensaje("");
-                        }}
-                    />
+                    <span className="text-muted">
+                        Crear Anuncio
+                    </span>
 
-                </div>
+                </nav>
 
-                <button className="btn btn-dark">
-                    Crear anuncio
+                <button
+                    className="btn btn-dark mb-3"
+                    onClick={() => navigate(-1)}
+                >
+                    Volver
                 </button>
 
-            </form>
+                {/* Formulario */}
+                <div className="card shadow-sm">
 
-            {
-                mensaje &&
-                <div className="alert alert-danger mt-3">
-                    {mensaje}
+                    <div className="card-header bg-dark text-white">
+                        <strong>
+                            Formulario de creación
+                        </strong>
+                    </div>
+
+                    <div className="card-body">
+
+                        {
+                            mensaje &&
+                            <div className="alert alert-danger">
+                                {mensaje}
+                            </div>
+                        }
+
+                        <form onSubmit={handleSubmit}>
+
+                            <div className="mb-3">
+
+                                <label className="form-label">
+                                    Título
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="titulo"
+                                    className="form-control"
+                                    value={formData.titulo}
+                                    onChange={handleChange}
+                                />
+
+                            </div>
+
+                            <div className="mb-3">
+
+                                <label className="form-label">
+                                    Contenido
+                                </label>
+
+                                <textarea
+                                    name="contenido"
+                                    className="form-control"
+                                    rows="8"
+                                    value={formData.contenido}
+                                    onChange={handleChange}
+                                />
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                            >
+                                Crear anuncio
+                            </button>
+
+                        </form>
+
+                    </div>
+
                 </div>
-            }
+
+                {/* Modal Ayuda */}
+                {
+                    showHelp && (
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor:
+                                    "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    maxWidth: "500px"
+                                }}
+                            >
+
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+
+                                    <h5>
+                                        ¿Cómo funciona este apartado?
+                                    </h5>
+
+                                    <button
+                                        className="btn-close"
+                                        onClick={() =>
+                                            setShowHelp(false)
+                                        }
+                                    />
+
+                                </div>
+
+                                <p>
+                                    Desde aquí podés crear
+                                    comunicados oficiales para
+                                    los usuarios del sistema.
+                                </p>
+
+                                <p>
+                                    Completá el título y el
+                                    contenido del anuncio.
+                                    Luego presioná
+                                    <strong className="text-primary">
+                                        {" "}Crear anuncio
+                                    </strong>.
+                                </p>
+
+                            </div>
+
+                        </div>
+                    )
+                }
+
+            </div>
 
         </div>
     );

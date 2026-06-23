@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminTorneoCategorias = () => {
+
+    const navigate = useNavigate();
+
+    const [showHelp, setShowHelp] = useState(false);
 
     const [torneos, setTorneos] = useState([]);
     const [categorias, setCategorias] = useState([]);
@@ -11,41 +15,10 @@ const AdminTorneoCategorias = () => {
     const [categoriaId, setCategoriaId] = useState("");
     const [arancel, setArancel] = useState("");
 
-    // Token
+    const [mensaje, setMensaje] = useState("");
+    const [tipoMensaje, setTipoMensaje] = useState("success");
+
     const token = localStorage.getItem("token");
-
-    // Obtener torneos
-    const obtenerTorneos = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/torneos");
-            const data = await response.json();
-            setTorneos(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    // Obtener categorías
-    const obtenerCategorias = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/categorias");
-            const data = await response.json();
-            setCategorias(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    // Obtener relaciones torneo-categoría
-    const obtenerTorneoCategorias = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
-            const data = await response.json();
-            setTorneoCategorias(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     useEffect(() => {
         obtenerTorneos();
@@ -53,17 +26,72 @@ const AdminTorneoCategorias = () => {
         obtenerTorneoCategorias();
     }, []);
 
-    // Crear relación
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const obtenerTorneos = async () => {
         try {
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias",
+
+            const response = await fetch(
+                "http://localhost:3000/api/v1/torneos"
+            );
+
+            const data = await response.json();
+
+            setTorneos(data);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const obtenerCategorias = async () => {
+        try {
+
+            const response = await fetch(
+                "http://localhost:3000/api/v1/categorias"
+            );
+
+            const data = await response.json();
+
+            setCategorias(data);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const obtenerTorneoCategorias = async () => {
+        try {
+
+            const response = await fetch(
+                "http://localhost:3000/api/v1/torneo-categorias"
+            );
+
+            const data = await response.json();
+
+            setTorneoCategorias(data);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        setMensaje("");
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:3000/api/v1/torneo-categorias",
                 {
                     method: "POST",
+
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`
                     },
+
                     body: JSON.stringify({
                         torneo_id: torneoId,
                         categoria_id: categoriaId,
@@ -75,193 +103,439 @@ const AdminTorneoCategorias = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                alert(data.message);
+
+                setTipoMensaje("danger");
+                setMensaje(data.message);
+
                 return;
             }
 
-            alert("Relación creada correctamente");
+            setTipoMensaje("success");
+            setMensaje(
+                "Categoría asignada correctamente al torneo."
+            );
 
-            // Limpiar formulario
             setTorneoId("");
             setCategoriaId("");
             setArancel("");
 
-            // Refrescar lista
             obtenerTorneoCategorias();
 
         } catch (error) {
+
             console.error(error);
-            alert("Error al crear relación");
+
+            setTipoMensaje("danger");
+            setMensaje(
+                "Error al crear la relación."
+            );
         }
     };
 
     return (
-        <div className="container mt-5 mb-5">
+        <div className="container mt-4 mb-5">
 
-            <h2 className="mb-4">
-                Asignar Categoría a Torneo
-            </h2>
+            <div className="col-lg-10 mx-auto">
 
-            <form onSubmit={handleSubmit}>
+                {/* Título */}
+                <div className="d-flex align-items-center mb-2">
 
-                {/* Torneo */}
-                <div className="mb-3">
+                    <h2 className="me-2">
+                        Torneos y Categorías
+                    </h2>
 
-                    <label className="form-label">
-                        Torneo
-                    </label>
-
-                    <select
-                        className="form-select"
-                        value={torneoId}
-                        onChange={(e) =>
-                            setTorneoId(e.target.value)
+                    <span
+                        className="text-primary"
+                        style={{
+                            cursor: "pointer",
+                            fontSize: "1.2rem"
+                        }}
+                        title="Ayuda"
+                        onClick={() =>
+                            setShowHelp(true)
                         }
-                        required
                     >
-
-                        <option value="">
-                            Seleccionar torneo
-                        </option>
-
-                        {
-                            torneos.map((torneo) => (
-
-                                <option
-                                    key={torneo.id}
-                                    value={torneo.id}
-                                >
-                                    {torneo.nombre}
-                                </option>
-                            ))
-                        }
-
-                    </select>
+                        ❓
+                    </span>
 
                 </div>
 
-                {/* Categoría */}
-                <div className="mb-3">
+                {/* Breadcrumb */}
+                <nav
+                    className="mb-3"
+                    style={{ fontSize: "0.9rem" }}
+                >
 
-                    <label className="form-label">
-                        Categoría
-                    </label>
-
-                    <select
-                        className="form-select"
-                        value={categoriaId}
-                        onChange={(e) =>
-                            setCategoriaId(e.target.value)
+                    <span
+                        className="text-primary"
+                        style={{
+                            cursor: "pointer"
+                        }}
+                        onClick={() =>
+                            navigate("/panel/admin")
                         }
-                        required
                     >
+                        Admin Dashboard
+                    </span>
 
-                        <option value="">
-                            Seleccionar categoría
-                        </option>
+                    {" > "}
 
-                        {
-                            categorias.map((categoria) => (
+                    <span className="text-muted">
+                        Torneos - Categorías
+                    </span>
 
-                                <option
-                                    key={categoria.id}
-                                    value={categoria.id}
-                                >
-                                    {categoria.nombre}
-                                </option>
-                            ))
-                        }
-
-                    </select>
-
-                </div>
-
-                {/* Arancel */}
-                <div className="mb-4">
-
-                    <label className="form-label">
-                        Arancel
-                    </label>
-
-                    <input
-                        type="number"
-                        className="form-control"
-                        value={arancel}
-                        onChange={(e) =>
-                            setArancel(e.target.value)
-                        }
-                        required
-                    />
-
-                </div>
+                </nav>
 
                 <button
-                    type="submit"
-                    className="btn btn-dark"
+                    className="btn btn-dark mb-3"
+                    onClick={() =>
+                        navigate(-1)
+                    }
                 >
-                    Guardar
+                    Volver
                 </button>
 
-            </form>
+                {/* FORMULARIO */}
 
-            <hr className="my-5" />
+                <div className="card shadow-sm mb-4">
 
-            <h3 className="mb-4">
-                Torneos - Categorías
-            </h3>
+                    <div className="card-header bg-dark text-white">
 
-            <div className="table-responsive">
+                        <strong>
+                            Asignar categoría a torneo
+                        </strong>
 
-                <table className="table table-bordered">
+                    </div>
 
-                    <thead>
-
-                        <tr>
-                            <th>Torneo</th>
-                            <th>Categoría</th>
-                            <th>Arancel</th>
-                            <th>Acciones</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
+                    <div className="card-body">
 
                         {
-                            torneoCategorias.map((tc) => (
-                                
-                                <tr key={tc.id}>
-
-                                    <td>
-                                        {tc.torneo?.nombre}
-                                    </td>
-
-                                    <td>
-                                        {tc.categoria?.nombre}
-                                    </td>
-
-                                    <td>
-                                        ${tc.arancel}
-                                    </td>
-
-                                    <td className="d-flex gap-2">
-
-                                        <Link
-                                            to={`/panel/admin/fixture/${tc.id}`}
-                                            className="btn btn-dark btn-sm"
-                                        >
-                                            Ver Fixture
-                                        </Link>
-
-                                    </td>
-
-                                </tr>
-                            ))
+                            mensaje &&
+                            (
+                                <div
+                                    className={`alert alert-${tipoMensaje}`}
+                                >
+                                    {mensaje}
+                                </div>
+                            )
                         }
 
-                    </tbody>
+                        <form onSubmit={handleSubmit}>
 
-                </table>
+                            <div className="mb-3">
+
+                                <label className="form-label">
+                                    Torneo
+                                </label>
+
+                                <select
+                                    className="form-select"
+                                    value={torneoId}
+                                    onChange={(e) =>
+                                        setTorneoId(
+                                            e.target.value
+                                        )
+                                    }
+                                    required
+                                >
+
+                                    <option value="">
+                                        Seleccionar torneo
+                                    </option>
+
+                                    {
+                                        torneos.map(
+                                            (torneo) => (
+                                                <option
+                                                    key={torneo.id}
+                                                    value={torneo.id}
+                                                >
+                                                    {
+                                                        torneo.nombre
+                                                    }
+                                                </option>
+                                            )
+                                        )
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <div className="mb-3">
+
+                                <label className="form-label">
+                                    Categoría
+                                </label>
+
+                                <select
+                                    className="form-select"
+                                    value={categoriaId}
+                                    onChange={(e) =>
+                                        setCategoriaId(
+                                            e.target.value
+                                        )
+                                    }
+                                    required
+                                >
+
+                                    <option value="">
+                                        Seleccionar categoría
+                                    </option>
+
+                                    {
+                                        categorias.map(
+                                            (categoria) => (
+                                                <option
+                                                    key={categoria.id}
+                                                    value={categoria.id}
+                                                >
+                                                    {
+                                                        categoria.nombre
+                                                    }
+                                                </option>
+                                            )
+                                        )
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <div className="mb-4">
+
+                                <label className="form-label">
+                                    Arancel
+                                </label>
+
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={arancel}
+                                    onChange={(e) =>
+                                        setArancel(
+                                            e.target.value
+                                        )
+                                    }
+                                    required
+                                />
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                            >
+                                Guardar relación
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                {/* TABLA */}
+
+                <div className="card shadow-sm">
+
+                    <div className="card-header bg-dark text-white">
+
+                        <strong>
+                            Categorías asignadas
+                        </strong>
+
+                    </div>
+
+                    <div className="card-body">
+
+                        <div className="table-responsive">
+
+                            <table className="table table-hover align-middle">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Torneo
+                                        </th>
+
+                                        <th>
+                                            Categoría
+                                        </th>
+
+                                        <th>
+                                            Equipos
+                                        </th>
+
+                                        <th>
+                                            Fixture
+                                        </th>
+
+                                        <th>
+                                            Arancel
+                                        </th>
+
+                                        <th>
+                                            Acciones
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    {
+                                        torneoCategorias.map(
+                                            (tc) => (
+
+                                                <tr
+                                                    key={tc.id}
+                                                >
+
+                                                    <td>
+                                                        {
+                                                            tc.torneo?.nombre
+                                                        }
+                                                    </td>
+
+                                                    <td>
+                                                        {
+                                                            tc.categoria?.nombre
+                                                        }
+                                                    </td>
+
+                                                    <td>
+
+                                                        <span
+                                                            className={
+                                                                Number(
+                                                                    tc.equipos_inscriptos
+                                                                ) >= 2
+                                                                    ? "badge bg-success"
+                                                                    : "badge bg-warning text-dark"
+                                                            }
+                                                        >
+                                                            {
+                                                                tc.equipos_inscriptos || 0
+                                                            }
+                                                            {" "}
+                                                            equipos
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        {
+                                                            Number(
+                                                                tc.equipos_inscriptos
+                                                            ) >= 2
+                                                                ? (
+                                                                    <span className="badge bg-success">
+                                                                        Listo
+                                                                    </span>
+                                                                )
+                                                                : (
+                                                                    <span className="badge bg-secondary">
+                                                                        Pendiente
+                                                                    </span>
+                                                                )
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <span className="badge bg-primary">
+                                                            $
+                                                            {
+                                                                tc.arancel
+                                                            }
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <Link
+                                                            to={`/panel/admin/fixture/${tc.id}`}
+                                                            className="btn btn-dark btn-sm"
+                                                        >
+                                                            Ver Fixture
+                                                        </Link>
+
+                                                    </td>
+
+                                                </tr>
+                                            )
+                                        )
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* Modal ayuda */}
+
+                {
+                    showHelp && (
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor:
+                                    "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    maxWidth: "500px"
+                                }}
+                            >
+
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+
+                                    <h5>
+                                        ¿Cómo funciona este apartado?
+                                    </h5>
+
+                                    <button
+                                        className="btn-close"
+                                        onClick={() =>
+                                            setShowHelp(false)
+                                        }
+                                    />
+
+                                </div>
+
+                                <p>
+                                    Desde aquí podés asociar
+                                    categorías a los torneos.
+                                </p>
+
+                                <p>
+                                    También podés consultar
+                                    cuántos equipos están
+                                    inscriptos y acceder al
+                                    fixture de cada categoría.
+                                </p>
+
+                            </div>
+
+                        </div>
+                    )
+                }
 
             </div>
 

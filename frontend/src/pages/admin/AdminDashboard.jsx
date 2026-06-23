@@ -8,7 +8,7 @@ const DashboardAdmin = () => {
         <div className="container mt-5 mb-5">
             <div className="mb-4">
                 <h2>
-                    Panel Administrador
+                    Administrador Dashboard
                 </h2>
                 <p className="text-muted">
                     Bienvenido {usuario?.correo}
