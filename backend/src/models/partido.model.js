@@ -51,7 +51,17 @@ const cols = {
         type: DataTypes.ENUM('pendiente', 'jugado', 'suspendido'),
         defaultValue: 'pendiente',
         allowNull: false
-    }
+    },
+    fase: {
+        type: DataTypes.ENUM(
+            'regular',
+            'cuartos',
+            'semifinal',
+            'final'
+        ),
+        allowNull: false,
+        defaultValue: 'regular'
+    },
 };
 
 const config = {

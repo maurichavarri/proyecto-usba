@@ -6,6 +6,7 @@ const AdminTorneoCategorias = () => {
     const navigate = useNavigate();
 
     const [showHelp, setShowHelp] = useState(false);
+    const [formatoCompetencia, setFormatoCompetencia] = useState("solo_liga");
 
     const [torneos, setTorneos] = useState([]);
     const [categorias, setCategorias] = useState([]);
@@ -82,20 +83,20 @@ const AdminTorneoCategorias = () => {
 
         try {
 
-            const response = await fetch(
-                "http://localhost:3000/api/v1/torneo-categorias",
+            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias",
                 {
                     method: "POST",
 
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${token} `
                     },
 
                     body: JSON.stringify({
                         torneo_id: torneoId,
                         categoria_id: categoriaId,
-                        arancel
+                        arancel,
+                        formato_competencia: formatoCompetencia
                     })
                 }
             );
@@ -132,12 +133,21 @@ const AdminTorneoCategorias = () => {
         }
     };
 
+    const totalEquipos = torneoCategorias.reduce(
+        (acc, tc) =>
+            acc + Number(tc.equipos_inscriptos || 0),
+        0
+    );
+
+    const listosParaFixture = torneoCategorias.filter(
+        tc => Number(tc.equipos_inscriptos) >= 4
+    ).length;
+
     return (
         <div className="container mt-4 mb-5">
 
             <div className="col-lg-10 mx-auto">
 
-                {/* Título */}
                 <div className="d-flex align-items-center mb-2">
 
                     <h2 className="me-2">
@@ -160,7 +170,6 @@ const AdminTorneoCategorias = () => {
 
                 </div>
 
-                {/* Breadcrumb */}
                 <nav
                     className="mb-3"
                     style={{ fontSize: "0.9rem" }}
@@ -195,8 +204,6 @@ const AdminTorneoCategorias = () => {
                     Volver
                 </button>
 
-                {/* FORMULARIO */}
-
                 <div className="card shadow-sm mb-4">
 
                     <div className="card-header bg-dark text-white">
@@ -213,7 +220,7 @@ const AdminTorneoCategorias = () => {
                             mensaje &&
                             (
                                 <div
-                                    className={`alert alert-${tipoMensaje}`}
+                                    className={`alert alert - ${tipoMensaje} `}
                                 >
                                     {mensaje}
                                 </div>
@@ -250,9 +257,7 @@ const AdminTorneoCategorias = () => {
                                                     key={torneo.id}
                                                     value={torneo.id}
                                                 >
-                                                    {
-                                                        torneo.nombre
-                                                    }
+                                                    {torneo.nombre}
                                                 </option>
                                             )
                                         )
@@ -290,9 +295,7 @@ const AdminTorneoCategorias = () => {
                                                     key={categoria.id}
                                                     value={categoria.id}
                                                 >
-                                                    {
-                                                        categoria.nombre
-                                                    }
+                                                    {categoria.nombre}
                                                 </option>
                                             )
                                         )
@@ -303,7 +306,6 @@ const AdminTorneoCategorias = () => {
                             </div>
 
                             <div className="mb-4">
-
                                 <label className="form-label">
                                     Arancel
                                 </label>
@@ -319,7 +321,36 @@ const AdminTorneoCategorias = () => {
                                     }
                                     required
                                 />
+                            </div>
 
+                            <div className="mb-4">
+                                <label className="form-label">
+                                    Formato
+                                </label>
+
+                                <select
+                                    className="form-select"
+                                    value={formatoCompetencia}
+                                    onChange={(e) =>
+                                        setFormatoCompetencia(
+                                            e.target.value
+                                        )
+                                    }
+                                >
+
+                                    <option value="solo_liga">
+                                        Solo Liga
+                                    </option>
+
+                                    <option value="playoff_4">
+                                        Liga + Playoff Top 4
+                                    </option>
+
+                                    <option value="playoff_8">
+                                        Liga + Playoff Top 8
+                                    </option>
+
+                                </select>
                             </div>
 
                             <button
@@ -335,7 +366,69 @@ const AdminTorneoCategorias = () => {
 
                 </div>
 
-                {/* TABLA */}
+                <div className="row mb-4">
+
+                    <div className="col-md-4">
+
+                        <div className="card shadow-sm border-0">
+
+                            <div className="card-body">
+
+                                <h6 className="text-muted">
+                                    Relaciones
+                                </h6>
+
+                                <h3>
+                                    {torneoCategorias.length}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div className="col-md-4">
+
+                        <div className="card shadow-sm border-0">
+
+                            <div className="card-body">
+
+                                <h6 className="text-muted">
+                                    Equipos Inscriptos
+                                </h6>
+
+                                <h3>
+                                    {totalEquipos}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div className="col-md-4">
+
+                        <div className="card shadow-sm border-0">
+
+                            <div className="card-body">
+
+                                <h6 className="text-muted">
+                                    Listos para Fixture
+                                </h6>
+
+                                <h3>
+                                    {listosParaFixture}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
                 <div className="card shadow-sm">
 
@@ -357,29 +450,13 @@ const AdminTorneoCategorias = () => {
 
                                     <tr>
 
-                                        <th>
-                                            Torneo
-                                        </th>
-
-                                        <th>
-                                            Categoría
-                                        </th>
-
-                                        <th>
-                                            Equipos
-                                        </th>
-
-                                        <th>
-                                            Fixture
-                                        </th>
-
-                                        <th>
-                                            Arancel
-                                        </th>
-
-                                        <th>
-                                            Acciones
-                                        </th>
+                                        <th>Torneo</th>
+                                        <th>Categoría</th>
+                                        <th>Equipos</th>
+                                        <th>Formato</th>
+                                        <th>Estado</th>
+                                        <th>Arancel</th>
+                                        <th>Acciones</th>
 
                                     </tr>
 
@@ -391,56 +468,56 @@ const AdminTorneoCategorias = () => {
                                         torneoCategorias.map(
                                             (tc) => (
 
-                                                <tr
-                                                    key={tc.id}
-                                                >
+                                                <tr key={tc.id}>
 
                                                     <td>
-                                                        {
-                                                            tc.torneo?.nombre
-                                                        }
+                                                        {tc.torneo?.nombre}
                                                     </td>
 
                                                     <td>
-                                                        {
-                                                            tc.categoria?.nombre
-                                                        }
-                                                    </td>
-
-                                                    <td>
-
-                                                        <span
-                                                            className={
-                                                                Number(
-                                                                    tc.equipos_inscriptos
-                                                                ) >= 2
-                                                                    ? "badge bg-success"
-                                                                    : "badge bg-warning text-dark"
-                                                            }
-                                                        >
-                                                            {
-                                                                tc.equipos_inscriptos || 0
-                                                            }
-                                                            {" "}
-                                                            equipos
-                                                        </span>
-
+                                                        {tc.categoria?.nombre}
                                                     </td>
 
                                                     <td>
 
                                                         {
-                                                            Number(
-                                                                tc.equipos_inscriptos
-                                                            ) >= 2
+                                                            Number(tc.equipos_inscriptos) >= 4
                                                                 ? (
                                                                     <span className="badge bg-success">
-                                                                        Listo
+                                                                        {tc.equipos_inscriptos} equipos
                                                                     </span>
                                                                 )
                                                                 : (
-                                                                    <span className="badge bg-secondary">
-                                                                        Pendiente
+                                                                    <span className="badge bg-danger">
+                                                                        {tc.equipos_inscriptos || 0}/4 mínimos
+                                                                    </span>
+                                                                )
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+                                                        {
+                                                            tc.formato_competencia === "solo_liga"
+                                                                ? "Solo Liga"
+                                                                : tc.formato_competencia === "playoff_4"
+                                                                    ? "Playoff Top 4"
+                                                                    : "Playoff Top 8"
+                                                        }
+                                                    </td>
+
+                                                    <td>
+
+                                                        {
+                                                            Number(tc.equipos_inscriptos) >= 4
+                                                                ? (
+                                                                    <span className="badge bg-primary">
+                                                                        Listo para generar
+                                                                    </span>
+                                                                )
+                                                                : (
+                                                                    <span className="badge bg-warning text-dark">
+                                                                        Esperando equipos
                                                                     </span>
                                                                 )
                                                         }
@@ -450,10 +527,7 @@ const AdminTorneoCategorias = () => {
                                                     <td>
 
                                                         <span className="badge bg-primary">
-                                                            $
-                                                            {
-                                                                tc.arancel
-                                                            }
+                                                            ${tc.arancel}
                                                         </span>
 
                                                     </td>
@@ -466,79 +540,17 @@ const AdminTorneoCategorias = () => {
                                                         >
                                                             Ver Fixture
                                                         </Link>
-
                                                     </td>
-
                                                 </tr>
                                             )
                                         )
                                     }
-
                                 </tbody>
-
                             </table>
-
                         </div>
-
                     </div>
-
                 </div>
-
-                {/* Modal ayuda */}
-
-                {
-                    showHelp && (
-                        <div
-                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                            style={{
-                                backgroundColor:
-                                    "rgba(0,0,0,0.5)",
-                                zIndex: 1050
-                            }}
-                        >
-
-                            <div
-                                className="bg-white p-4 rounded shadow"
-                                style={{
-                                    maxWidth: "500px"
-                                }}
-                            >
-
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-
-                                    <h5>
-                                        ¿Cómo funciona este apartado?
-                                    </h5>
-
-                                    <button
-                                        className="btn-close"
-                                        onClick={() =>
-                                            setShowHelp(false)
-                                        }
-                                    />
-
-                                </div>
-
-                                <p>
-                                    Desde aquí podés asociar
-                                    categorías a los torneos.
-                                </p>
-
-                                <p>
-                                    También podés consultar
-                                    cuántos equipos están
-                                    inscriptos y acceder al
-                                    fixture de cada categoría.
-                                </p>
-
-                            </div>
-
-                        </div>
-                    )
-                }
-
             </div>
-
         </div>
     );
 };

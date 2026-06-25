@@ -68,14 +68,35 @@ Inscripcion.belongsTo(TorneoCategoria, {
 });
 
 // Partido
-Partido.belongsTo(Inscripcion, { as: 'local', foreignKey: 'inscripcion_local_id' });
-Partido.belongsTo(Inscripcion, { as: 'visitante', foreignKey: 'inscripcion_visitante_id' });
-Partido.belongsTo(Sede, { foreignKey: 'sede_id' });
-Partido.belongsTo(Arbitro, { foreignKey: 'arbitro_id' });
+Partido.belongsTo(Inscripcion, { foreignKey: 'inscripcion_local_id', as: 'local' });
+
+Partido.belongsTo(Inscripcion, { foreignKey: 'inscripcion_visitante_id', as: 'visitante' });
+
+Partido.belongsTo(Sede, { 
+  foreignKey: 'sede_id',
+  as: 'sede'
+});
+
+Partido.belongsTo(Arbitro, { 
+  foreignKey: 'arbitro_id',
+  as: 'arbitro' 
+});
 
 // Sanción
 Sancion.belongsTo(Jugador, { foreignKey: 'jugador_id' });
+
 Sancion.belongsTo(Partido, { foreignKey: 'partido_id' });
+
+// Usuario - Arbitro
+Usuario.hasOne(Arbitro, {
+    foreignKey: 'usuario_id',
+    as: 'arbitro'
+});
+
+Arbitro.belongsTo(Usuario, {
+    foreignKey: 'usuario_id',
+    as: 'usuario'
+});
 
 export {
   Usuario,

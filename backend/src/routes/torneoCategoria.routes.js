@@ -4,7 +4,10 @@ import {
     getTorneoCategorias,
     getDetalle,
     generarFixtureController,
-    getFixture
+    getFixture,
+    getTablaPosiciones,
+    getResumenTorneoCategoria,
+    generarPlayoffsController
 } from '../controllers/torneoCategoria.controller.js';
 
 import verifyToken from '../middlewares/verifyToken.js';
@@ -26,5 +29,14 @@ router.post('/:id/fixture', verifyToken, verifyRole('admin'), generarFixtureCont
 
 // Obtener fixture
 router.get('/:id/fixture', getFixture);
+
+// Obtener tabla
+router.get('/:id/tabla', getTablaPosiciones);
+
+// Obtener resumen
+router.get("/:id/resumen", getResumenTorneoCategoria);
+
+// Generar playoff
+router.post('/:id/playoffs', verifyToken, verifyRole('admin'), generarPlayoffsController);
 
 export default router;
