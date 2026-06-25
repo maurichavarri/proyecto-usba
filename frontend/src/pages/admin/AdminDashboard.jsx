@@ -59,7 +59,7 @@ const DashboardAdmin = () => {
                         <div className="card-body">
                             <h5>Torneo-Categorías / Fixtures</h5>
                             <p>
-                                Asignar categorías a torneos.
+                                Asignar categorías a torneos. Administración de fixture.
                             </p>
                             <Link
                                 to="/panel/admin/torneo-categorias"

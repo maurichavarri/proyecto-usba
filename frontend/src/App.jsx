@@ -30,8 +30,13 @@ import AdminAnuncios from './pages/admin/anuncios/AdminAnuncios';
 import CrearAnuncio from './pages/admin/anuncios/CrearAnuncio';
 import EditarAnuncio from './pages/admin/anuncios/EditarAnuncio';
 import AdminFixture from './pages/admin/AdminFixture';
-import AdminSedes from "./pages/admin/AdminSedes";
-import AdminArbitros from "./pages/admin/AdminArbitros";
+import AdminSedes from "./pages/admin/sedes/AdminSedes";
+import CrearSede from "./pages/admin/sedes/CrearSede";
+import EditarSede from "./pages/admin/sedes/EditarSede";
+import AdminArbitros from "./pages/admin/arbitros/AdminArbitros";
+import CrearArbitro from "./pages/admin/arbitros/CrearArbitro";
+import EditarArbitro from "./pages/admin/arbitros/EditarArbitro";
+import AdminPartido from "./pages/admin/AdminPartido";
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 
@@ -49,7 +54,6 @@ function App() {
           <Route path="/anuncios/:id" element={<AnuncioDetalle />} />
           <Route path="/auth/ingresar" element={<Login />} />
           <Route path="/auth/inscribirse" element={<Register />} />
-          <Route path="/panel/admin/torneo-categorias" element={<ProtectedRoute roles={["admin"]}><AdminTorneoCategorias /></ProtectedRoute>} />
           <Route path="/panel/delegado/equipos/crear" element={<ProtectedRoute roles={["delegado"]}><CrearEquipo /></ProtectedRoute>} />
           <Route path="/panel/delegado/equipos" element={<ProtectedRoute roles={["delegado"]}><MisEquipos /></ProtectedRoute>} />
           <Route path="/panel/delegado/equipos/:id/jugadores" element={<ProtectedRoute roles={["delegado"]}><JugadoresEquipo /></ProtectedRoute>} />
@@ -63,12 +67,18 @@ function App() {
           <Route path="/panel/admin/categorias" element={<ProtectedRoute roles={["admin"]}><AdminCategorias /></ProtectedRoute>} />
           <Route path="/panel/admin/categorias/crear" element={<ProtectedRoute roles={["admin"]}><CrearCategoria /></ProtectedRoute>} />
           <Route path="/panel/admin/categorias/editar/:id" element={<ProtectedRoute roles={["admin"]}><EditarCategoria /></ProtectedRoute>} />
+          <Route path="/panel/admin/torneo-categorias" element={<ProtectedRoute roles={["admin"]}><AdminTorneoCategorias /></ProtectedRoute>} />
           <Route path="/panel/admin/anuncios" element={<ProtectedRoute roles={['admin']}><AdminAnuncios /></ProtectedRoute>} />
           <Route path="/panel/admin/anuncios/crear" element={<ProtectedRoute roles={['admin']}><CrearAnuncio /></ProtectedRoute>} />
           <Route path="/panel/admin/anuncios/editar/:id" element={<ProtectedRoute roles={['admin']}><EditarAnuncio /></ProtectedRoute>} />
           <Route path="/panel/admin/fixture/:id" element={<ProtectedRoute roles={['admin']}><AdminFixture /></ProtectedRoute>} />
           <Route path="/panel/admin/sedes" element={<ProtectedRoute roles={['admin']}><AdminSedes /></ProtectedRoute>} />
+          <Route path="/panel/admin/sedes/crear" element={<ProtectedRoute roles={['admin']}><CrearSede /></ProtectedRoute>} />
+          <Route path="/panel/admin/sedes/editar/:id" element={<ProtectedRoute roles={['admin']}><EditarSede /></ProtectedRoute>} />
           <Route path="/panel/admin/arbitros" element={<ProtectedRoute roles={['admin']}><AdminArbitros /></ProtectedRoute>} />
+          <Route path="/panel/admin/arbitros/crear" element={<ProtectedRoute roles={['admin']}><CrearArbitro /></ProtectedRoute>} />
+          <Route path="/panel/admin/arbitros/editar/:id" element={<ProtectedRoute roles={['admin']}><EditarArbitro /></ProtectedRoute>} />
+          <Route path="/panel/admin/partidos/:id" element={<ProtectedRoute roles={["admin"]}><AdminPartido /></ProtectedRoute>} />
         </Routes>
       </main>
 

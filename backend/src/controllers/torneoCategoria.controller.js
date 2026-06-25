@@ -1,14 +1,15 @@
-import { TorneoCategoria, Torneo, Categoria } from '../models/index.js';
-import { Partido, Equipo, Inscripcion } from '../models/index.js';
+import { TorneoCategoria, Torneo, Categoria, Partido, Equipo, Inscripcion, Sede, Arbitro } from '../models/index.js';
 
 import { getDetalleTorneoCategoria } from '../services/torneoCategoria.service.js';
 import { generarFixture } from '../services/fixture.service.js';
+import { calcularTablaPosiciones } from '../services/tabla.service.js';
+import { generarPlayoffs } from '../services/playoff.service.js';
 
 import { Sequelize } from 'sequelize';
 
 export const crearTorneoCategoria = async (req, res, next) => {
     try {
-        const { torneo_id, categoria_id, arancel } = req.body;
+        const { torneo_id, categoria_id, arancel, formato_competencia } = req.body;
 
         // Validaciones básicas
         if (!torneo_id || !categoria_id || !arancel) {
@@ -42,7 +43,8 @@ export const crearTorneoCategoria = async (req, res, next) => {
         const torneoCategoria = await TorneoCategoria.create({
             torneo_id,
             categoria_id,
-            arancel
+            arancel,
+            formato_competencia
         });
 
         res.status(201).json(torneoCategoria);
@@ -118,20 +120,58 @@ export const generarFixtureController = async (req, res, next) => {
     }
 };
 
+export const generarPlayoffsController = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const resultado = await generarPlayoffs(id);
+        res.json(resultado);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getFixture = async (req, res, next) => {
     try {
         const { id } = req.params;
-
         const partidos = await Partido.findAll({
-            where: { torneo_categoria_id: id },
+            where: {
+                torneo_categoria_id: id
+            },
             include: [
                 {
                     association: 'local',
-                    include: [{ model: Equipo, attributes: ['nombre'] }]
+                    include: [
+                        {
+                            model: Equipo,
+                            attributes: ['nombre']
+                        }
+                    ]
                 },
                 {
                     association: 'visitante',
-                    include: [{ model: Equipo, attributes: ['nombre'] }]
+                    include: [
+                        {
+                            model: Equipo,
+                            attributes: ['nombre']
+                        }
+                    ]
+                },
+                {
+                    model: Sede,
+                    as: 'sede',
+                    attributes: [
+                        'id',
+                        'nombre'
+                    ]
+                },
+                {
+                    model: Arbitro,
+                    as: 'arbitro',
+                    attributes: [
+                        'id',
+                        'nombre',
+                        'apellido'
+                    ]
                 }
             ],
             order: [
@@ -139,10 +179,101 @@ export const getFixture = async (req, res, next) => {
                 ['fecha', 'ASC']
             ]
         });
-
         res.json(partidos);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getTablaPosiciones = async (req, res, next) => {
+    try {
+        const tabla = await calcularTablaPosiciones(req.params.id);
+        res.json(tabla);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getResumenTorneoCategoria = async (req, res, next) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const torneoCategoria =
+            await TorneoCategoria.findByPk(
+                id,
+                {
+                    include: [
+                        {
+                            model: Torneo,
+                            as: "torneo"
+                        },
+                        {
+                            model: Categoria,
+                            as: "categoria"
+                        }
+                    ]
+                }
+            );
+
+        if (!torneoCategoria) {
+
+            return res.status(404).json({
+                message:
+                    "Torneo categoría no encontrado"
+            });
+        }
+
+        const equipos =
+            await Inscripcion.count({
+                where: {
+                    torneo_categoria_id: id,
+                    estado: "confirmado"
+                }
+            });
+
+        const partidos =
+            await Partido.count({
+                where: {
+                    torneo_categoria_id: id
+                }
+            });
+
+        const partidosJugados =
+            await Partido.count({
+                where: {
+                    torneo_categoria_id: id,
+                    estado: "jugado"
+                }
+            });
+
+        const partidosPendientes =
+            await Partido.count({
+                where: {
+                    torneo_categoria_id: id,
+                    estado: "pendiente"
+                }
+            });
+
+        res.json({
+            torneo:
+                torneoCategoria.torneo?.nombre,
+
+            categoria:
+                torneoCategoria.categoria?.nombre,
+
+            equipos,
+
+            partidos,
+
+            partidosJugados,
+
+            partidosPendientes
+        });
 
     } catch (error) {
+
         next(error);
     }
 };

@@ -29,7 +29,8 @@ export const crearInscripcion = async (req, res, next) => {
         }
 
         // Buscar torneo categoría
-        const torneoCategoria = await TorneoCategoria.findByPk(torneo_categoria_id,
+        const torneoCategoria = await TorneoCategoria.findByPk(
+            torneo_categoria_id,
             {
                 include: [
                     {
@@ -43,6 +44,13 @@ export const crearInscripcion = async (req, res, next) => {
         if (!torneoCategoria) {
             return res.status(404).json({
                 message: 'Torneo categoría no encontrado'
+            });
+        }
+
+        // Nueva validación
+        if (torneoCategoria.fixture_generado) {
+            return res.status(400).json({
+                message: 'Las inscripciones están cerradas porque el fixture ya fue generado'
             });
         }
 

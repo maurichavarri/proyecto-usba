@@ -11,6 +11,7 @@ import authRoutes from './auth.routes.js';
 import equipoRoutes from './equipo.routes.js';
 import jugadorRoutes from './jugador.routes.js';
 import inscripcionRoutes from './inscripcion.routes.js';
+import partidoRoutes from './partido.routes.js';
 
 import sedeRoutes from './sede.routes.js';
 import arbitroRoutes from './arbitro.routes.js';
@@ -37,5 +38,6 @@ router.use('/delegado/inscripciones', inscripcionRoutes);
 router.use('/admin', adminRoutes);
 router.use('/sedes', sedeRoutes);
 router.use('/arbitros', arbitroRoutes);
+router.use('/partidos', partidoRoutes);
 
 export default router;

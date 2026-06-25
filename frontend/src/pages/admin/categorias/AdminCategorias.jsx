@@ -7,6 +7,7 @@ const AdminCategorias = () => {
 
     const [categorias, setCategorias] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
+    const [busqueda, setBusqueda] = useState("");
 
     useEffect(() => {
         obtenerCategorias();
@@ -57,6 +58,15 @@ const AdminCategorias = () => {
             console.error(error);
         }
     };
+
+    const categoriasFiltradas = categorias.filter((categoria) => {
+
+        const texto = busqueda.toLowerCase();
+
+        return (
+            categoria.nombre?.toLowerCase().includes(texto)
+        );
+    });
 
     return (
         <div className="container mt-4 mb-5">
@@ -115,7 +125,7 @@ const AdminCategorias = () => {
 
                     <Link
                         to="/panel/admin/categorias/crear"
-                        className="btn btn-dark"
+                        className="btn btn-primary"
                     >
                         Crear categoría
                     </Link>
@@ -124,11 +134,21 @@ const AdminCategorias = () => {
 
                 <div className="card shadow-sm">
 
-                    <div className="card-header bg-dark text-white">
+                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
 
                         <strong>
                             Categorías registradas
                         </strong>
+
+                        <input
+                            type="text"
+                            className="form-control w-auto"
+                            placeholder="Buscar..."
+                            value={busqueda}
+                            onChange={(e) =>
+                                setBusqueda(e.target.value)
+                            }
+                        />
 
                     </div>
 
@@ -147,40 +167,25 @@ const AdminCategorias = () => {
                             categorias.length > 0 &&
                             (
                                 <div className="table-responsive">
-
                                     <table className="table align-middle">
-
                                         <thead>
-
                                             <tr>
-
-                                                <th>ID</th>
                                                 <th>Nombre</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
-
                                             </tr>
-
                                         </thead>
 
                                         <tbody>
-
                                             {
-                                                categorias.map(
-                                                    (categoria) => (
-
+                                                categoriasFiltradas.length > 0 ? (
+                                                    categoriasFiltradas.map((categoria) => (
                                                         <tr key={categoria.id}>
-
-                                                            <td>
-                                                                {categoria.id}
-                                                            </td>
-
                                                             <td>
                                                                 {categoria.nombre}
                                                             </td>
 
                                                             <td>
-
                                                                 {
                                                                     categoria.estado === "activo"
                                                                         ? (
@@ -194,7 +199,6 @@ const AdminCategorias = () => {
                                                                             </span>
                                                                         )
                                                                 }
-
                                                             </td>
 
                                                             <td>
@@ -203,7 +207,7 @@ const AdminCategorias = () => {
 
                                                                     <Link
                                                                         to={`/panel/admin/categorias/editar/${categoria.id}`}
-                                                                        className="btn btn-dark btn-sm"
+                                                                        className="btn btn-primary btn-sm"
                                                                     >
                                                                         Editar
                                                                     </Link>
@@ -230,7 +234,19 @@ const AdminCategorias = () => {
                                                             </td>
 
                                                         </tr>
-                                                    )
+                                                    ))
+                                                ) : (
+
+                                                    <tr>
+
+                                                        <td
+                                                            colSpan="4"
+                                                            className="text-center text-muted"
+                                                        >
+                                                            No se encontraron categorías.
+                                                        </td>
+
+                                                    </tr>
                                                 )
                                             }
 

@@ -7,6 +7,7 @@ const AdminTorneos = () => {
 
     const [torneos, setTorneos] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
+    const [busqueda, setBusqueda] = useState("");
 
     useEffect(() => {
         obtenerTorneos();
@@ -70,6 +71,15 @@ const AdminTorneos = () => {
         if (!fecha) return "-";
         return new Date(fecha).toLocaleDateString();
     };
+
+    const torneosFiltrados = torneos.filter((torneo) => {
+
+        const texto = busqueda.toLowerCase();
+
+        return (
+            torneo.nombre?.toLowerCase().includes(texto)
+        );
+    });
 
     return (
         <div className="container mt-4 mb-5">
@@ -143,7 +153,7 @@ const AdminTorneos = () => {
 
                     <Link
                         to="/panel/admin/torneos/crear"
-                        className="btn btn-dark"
+                        className="btn btn-primary"
                     >
                         Crear torneo
                     </Link>
@@ -154,11 +164,21 @@ const AdminTorneos = () => {
 
                 <div className="card shadow-sm">
 
-                    <div className="card-header bg-dark text-white">
+                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
 
                         <strong>
                             Torneos registrados
                         </strong>
+
+                        <input
+                            type="text"
+                            className="form-control w-auto"
+                            placeholder="Buscar..."
+                            value={busqueda}
+                            onChange={(e) =>
+                                setBusqueda(e.target.value)
+                            }
+                        />
 
                     </div>
 
@@ -204,119 +224,134 @@ const AdminTorneos = () => {
                                         <tbody>
 
                                             {
-                                                torneos.map((torneo) => (
+                                                torneosFiltrados.length > 0 ? (
 
-                                                    <tr key={torneo.id}>
+                                                    torneosFiltrados.map((torneo) => (
 
-                                                        <td>
-                                                            <strong>
-                                                                {torneo.nombre}
-                                                            </strong>
-                                                        </td>
+                                                        <tr key={torneo.id}>
 
-                                                        <td>
-                                                            {
-                                                                formatearFecha(
-                                                                    torneo.fecha_inicio
-                                                                )
-                                                            }
-                                                        </td>
+                                                            <td>
+                                                                <strong>
+                                                                    {torneo.nombre}
+                                                                </strong>
+                                                            </td>
 
-                                                        <td>
-                                                            {
-                                                                formatearFecha(
-                                                                    torneo.fecha_cierre_inscripcion
-                                                                )
-                                                            }
-                                                        </td>
-
-                                                        <td>
-                                                            {
-                                                                formatearFecha(
-                                                                    torneo.fecha_fin
-                                                                )
-                                                            }
-                                                        </td>
-
-                                                        <td>
-
-                                                            {
-                                                                new Date()
-                                                                    <=
-                                                                new Date(
-                                                                    torneo.fecha_cierre_inscripcion
-                                                                )
-
-                                                                    ? (
-                                                                        <span className="badge bg-success">
-                                                                            Abiertas
-                                                                        </span>
+                                                            <td>
+                                                                {
+                                                                    formatearFecha(
+                                                                        torneo.fecha_inicio
                                                                     )
+                                                                }
+                                                            </td>
 
-                                                                    : (
-                                                                        <span className="badge bg-danger">
-                                                                            Cerradas
-                                                                        </span>
+                                                            <td>
+                                                                {
+                                                                    formatearFecha(
+                                                                        torneo.fecha_cierre_inscripcion
                                                                     )
-                                                            }
+                                                                }
+                                                            </td>
 
-                                                        </td>
-
-                                                        <td>
-
-                                                            {
-                                                                torneo.estado === "activo"
-                                                                    ? (
-                                                                        <span className="badge bg-success">
-                                                                            Activo
-                                                                        </span>
+                                                            <td>
+                                                                {
+                                                                    formatearFecha(
+                                                                        torneo.fecha_fin
                                                                     )
-                                                                    : (
-                                                                        <span className="badge bg-danger">
-                                                                            Archivado
-                                                                        </span>
-                                                                    )
-                                                            }
+                                                                }
+                                                            </td>
 
-                                                        </td>
+                                                            <td>
 
-                                                        <td>
-
-                                                            <div className="d-flex gap-2">
-
-                                                                <Link
-                                                                    to={`/panel/admin/torneos/editar/${torneo.id}`}
-                                                                    className="btn btn-dark btn-sm"
-                                                                >
-                                                                    Editar
-                                                                </Link>
-
-                                                                <button
-                                                                    className={
-                                                                        torneo.estado === "activo"
-                                                                            ? "btn btn-danger btn-sm"
-                                                                            : "btn btn-success btn-sm"
-                                                                    }
-                                                                    onClick={() =>
-                                                                        cambiarEstado(
-                                                                            torneo.id
+                                                                {
+                                                                    new Date()
+                                                                        <=
+                                                                        new Date(
+                                                                            torneo.fecha_cierre_inscripcion
                                                                         )
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        torneo.estado === "activo"
-                                                                            ? "Archivar"
-                                                                            : "Activar"
-                                                                    }
-                                                                </button>
 
-                                                            </div>
+                                                                        ? (
+                                                                            <span className="badge bg-success">
+                                                                                Abiertas
+                                                                            </span>
+                                                                        )
 
+                                                                        : (
+                                                                            <span className="badge bg-danger">
+                                                                                Cerradas
+                                                                            </span>
+                                                                        )
+                                                                }
+
+                                                            </td>
+
+                                                            <td>
+
+                                                                {
+                                                                    torneo.estado === "activo"
+                                                                        ? (
+                                                                            <span className="badge bg-success">
+                                                                                Activo
+                                                                            </span>
+                                                                        )
+                                                                        : (
+                                                                            <span className="badge bg-danger">
+                                                                                Archivado
+                                                                            </span>
+                                                                        )
+                                                                }
+
+                                                            </td>
+
+                                                            <td>
+
+                                                                <div className="d-flex gap-2">
+
+                                                                    <Link
+                                                                        to={`/panel/admin/torneos/editar/${torneo.id}`}
+                                                                        className="btn btn-primary btn-sm"
+                                                                    >
+                                                                        Editar
+                                                                    </Link>
+
+                                                                    <button
+                                                                        className={
+                                                                            torneo.estado === "activo"
+                                                                                ? "btn btn-danger btn-sm"
+                                                                                : "btn btn-success btn-sm"
+                                                                        }
+                                                                        onClick={() =>
+                                                                            cambiarEstado(
+                                                                                torneo.id
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            torneo.estado === "activo"
+                                                                                ? "Archivar"
+                                                                                : "Activar"
+                                                                        }
+                                                                    </button>
+
+                                                                </div>
+
+                                                            </td>
+
+                                                        </tr>
+
+                                                    ))
+                                                ) : (
+
+                                                    <tr>
+
+                                                        <td
+                                                            colSpan="4"
+                                                            className="text-center text-muted"
+                                                        >
+                                                            No se encontraron torneos.
                                                         </td>
 
                                                     </tr>
-
-                                                ))
+                                                )
                                             }
 
                                         </tbody>

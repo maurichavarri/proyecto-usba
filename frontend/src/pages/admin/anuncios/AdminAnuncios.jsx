@@ -6,8 +6,8 @@ const AdminAnuncios = () => {
     const navigate = useNavigate();
 
     const [showHelp, setShowHelp] = useState(false);
-
     const [anuncios, setAnuncios] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
 
     useEffect(() => {
         obtenerAnuncios();
@@ -68,6 +68,14 @@ const AdminAnuncios = () => {
             console.error(error);
         }
     };
+
+    const anunciosFiltrados = anuncios.filter((anuncio) => {
+        const texto = busqueda.toLowerCase();
+        return (
+            anuncio.titulo?.toLowerCase().includes(texto) ||
+            anuncio.contenido?.toLowerCase().includes(texto)
+        );
+    });
 
     return (
         <div className="container mt-4 mb-5">
@@ -136,7 +144,7 @@ const AdminAnuncios = () => {
 
                     <Link
                         to="/panel/admin/anuncios/crear"
-                        className="btn btn-dark"
+                        className="btn btn-primary"
                     >
                         Crear anuncio
                     </Link>
@@ -145,11 +153,21 @@ const AdminAnuncios = () => {
 
                 <div className="card shadow-sm">
 
-                    <div className="card-header bg-dark">
+                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
 
                         <strong className="text-white">
                             Listado de anuncios
                         </strong>
+
+                        <input
+                            type="text"
+                            className="form-control w-auto"
+                            placeholder="Buscar..."
+                            value={busqueda}
+                            onChange={(e) =>
+                                setBusqueda(e.target.value)
+                            }
+                        />
 
                     </div>
 
@@ -183,84 +201,96 @@ const AdminAnuncios = () => {
                                         <tbody>
 
                                             {
-                                                anuncios.map((anuncio) => (
+                                                anunciosFiltrados.length > 0 ? (
+                                                    anunciosFiltrados.map((anuncio) => (
 
-                                                    <tr key={anuncio.id}>
+                                                        <tr key={anuncio.id}>
 
-                                                        <td>
-                                                            <strong>
-                                                                {anuncio.titulo}
-                                                            </strong>
-                                                        </td>
+                                                            <td>
+                                                                <strong>
+                                                                    {anuncio.titulo}
+                                                                </strong>
+                                                            </td>
 
-                                                        <td>
-                                                            {
-                                                                anuncio.contenido?.length > 80
-                                                                    ? anuncio.contenido.substring(0, 80) + "..."
-                                                                    : anuncio.contenido
-                                                            }
-                                                        </td>
+                                                            <td>
+                                                                {
+                                                                    anuncio.contenido?.length > 80
+                                                                        ? anuncio.contenido.substring(0, 80) + "..."
+                                                                        : anuncio.contenido
+                                                                }
+                                                            </td>
 
-                                                        <td>
+                                                            <td>
 
-                                                            {
-                                                                anuncio.estado === "activo"
-                                                                    ? (
-                                                                        <span className="badge bg-success">
-                                                                            Activo
-                                                                        </span>
-                                                                    )
-                                                                    : (
-                                                                        <span className="badge bg-danger">
-                                                                            Archivado
-                                                                        </span>
-                                                                    )
-                                                            }
+                                                                {
+                                                                    anuncio.estado === "activo"
+                                                                        ? (
+                                                                            <span className="badge bg-success">
+                                                                                Activo
+                                                                            </span>
+                                                                        )
+                                                                        : (
+                                                                            <span className="badge bg-danger">
+                                                                                Archivado
+                                                                            </span>
+                                                                        )
+                                                                }
 
-                                                        </td>
+                                                            </td>
 
-                                                        <td>
-                                                            {
-                                                                new Date(
-                                                                    anuncio.createdAt
-                                                                ).toLocaleDateString()
-                                                            }
-                                                        </td>
+                                                            <td>
+                                                                {
+                                                                    new Date(anuncio.createdAt).toLocaleDateString()
+                                                                }
+                                                            </td>
 
-                                                        <td>
+                                                            <td>
 
-                                                            <div className="d-flex gap-2">
+                                                                <div className="d-flex gap-2">
 
-                                                                <Link
-                                                                    to={`/panel/admin/anuncios/editar/${anuncio.id}`}
-                                                                    className="btn btn-black btn-sm"
-                                                                >
-                                                                    Editar
-                                                                </Link>
+                                                                    <Link
+                                                                        to={`/panel/admin/anuncios/editar/${anuncio.id}`}
+                                                                        className="btn btn-primary btn-sm"
+                                                                    >
+                                                                        Editar
+                                                                    </Link>
 
-                                                                <button
-                                                                    className={
-                                                                        anuncio.estado === "activo"
-                                                                            ? "btn btn-danger btn-sm"
-                                                                            : "btn btn-success btn-sm"
-                                                                    }
-                                                                    onClick={() =>
-                                                                        cambiarEstado(anuncio.id)
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        anuncio.estado === "activo"
-                                                                            ? "Archivar"
-                                                                            : "Activar"
-                                                                    }
-                                                                </button>
+                                                                    <button
+                                                                        className={
+                                                                            anuncio.estado === "activo"
+                                                                                ? "btn btn-danger btn-sm"
+                                                                                : "btn btn-success btn-sm"
+                                                                        }
+                                                                        onClick={() =>
+                                                                            cambiarEstado(anuncio.id)
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            anuncio.estado === "activo"
+                                                                                ? "Archivar"
+                                                                                : "Activar"
+                                                                        }
+                                                                    </button>
 
-                                                            </div>
+                                                                </div>
 
+                                                            </td>
+
+                                                        </tr>
+                                                    ))
+                                                ) : (
+
+                                                    <tr>
+
+                                                        <td
+                                                            colSpan="4"
+                                                            className="text-center text-muted"
+                                                        >
+                                                            No se encontraron anuncios.
                                                         </td>
 
                                                     </tr>
-                                                ))
+                                                )
                                             }
 
                                         </tbody>
