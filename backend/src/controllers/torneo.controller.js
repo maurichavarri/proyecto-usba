@@ -1,13 +1,22 @@
 import { Torneo, Categoria } from '../models/index.js';
 
+export const getTodosLosTorneos = async (req, res, next) => {
+    try {
+        const torneos = await Torneo.findAll({
+            order: [['id', 'DESC']]
+        });
+        res.json(torneos);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getTorneos = async (req, res, next) => {
     try {
-        // Obtenemos los torneos.
         const torneos = await Torneo.findAll({
             where: { estado: 'activo' }
         });
         res.json(torneos);
-
     } catch (error) {
         next(error);
     }
@@ -21,11 +30,11 @@ export const getTorneo = async (req, res, next) => {
             include: {
                 model: Categoria,
                 where: { estado: 'activo' },
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre'],
+                required: false
             }
         });
         res.json(torneo);
-
     } catch (error) {
         next(error);
     }
@@ -34,10 +43,10 @@ export const getTorneo = async (req, res, next) => {
 export const crearTorneo = async (req, res, next) => {
     try {
         // Guardamos en un objeto literal la información de req.body.
-        const { nombre, fecha_inicio, fecha_fin } = req.body;
-        
+        const { nombre, fecha_inicio, fecha_fin, fecha_cierre_inscripcion } = req.body;
+
         // Validaciones
-        if (!nombre || !fecha_inicio || !fecha_fin) {
+        if (!nombre || !fecha_inicio || !fecha_fin || !fecha_cierre_inscripcion) {
             return res.status(400).json({
                 message: 'Todos los campos son obligatorios'
             });
@@ -46,6 +55,12 @@ export const crearTorneo = async (req, res, next) => {
         if (new Date(fecha_inicio) > new Date(fecha_fin)) {
             return res.status(400).json({
                 message: 'La fecha de inicio no puede ser mayor a la fecha de fin'
+            });
+        }
+
+        if (new Date(fecha_cierre_inscripcion) > new Date(fecha_inicio)) {
+            return res.status(400).json({
+                message: 'La fecha de cierre debe ser anterior al inicio del torneo'
             });
         }
 
@@ -58,12 +73,7 @@ export const crearTorneo = async (req, res, next) => {
         }
 
         // Creamos un torneo con dicha información.
-        const torneo = await Torneo.create({
-            nombre,
-            fecha_inicio,
-            fecha_fin
-        });
-
+        const torneo = await Torneo.create({ nombre, fecha_inicio, fecha_fin, fecha_cierre_inscripcion });
         res.status(201).json(torneo);
 
     } catch (error) {
@@ -72,42 +82,58 @@ export const crearTorneo = async (req, res, next) => {
 };
 
 export const actualizarTorneo = async (req, res, next) => {
-    try{
-        // Guardamos en un objeto literal la información de req.body.
-        const { nombre, fecha_inicio, fecha_fin } = req.body;
-        
-        // Obtenemos un torneo a través de la clave primaria que se encuentra en la ruta.
-        const torneo = await Torneo.findByPk(req.params.id);
+    try {
+        const { id } = req.params;
+        const { nombre, fecha_inicio, fecha_fin, fecha_cierre_inscripcion } = req.body;
 
-        // Si el torneo no se encontró...
+        const torneo = await Torneo.findByPk(id);
+
         if (!torneo) {
             return res.status(404).json({
                 message: 'Torneo no encontrado'
             });
         }
 
-        // Validaciones
-        // En el caso de que se hayan ingresado nuevas fechas, verificamos que estas sean correctas
-        if (fecha_inicio && fecha_fin) {
-            if (new Date(fecha_inicio) > new Date(fecha_fin)) {
-                return res.status(400).json({
-                    message: 'Fechas inválidas'
-                });
-            }
+        // Validar campos
+        if (!nombre || !fecha_inicio || !fecha_fin || !fecha_cierre_inscripcion) {
+            return res.status(400).json({
+                message: 'Todos los campos son obligatorios'
+            });
         }
 
-        // Si toda la información es correcta. Hacemos el UPDATE correspondiente.
-        await torneo.update({
-            nombre: nombre ?? torneo.nombre,
-            fecha_inicio: fecha_inicio ?? torneo.fecha_inicio,
-            fecha_fin: fecha_fin ?? torneo.fecha_fin
+        // Validar fechas
+        if (new Date(fecha_inicio) > new Date(fecha_fin)) {
+            return res.status(400).json({
+                message: 'La fecha de inicio no puede ser mayor a la fecha de fin'
+            });
+        }
+
+        if (new Date(fecha_cierre_inscripcion) > new Date(fecha_inicio)) {
+            return res.status(400).json({
+                message: 'La fecha de cierre debe ser anterior al inicio del torneo'
+            });
+        }
+
+        // Verificar duplicado
+        const existe = await Torneo.findOne({ where: { nombre } });
+
+        // Si existe y no es el mismo torneo
+        if (existe && existe.id !== torneo.id) {
+            return res.status(400).json({
+                message: 'Ya existe un torneo con ese nombre'
+            });
+        }
+
+        await torneo.update({ nombre, fecha_inicio, fecha_fin, fecha_cierre_inscripcion });
+
+        res.json({
+            message: 'Torneo actualizado', torneo
         });
 
-        res.json(torneo);
     } catch (error) {
         next(error);
     }
-}
+};
 
 export const estadoTorneo = async (req, res, next) => {
     try {

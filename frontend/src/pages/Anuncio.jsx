@@ -8,17 +8,19 @@ const Anuncio = () => {
     return (
         <section className="container mt-3 mb-5">
             <h2 className="mb-3">Anuncios</h2>
-            <div className="row g-3">
-                {data.map((anuncio, i) => (
-                    <div className="col-6 col-md-4">
-                        <Card
-                            titulo={anuncio.titulo}
-                            imagen={img}
-                            descripcion={anuncio.descripcion}
-                        />
-                    </div>
-                ))}
-            </div>
+            {data.length === 0 ? (<p>No hay anuncios disponibles.</p>) : (
+                <div className="row g-3">
+                    {data.map((anuncio, i) => (
+                        <div className="col-6 col-md-4">
+                            <Card
+                                titulo={anuncio.titulo}
+                                imagen={img}
+                                descripcion={anuncio.contenido}
+                            />
+                        </div>
+                    ))}
+                </div>
+            )}
         </section>
     );
 };
