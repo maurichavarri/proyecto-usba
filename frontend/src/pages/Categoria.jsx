@@ -90,18 +90,14 @@ const Categoria = () => {
     // navigate(`/inscripcion/${categoria.id}`);
   };
 
-  // Manejar la redirección al login
-  const handleRedirectToLogin = () => {
-    setShowModal(false);
-    // Guardar la categoría a la que quería inscribirse para redirigir después del login
-    localStorage.setItem('categoriaDestino', JSON.stringify(categoriaSeleccionada));
-    navigate('/login', { 
-      state: { 
-        from: '/categorias',
-        categoria: categoriaSeleccionada 
-      } 
-    });
-  };
+ // Manejar la redirección al login
+const handleRedirectToLogin = () => {
+  setShowModal(false);
+  // Guardar la categoría a la que quería inscribirse
+  localStorage.setItem('categoriaDestino', JSON.stringify(categoriaSeleccionada));
+  // Redirigir al login
+  navigate('/auth/ingresar');
+};
 
   // Cerrar modal
   const handleCloseModal = () => {

@@ -82,13 +82,8 @@ const Torneo = () => {
     setShowModal(false);
     // Guardar el torneo seleccionado para redirigir después del login
     localStorage.setItem('torneoDestino', JSON.stringify(torneoSeleccionado));
-    navigate('/login', { 
-      state: { 
-        from: `/torneos/${categoriaId}`,
-        torneo: torneoSeleccionado 
-      } 
-    });
-  };
+    navigate('/auth/ingresar');
+};
 
   // Cerrar modal
   const handleCloseModal = () => {
