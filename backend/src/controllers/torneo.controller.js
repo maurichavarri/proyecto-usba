@@ -1,4 +1,4 @@
-import { Torneo, Categoria } from '../models/index.js';
+import { Torneo, Categoria, TorneoCategoria, Inscripcion } from '../models/index.js';
 
 export const getTodosLosTorneos = async (req, res, next) => {
     try {
@@ -14,12 +14,75 @@ export const getTodosLosTorneos = async (req, res, next) => {
 export const getTorneos = async (req, res, next) => {
     try {
         const torneos = await Torneo.findAll({
-            where: { estado: 'activo' }
+            where: {
+                estado: "activo"
+            },
+
+            include: [
+                {
+                    model: Categoria,
+                    required: false,
+
+                    where: {
+                        estado: "activo"
+                    },
+
+                    attributes: [
+                        "id",
+                        "nombre"
+                    ],
+
+                    through: {
+                        attributes: [
+                            "id",
+                            "formato_competencia",
+                            "estado_competencia"
+                        ]
+                    }
+                }
+            ],
+
+            order: [
+                ["fecha_inicio", "DESC"]
+            ]
         });
-        res.json(torneos);
+
+        const resultado = await Promise.all(
+            torneos.map(async (torneo) => {
+                const categorias = await Promise.all(
+                    torneo.Categoria.map(async (categoria) => {
+                        const equipos = await Inscripcion.count({
+                            where: {
+                                torneo_categoria_id: categoria.TorneoCategoria.id,
+                                estado: "confirmado"
+                            }
+                        });
+
+                        return {
+                            id: categoria.TorneoCategoria.id,
+                            nombre: categoria.nombre,
+                            equipos,
+                            formato: categoria.TorneoCategoria.formato_competencia,
+                            estado: categoria.TorneoCategoria.estado_competencia
+                        };
+                    })
+                );
+                return {
+                    id: torneo.id,
+                    nombre: torneo.nombre,
+                    fecha_inicio: torneo.fecha_inicio,
+                    fecha_fin: torneo.fecha_fin,
+                    categorias
+                };
+            })
+        );
+
+        res.json(resultado);
+
     } catch (error) {
         next(error);
     }
+
 };
 
 export const getTorneo = async (req, res, next) => {

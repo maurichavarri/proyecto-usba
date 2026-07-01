@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Torneo from "./pages/Torneo";
 import Categoria from "./pages/Categoria";
+import CompetenciaPublica from "./pages/CompetenciaPublica";
 import Anuncio from "./pages/Anuncio";
 import AnuncioDetalle from "./pages/AnuncioDetalle";
 import Login from "./pages/Login"
@@ -50,6 +51,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/torneos" element={<Torneo />} />
           <Route path="/categorias" element={<Categoria />} />
+          <Route path="/torneos/:id" element={<CompetenciaPublica />} />
           <Route path="/anuncios" element={<Anuncio />} />
           <Route path="/anuncios/:id" element={<AnuncioDetalle />} />
           <Route path="/auth/ingresar" element={<Login />} />

@@ -128,64 +128,44 @@ export const generarPlayoffs = async (torneoCategoriaId) => {
 
 const generarSemifinales = async (torneoCategoriaId) => {
 
-    const cuartos =
-        await Partido.findAll({
-            where: {
-                torneo_categoria_id:
-                    torneoCategoriaId,
-                fase: 'cuartos'
-            }
-        });
+    const cuartos = await Partido.findAll({
+        where: {
+            torneo_categoria_id: torneoCategoriaId,
+            fase: 'cuartos'
+        }
+    });
 
     if (cuartos.length !== 4) return;
 
-    const todosJugados =
-        cuartos.every(
-            partido =>
-                partido.estado === 'jugado'
-        );
+    const todosJugados = cuartos.every(partido => partido.estado === 'jugado');
 
     if (!todosJugados) return;
 
-    const existen =
-        await Partido.count({
-            where: {
-                torneo_categoria_id:
-                    torneoCategoriaId,
-                fase: 'semifinal'
-            }
-        });
+    const existen = await Partido.count({
+        where: {
+            torneo_categoria_id: torneoCategoriaId,
+            fase: 'semifinal'
+        }
+    });
 
     if (existen > 0) return;
 
-    const ganador = (partido) =>
-        partido.puntaje_local >
-            partido.puntaje_visitante
-            ? partido.inscripcion_local_id
-            : partido.inscripcion_visitante_id;
+    const ganador = (partido) => partido.puntaje_local > partido.puntaje_visitante ? partido.inscripcion_local_id : partido.inscripcion_visitante_id;
 
     await Partido.bulkCreate([
-
         {
-            torneo_categoria_id:
-                torneoCategoriaId,
-            inscripcion_local_id:
-                ganador(cuartos[0]),
-            inscripcion_visitante_id:
-                ganador(cuartos[1]),
+            torneo_categoria_id: torneoCategoriaId,
+            inscripcion_local_id: ganador(cuartos[0]),
+            inscripcion_visitante_id: ganador(cuartos[1]),
             jornada: 1,
             fase: 'semifinal',
             fecha: new Date(),
             estado: 'pendiente'
         },
-
         {
-            torneo_categoria_id:
-                torneoCategoriaId,
-            inscripcion_local_id:
-                ganador(cuartos[2]),
-            inscripcion_visitante_id:
-                ganador(cuartos[3]),
+            torneo_categoria_id: torneoCategoriaId,
+            inscripcion_local_id: ganador(cuartos[2]),
+            inscripcion_visitante_id: ganador(cuartos[3]),
             jornada: 1,
             fase: 'semifinal',
             fecha: new Date(),
@@ -195,63 +175,39 @@ const generarSemifinales = async (torneoCategoriaId) => {
     ]);
 };
 
-const generarFinal = async (
-    torneoCategoriaId
-) => {
+const generarFinal = async (torneoCategoriaId) => {
 
-    const semifinales =
-        await Partido.findAll({
-            where: {
-                torneo_categoria_id:
-                    torneoCategoriaId,
-                fase: 'semifinal'
-            }
-        });
+    const semifinales = await Partido.findAll({
+        where: {
+            torneo_categoria_id: torneoCategoriaId,
+            fase: 'semifinal'
+        }
+    });
 
     if (semifinales.length !== 2) return;
 
-    const todasJugadas =
-        semifinales.every(
-            partido =>
-                partido.estado === 'jugado'
-        );
+    const todasJugadas = semifinales.every(partido => partido.estado === 'jugado');
 
     if (!todasJugadas) return;
 
-    const existeFinal =
-        await Partido.count({
-            where: {
-                torneo_categoria_id:
-                    torneoCategoriaId,
-                fase: 'final'
-            }
-        });
+    const existeFinal = await Partido.count({
+        where: {
+            torneo_categoria_id: torneoCategoriaId,
+            fase: 'final'
+        }
+    });
 
     if (existeFinal > 0) return;
 
-    const ganador = (partido) =>
-        partido.puntaje_local >
-            partido.puntaje_visitante
-            ? partido.inscripcion_local_id
-            : partido.inscripcion_visitante_id;
+    const ganador = (partido) => partido.puntaje_local > partido.puntaje_visitante ? partido.inscripcion_local_id : partido.inscripcion_visitante_id;
 
     await Partido.create({
-
-        torneo_categoria_id:
-            torneoCategoriaId,
-
-        inscripcion_local_id:
-            ganador(semifinales[0]),
-
-        inscripcion_visitante_id:
-            ganador(semifinales[1]),
-
+        torneo_categoria_id: torneoCategoriaId,
+        inscripcion_local_id: ganador(semifinales[0]),
+        inscripcion_visitante_id: ganador(semifinales[1]),
         jornada: 1,
-
         fase: 'final',
-
         fecha: new Date(),
-
         estado: 'pendiente'
     });
 };

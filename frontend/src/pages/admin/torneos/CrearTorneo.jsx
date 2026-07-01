@@ -145,18 +145,6 @@ const CrearTorneo = () => {
                             </div>
 
                             <div className="mb-2">
-                                <label htmlFor="fechaInicio" className="form-label">Fecha inicio</label>
-                                <input
-                                    type="date"
-                                    id="fechaInicio"
-                                    name="fechaInicio"
-                                    className="form-control"
-                                    value={formData.fechaInicio}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="mb-2">
                                 <label htmlFor="cierreInscripcion" className="form-label">Cierre de inscripción</label>
                                 <input
                                     type="date"
@@ -164,6 +152,18 @@ const CrearTorneo = () => {
                                     name="cierreInscripcion"
                                     className="form-control"
                                     value={formData.cierreInscripcion}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div className="mb-2">
+                                <label htmlFor="fechaInicio" className="form-label">Fecha inicio</label>
+                                <input
+                                    type="date"
+                                    id="fechaInicio"
+                                    name="fechaInicio"
+                                    className="form-control"
+                                    value={formData.fechaInicio}
                                     onChange={handleChange}
                                 />
                             </div>

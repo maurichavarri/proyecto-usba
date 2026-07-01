@@ -7,7 +7,6 @@ const AdminFixture = () => {
     const { id } = useParams();
     const [detalle, setDetalle] = useState(null);
     const [resumen, setResumen] = useState(null);
-    const [showHelp, setShowHelp] = useState(false);
     const [fixture, setFixture] = useState([]);
     const [tabla, setTabla] = useState([]);
     const [mensaje, setMensaje] = useState("");
@@ -41,37 +40,6 @@ const AdminFixture = () => {
         }
     };
 
-    const generarFixture = async () => {
-        const confirmar = window.confirm("¿Desea generar el fixture?");
-        if (!confirmar) return;
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/fixture`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setMensaje(data.message);
-                return;
-            }
-
-            setMensaje("Fixture generado correctamente");
-            obtenerFixture();
-            obtenerTabla();
-
-        } catch (error) {
-            console.error(error);
-            setMensaje("Error al generar fixture");
-        }
-    };
-
     const obtenerResumen = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/resumen`);
@@ -85,76 +53,16 @@ const AdminFixture = () => {
     const obtenerDetalle = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}`);
+            
+            if (!response.ok) {
+                navigate("/torneos");
+                return;
+            }
+
             const data = await response.json();
             setDetalle(data);
         } catch (error) {
             console.error(error);
-        }
-    };
-
-    const generarPlayoffs = async () => {
-
-        const confirmar = window.confirm("¿Generar playoffs?");
-        if (!confirmar) return;
-
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/playoffs`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setMensaje(data.message);
-                return;
-            }
-
-            setMensaje("Playoffs generados correctamente");
-            obtenerFixture();
-
-        } catch (error) {
-            console.error(error);
-            setMensaje("Error al generar playoffs");
-        }
-    };
-
-    const finalizarCompetencia = async () => {
-
-        const confirmar = window.confirm("¿Desea finalizar la competencia?");
-        if (!confirmar) return;
-
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/finalizar`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setMensaje(data.message);
-                return;
-            }
-
-            setMensaje(data.message);
-
-            await obtenerDetalle();
-            await obtenerFixture();
-
-        } catch (error) {
-            console.error(error);
-            setMensaje("Error al finalizar la competencia");
         }
     };
 
@@ -169,7 +77,6 @@ const AdminFixture = () => {
                     <th>Árbitro</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -226,14 +133,6 @@ const AdminFixture = () => {
                                     </span>
                                 }
                             </td>
-                            <td>
-                                <Link
-                                    to={`/panel/admin/partidos/${partido.id}`}
-                                    className="btn btn-dark btn-sm"
-                                >
-                                    Gestionar
-                                </Link>
-                            </td>
                         </tr>
                     ))
                 }
@@ -277,57 +176,12 @@ const AdminFixture = () => {
 
             {/* Header */}
             <div className="d-flex align-items-center mb-2">
-
                 <h2 className="me-2">
                     Fixture
                 </h2>
-
-                <span
-                    className="text-primary"
-                    style={{
-                        cursor: "pointer",
-                        fontSize: "1.2rem"
-                    }}
-                    onClick={() => setShowHelp(true)}
-                    title="Ayuda"
-                >
-                    ❓
-                </span>
-
             </div>
 
-            <nav
-                className="mb-3"
-                style={{
-                    fontSize: "0.9rem"
-                }}
-            >
-
-                <Link
-                    to="/panel/admin"
-                    className="text-primary"
-                >
-                    Admin Dashboard
-                </Link>
-
-                {" > "}
-
-                <Link
-                    to="/panel/admin/torneo-categorias"
-                    className="text-primary"
-                >
-                    Torneos - Categorías
-                </Link>
-
-                {" > "}
-
-                <span className="text-muted">
-                    Fixture
-                </span>
-
-            </nav>
-
-            {/* Botones */}
+            {/* Boton */}
             <div className="d-flex justify-content-between align-items-center mb-4">
 
                 <button
@@ -337,112 +191,7 @@ const AdminFixture = () => {
                     Volver
                 </button>
 
-                <div className="d-flex gap-2">
-
-                    {
-                        fixture.length === 0 &&
-
-                        <button
-                            onClick={generarFixture}
-                            className="btn btn-primary"
-                        >
-                            Generar Fixture
-                        </button>
-                    }
-
-                    {
-                        detalle &&
-                        detalle.formato_competencia !== "solo_liga" &&
-                        faseRegularFinalizada &&
-                        !fixture.some(
-                            partido =>
-                                partido.fase === "cuartos" ||
-                                partido.fase === "semifinal" ||
-                                partido.fase === "final"
-                        ) &&
-
-                        <button
-                            onClick={generarPlayoffs}
-                            className="btn btn-success"
-                        >
-                            Generar Playoffs
-                        </button>
-                    }
-
-                    {
-                        todosJugados &&
-                        detalle?.estado_competencia !== "finalizado" &&
-
-                        <button
-                            className="btn btn-danger"
-                            onClick={finalizarCompetencia}
-                        >
-                            Finalizar Competencia
-                        </button>
-                    }
-
-                </div>
-
             </div>
-
-            {/* Mensajes */}
-            {
-                mensaje &&
-                <div className="alert alert-info">
-                    {mensaje}
-                </div>
-            }
-
-            {
-                detalle?.estado_competencia === "finalizado" &&
-                detalle?.campeon &&
-                detalle?.subcampeon && (
-
-                    <div className="row mb-4">
-
-                        <div className="col-md-6">
-
-                            <div className="card border-success">
-
-                                <div className="card-body text-center">
-
-                                    <h4>
-                                        Campeón
-                                    </h4>
-
-                                    <h3 className="text-success">
-                                        {detalle.campeon.nombre}
-                                    </h3>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div className="col-md-6">
-
-                            <div className="card border-secondary">
-
-                                <div className="card-body text-center">
-
-                                    <h4>
-                                        Subcampeón
-                                    </h4>
-
-                                    <h3 className="text-secondary">
-                                        {detalle.subcampeon.nombre}
-                                    </h3>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                )
-            }
 
             {/* Información Resumen Encabezado */}
             {
@@ -486,8 +235,8 @@ const AdminFixture = () => {
                                 <h5>
                                     {{
                                         solo_liga: "Liga",
-                                        playoff_4: "Liga + Play-Off (4)",
-                                        playoff_8: "Liga + Play-Off (8)"
+                                        playoff_4: "Play-Off (4)",
+                                        playoff_8: "Play-Off (8)"
                                     }[resumen.formatoCompetencia] || "-"}
                                 </h5>
                             </div>
@@ -535,112 +284,107 @@ const AdminFixture = () => {
                 </div>
             }
 
+            {/* Campeón y Subcampeón */}
+            {
+                detalle?.estado_competencia === "finalizado" &&
+                detalle?.campeon &&
+                detalle?.subcampeon && (
+
+                    <div className="row mb-4">
+                        <div className="col-md-6">
+                            <div className="card border-success">
+                                <div className="card-body text-center">
+                                    <h4>
+                                        Campeón
+                                    </h4>
+                                    <h3 className="text-success">
+                                        {detalle.campeon.nombre}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-md-6">
+                            <div className="card border-secondary">
+                                <div className="card-body text-center">
+                                    <h4>
+                                        Subcampeón
+                                    </h4>
+                                    <h3 className="text-secondary">
+                                        {detalle.subcampeon.nombre}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
             {/* Tabla de posiciones */}
             {
                 tabla.length > 0 && (
-
                     <div className="card shadow-sm mb-5">
-
                         <div className="card-header bg-dark text-white">
-
                             <strong>
                                 Tabla de Posiciones
                             </strong>
-
                         </div>
 
                         <div className="card-body p-0">
-
                             <div className="table-responsive">
-
                                 <table className="table table-hover mb-0">
-
                                     <thead className="table-light">
-
                                         <tr>
-
                                             <th>#</th>
                                             <th>Equipo</th>
-
                                             <th>PJ</th>
                                             <th>PG</th>
                                             <th>PE</th>
                                             <th>PP</th>
-
                                             <th>GF</th>
                                             <th>GC</th>
                                             <th>DG</th>
-
                                             <th>PTS</th>
-
                                         </tr>
-
                                     </thead>
 
                                     <tbody>
-
                                         {
-                                            tabla.map(
-                                                (
-                                                    equipo,
-                                                    index
-                                                ) => (
+                                            tabla.map((equipo, index) => (
 
-                                                    <tr
-                                                        key={equipo.equipo_id}
-                                                    >
-
-                                                        <td>
-                                                            {index + 1}
-                                                        </td>
-
-                                                        <td>
-                                                            <strong>
-                                                                {equipo.nombre}
-                                                            </strong>
-                                                        </td>
-
-                                                        <td>{equipo.pj}</td>
-                                                        <td>{equipo.pg}</td>
-                                                        <td>{equipo.pe}</td>
-                                                        <td>{equipo.pp}</td>
-
-                                                        <td>{equipo.gf}</td>
-                                                        <td>{equipo.gc}</td>
-
-                                                        <td>
-
-                                                            {
-                                                                equipo.dg > 0
-                                                                    ? `+${equipo.dg}`
-                                                                    : equipo.dg
-                                                            }
-
-                                                        </td>
-
-                                                        <td>
-
-                                                            <span className="badge bg-success">
-
-                                                                {equipo.pts}
-
-                                                            </span>
-
-                                                        </td>
-
-                                                    </tr>
-                                                )
+                                                <tr key={equipo.equipo_id}>
+                                                    <td>
+                                                        {index + 1}
+                                                    </td>
+                                                    <td>
+                                                        <strong>
+                                                            {equipo.nombre}
+                                                        </strong>
+                                                    </td>
+                                                    <td>{equipo.pj}</td>
+                                                    <td>{equipo.pg}</td>
+                                                    <td>{equipo.pe}</td>
+                                                    <td>{equipo.pp}</td>
+                                                    <td>{equipo.gf}</td>
+                                                    <td>{equipo.gc}</td>
+                                                    <td>
+                                                        {
+                                                            equipo.dg > 0 ? `+${equipo.dg}` : equipo.dg
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <span className="badge bg-success">
+                                                            {equipo.pts}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            )
                                             )
                                         }
-
                                     </tbody>
-
                                 </table>
-
                             </div>
-
                         </div>
-
                     </div>
                 )
             }
@@ -649,7 +393,7 @@ const AdminFixture = () => {
             {
                 fixture.length === 0 &&
                 <div className="alert alert-secondary">
-                    No hay fixture generado.
+                    Esta competencia aún no comenzó.
                 </div>
             }
 
@@ -761,41 +505,6 @@ const AdminFixture = () => {
                             }
                         </div>
                     </>
-                )
-            }
-
-            {
-                showHelp && (
-
-                    <div
-                        className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                        style={{
-                            backgroundColor:
-                                "rgba(0,0,0,0.5)",
-                            zIndex: 1050
-                        }}
-                    >
-
-                        <div className="bg-white p-4 rounded shadow" style={{ maxWidth: "600px" }}>
-
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h5>¿Cómo funciona este apartado?</h5>
-                                <button className="btn-close" onClick={() => setShowHelp(false)} />
-                            </div>
-
-                            <p>Desde aquí podés visualizar y administrar el fixture generado para esta categoría del torneo.</p>
-
-                            <ul>
-                                <li>Consultar la tabla de posiciones.</li>
-                                <li>Ver los partidos agrupados por jornada.</li>
-                                <li>Gestionar cada partido.</li>
-                                <li>Asignar árbitros, sedes y fechas.</li>
-                                <li>Registrar resultados.</li>
-                            </ul>
-
-                            <p className="mb-0">Una vez generados los partidos, las posiciones se actualizarán automáticamente a medida que se carguen los resultados.</p>
-                        </div>
-                    </div>
                 )
             }
         </div>

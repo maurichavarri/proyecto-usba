@@ -1,19 +1,33 @@
 import { TorneoCategoria, Torneo, Categoria, Inscripcion, Partido } from '../models/index.js';
+import { obtenerCampeonYSubcampeon } from './campeon.service.js';
 
 export const getDetalleTorneoCategoria = async (torneoCategoriaId) => {
 
-  const torneoCategoria = await TorneoCategoria.findByPk(torneoCategoriaId,
+  const torneoCategoria = await TorneoCategoria.findByPk(
+    torneoCategoriaId,
     {
       include: [
         {
           model: Torneo,
-          as: 'torneo',
-          attributes: ['id', 'nombre']
+          as: "torneo",
+          where: {
+            estado: "activo"
+          },
+          attributes: [
+            "id",
+            "nombre"
+          ]
         },
         {
           model: Categoria,
-          as: 'categoria',
-          attributes: ['id', 'nombre']
+          as: "categoria",
+          where: {
+            estado: "activo"
+          },
+          attributes: [
+            "id",
+            "nombre"
+          ]
         }
       ]
     }
@@ -21,6 +35,10 @@ export const getDetalleTorneoCategoria = async (torneoCategoriaId) => {
 
   if (!torneoCategoria) {
     throw new Error('Torneo-Categoría no encontrado');
+  }
+
+  if (torneoCategoria.estado_competencia === "configuracion") {
+    throw new Error("La competencia todavía no se encuentra publicada");
   }
 
   const equiposInscriptos = await Inscripcion.count({
@@ -52,15 +70,24 @@ export const getDetalleTorneoCategoria = async (torneoCategoriaId) => {
     }
   );
 
+  let podio = null;
+
+  if (torneoCategoria.estado_competencia === 'finalizado') {
+    podio = await obtenerCampeonYSubcampeon(torneoCategoriaId, torneoCategoria.formato_competencia);
+  }
+
   return {
     id: torneoCategoria.id,
     torneo: torneoCategoria.torneo,
     categoria: torneoCategoria.categoria,
     arancel: torneoCategoria.arancel,
     formato_competencia: torneoCategoria.formato_competencia,
+    estado_competencia: torneoCategoria.estado_competencia,
     equipos_inscriptos: equiposInscriptos,
     partidos_generados: partidosGenerados,
     partidos_jugados: partidosJugados,
-    jornadas: jornadas || 0
+    jornadas: jornadas || 0,
+    campeon: podio?.campeon || null,
+    subcampeon: podio?.subcampeon || null
   };
 };

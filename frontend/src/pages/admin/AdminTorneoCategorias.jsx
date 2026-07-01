@@ -479,7 +479,6 @@ const AdminTorneoCategorias = () => {
                                                     </td>
 
                                                     <td>
-
                                                         {
                                                             Number(tc.equipos_inscriptos) >= 4
                                                                 ? (
@@ -493,7 +492,6 @@ const AdminTorneoCategorias = () => {
                                                                     </span>
                                                                 )
                                                         }
-
                                                     </td>
 
                                                     <td>
@@ -507,21 +505,24 @@ const AdminTorneoCategorias = () => {
                                                     </td>
 
                                                     <td>
-
                                                         {
-                                                            Number(tc.equipos_inscriptos) >= 4
-                                                                ? (
-                                                                    <span className="badge bg-primary">
-                                                                        Listo para generar
-                                                                    </span>
-                                                                )
-                                                                : (
-                                                                    <span className="badge bg-warning text-dark">
-                                                                        Esperando equipos
-                                                                    </span>
-                                                                )
+                                                            tc.estado_competencia === "configuracion" &&
+                                                            <span className="badge bg-secondary">
+                                                                En Configuración
+                                                            </span>
                                                         }
-
+                                                        {
+                                                            tc.estado_competencia === "en_curso" &&
+                                                            <span className="badge bg-success">
+                                                                En Curso
+                                                            </span>
+                                                        }
+                                                        {
+                                                            tc.estado_competencia === "finalizado" &&
+                                                            <span className="badge bg-dark">
+                                                                Finalizado
+                                                            </span>
+                                                        }
                                                     </td>
 
                                                     <td>

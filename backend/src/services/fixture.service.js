@@ -1,8 +1,4 @@
-import {
-    Inscripcion,
-    Partido,
-    TorneoCategoria
-} from '../models/index.js';
+import { Inscripcion, Partido, TorneoCategoria } from '../models/index.js';
 
 export const generarFixture = async (torneoCategoriaId) => {
 
@@ -46,8 +42,7 @@ export const generarFixture = async (torneoCategoriaId) => {
             }
         });
 
-    let equipos =
-        inscripciones.map(i => i.id);
+    let equipos = inscripciones.map(i => i.id);
 
     // Mínimo de equipos
     if (equipos.length < 4) {
@@ -96,21 +91,24 @@ export const generarFixture = async (torneoCategoriaId) => {
         // Rotación Round Robin
         const ultimo = equipos.pop();
 
-        equipos.splice(
-            1,
-            0,
-            ultimo
-        );
+        equipos.splice(1, 0, ultimo);
     }
 
     // Crear partidos
-    const partidosCreados =
-        await Partido.bulkCreate(partidos);
+    const partidosCreados = await Partido.bulkCreate(partidos);
 
-    // Marcar fixture generado
-    await torneoCategoria.update({
-        fixture_generado: true
-    });
+    // Marcar fixture generado y campeonato en curso
+    await torneoCategoria.update(
+        {
+            fixture_generado: true,
+            estado_competencia: 'en_curso'
+        },
+        {
+            where: {
+                id: torneoCategoriaId
+            }
+        }
+    );
 
     return partidosCreados;
 };
