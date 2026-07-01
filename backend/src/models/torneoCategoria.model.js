@@ -26,6 +26,15 @@ const cols = {
         ),
         allowNull: false,
         defaultValue: 'solo_liga'
+    },
+    estado_competencia: {
+        type: DataTypes.ENUM(
+            'configuracion',
+            'en_curso',
+            'finalizado'
+        ),
+        defaultValue: 'configuracion',
+        allowNull: false
     }
 }
 

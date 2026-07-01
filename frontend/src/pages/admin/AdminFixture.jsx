@@ -12,6 +12,8 @@ const AdminFixture = () => {
     const [tabla, setTabla] = useState([]);
     const [mensaje, setMensaje] = useState("");
 
+    const todosJugados = fixture.length > 0 && fixture.every(partido => partido.estado === "jugado");
+
     useEffect(() => {
         obtenerFixture();
         obtenerTabla();
@@ -119,6 +121,40 @@ const AdminFixture = () => {
         } catch (error) {
             console.error(error);
             setMensaje("Error al generar playoffs");
+        }
+    };
+
+    const finalizarCompetencia = async () => {
+
+        const confirmar = window.confirm("¿Desea finalizar la competencia?");
+        if (!confirmar) return;
+
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/finalizar`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMensaje(data.message);
+                return;
+            }
+
+            setMensaje(data.message);
+
+            await obtenerDetalle();
+            await obtenerFixture();
+
+        } catch (error) {
+            console.error(error);
+            setMensaje("Error al finalizar la competencia");
         }
     };
 
@@ -291,6 +327,7 @@ const AdminFixture = () => {
 
             </nav>
 
+            {/* Botones */}
             <div className="d-flex justify-content-between align-items-center mb-4">
 
                 <button
@@ -309,7 +346,7 @@ const AdminFixture = () => {
                             onClick={generarFixture}
                             className="btn btn-primary"
                         >
-                            ⚙️ Generar Fixture
+                            Generar Fixture
                         </button>
                     }
 
@@ -328,7 +365,19 @@ const AdminFixture = () => {
                             onClick={generarPlayoffs}
                             className="btn btn-success"
                         >
-                            🏆 Generar Playoffs
+                            Generar Playoffs
+                        </button>
+                    }
+
+                    {
+                        todosJugados &&
+                        detalle?.estado_competencia !== "finalizado" &&
+
+                        <button
+                            className="btn btn-danger"
+                            onClick={finalizarCompetencia}
+                        >
+                            Finalizar Competencia
                         </button>
                     }
 
@@ -344,13 +393,64 @@ const AdminFixture = () => {
                 </div>
             }
 
+            {
+                detalle?.estado_competencia === "finalizado" &&
+                detalle?.campeon &&
+                detalle?.subcampeon && (
+
+                    <div className="row mb-4">
+
+                        <div className="col-md-6">
+
+                            <div className="card border-success">
+
+                                <div className="card-body text-center">
+
+                                    <h4>
+                                        Campeón
+                                    </h4>
+
+                                    <h3 className="text-success">
+                                        {detalle.campeon.nombre}
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div className="col-md-6">
+
+                            <div className="card border-secondary">
+
+                                <div className="card-body text-center">
+
+                                    <h4>
+                                        Subcampeón
+                                    </h4>
+
+                                    <h3 className="text-secondary">
+                                        {detalle.subcampeon.nombre}
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                )
+            }
+
             {/* Información Resumen Encabezado */}
             {
                 resumen &&
 
                 <div className="row mb-4">
 
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
@@ -363,7 +463,7 @@ const AdminFixture = () => {
                         </div>
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
@@ -371,6 +471,24 @@ const AdminFixture = () => {
                                 </small>
                                 <h5>
                                     {resumen.categoria}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-md-2">
+                        <div className="card shadow-sm">
+                            <div className="card-body text-center">
+                                <small className="text-muted">
+                                    Formato
+                                </small>
+
+                                <h5>
+                                    {{
+                                        solo_liga: "Liga",
+                                        playoff_4: "Liga + Play-Off (4)",
+                                        playoff_8: "Liga + Play-Off (8)"
+                                    }[resumen.formatoCompetencia] || "-"}
                                 </h5>
                             </div>
                         </div>

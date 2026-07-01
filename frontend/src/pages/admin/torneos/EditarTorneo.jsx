@@ -227,22 +227,6 @@ const EditarTorneo = () => {
                             <div className="mb-2">
 
                                 <label className="form-label">
-                                    Fecha inicio
-                                </label>
-
-                                <input
-                                    type="date"
-                                    name="fechaInicio"
-                                    className="form-control"
-                                    value={formData.fechaInicio}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-
-                            <div className="mb-2">
-
-                                <label className="form-label">
                                     Cierre de inscripción
                                 </label>
 
@@ -251,6 +235,22 @@ const EditarTorneo = () => {
                                     name="cierreInscripcion"
                                     className="form-control"
                                     value={formData.cierreInscripcion}
+                                    onChange={handleChange}
+                                />
+
+                            </div>
+
+                            <div className="mb-2">
+
+                                <label className="form-label">
+                                    Fecha inicio
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="fechaInicio"
+                                    className="form-control"
+                                    value={formData.fechaInicio}
                                     onChange={handleChange}
                                 />
 

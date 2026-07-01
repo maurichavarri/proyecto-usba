@@ -195,85 +195,105 @@ export const getTablaPosiciones = async (req, res, next) => {
 };
 
 export const getResumenTorneoCategoria = async (req, res, next) => {
-
     try {
-
         const { id } = req.params;
-
-        const torneoCategoria =
-            await TorneoCategoria.findByPk(
-                id,
-                {
-                    include: [
-                        {
-                            model: Torneo,
-                            as: "torneo"
-                        },
-                        {
-                            model: Categoria,
-                            as: "categoria"
-                        }
-                    ]
-                }
-            );
+        const torneoCategoria = await TorneoCategoria.findByPk(
+            id,
+            {
+                include: [
+                    {
+                        model: Torneo,
+                        as: "torneo"
+                    },
+                    {
+                        model: Categoria,
+                        as: "categoria"
+                    }
+                ]
+            }
+        );
 
         if (!torneoCategoria) {
-
             return res.status(404).json({
-                message:
-                    "Torneo categoría no encontrado"
+                message: "Torneo categoría no encontrado"
             });
         }
 
-        const equipos =
-            await Inscripcion.count({
-                where: {
-                    torneo_categoria_id: id,
-                    estado: "confirmado"
-                }
-            });
+        const equipos = await Inscripcion.count({
+            where: {
+                torneo_categoria_id: id,
+                estado: "confirmado"
+            }
+        });
 
-        const partidos =
-            await Partido.count({
-                where: {
-                    torneo_categoria_id: id
-                }
-            });
+        const partidos = await Partido.count({
+            where: {
+                torneo_categoria_id: id
+            }
+        });
 
-        const partidosJugados =
-            await Partido.count({
-                where: {
-                    torneo_categoria_id: id,
-                    estado: "jugado"
-                }
-            });
+        const partidosJugados = await Partido.count({
+            where: {
+                torneo_categoria_id: id,
+                estado: "jugado"
+            }
+        });
 
-        const partidosPendientes =
-            await Partido.count({
-                where: {
-                    torneo_categoria_id: id,
-                    estado: "pendiente"
-                }
-            });
+        const partidosPendientes = await Partido.count({
+            where: {
+                torneo_categoria_id: id,
+                estado: "pendiente"
+            }
+        });
 
         res.json({
-            torneo:
-                torneoCategoria.torneo?.nombre,
-
-            categoria:
-                torneoCategoria.categoria?.nombre,
-
+            torneo: torneoCategoria.torneo?.nombre,
+            categoria: torneoCategoria.categoria?.nombre,
+            formatoCompetencia: torneoCategoria.formato_competencia,
             equipos,
-
             partidos,
-
             partidosJugados,
-
             partidosPendientes
         });
 
     } catch (error) {
+        next(error);
+    }
+};
 
+export const finalizarCompetencia = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const torneoCategoria = await TorneoCategoria.findByPk(id);
+
+        if (!torneoCategoria) {
+            return res.status(404).json({
+                message: 'Competencia no encontrada'
+            });
+        }
+
+        const pendientes = await Partido.count({
+            where: {
+                torneo_categoria_id: id,
+                estado: 'pendiente'
+            }
+        });
+
+        if (pendientes > 0) {
+            return res.status(400).json({
+                message: 'Todavía existen partidos pendientes'
+            });
+        }
+
+        await torneoCategoria.update({
+            estado_competencia: 'finalizado'
+        });
+
+        res.json({
+            message: 'Competencia finalizada correctamente'
+        });
+
+    } catch (error) {
         next(error);
     }
 };

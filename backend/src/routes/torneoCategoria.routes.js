@@ -7,7 +7,8 @@ import {
     getFixture,
     getTablaPosiciones,
     getResumenTorneoCategoria,
-    generarPlayoffsController
+    generarPlayoffsController,
+    finalizarCompetencia
 } from '../controllers/torneoCategoria.controller.js';
 
 import verifyToken from '../middlewares/verifyToken.js';
@@ -38,5 +39,8 @@ router.get("/:id/resumen", getResumenTorneoCategoria);
 
 // Generar playoff
 router.post('/:id/playoffs', verifyToken, verifyRole('admin'), generarPlayoffsController);
+
+// Finalizar competición
+router.patch('/:id/finalizar', verifyToken, verifyRole('admin'), finalizarCompetencia)
 
 export default router;

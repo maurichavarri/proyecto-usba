@@ -205,9 +205,9 @@ const AdminTorneos = () => {
 
                                                 <th>Nombre</th>
 
-                                                <th>Inicio</th>
-
                                                 <th>Cierre inscripción</th>
+
+                                                <th>Inicio</th>
 
                                                 <th>Fin</th>
 
@@ -239,7 +239,7 @@ const AdminTorneos = () => {
                                                             <td>
                                                                 {
                                                                     formatearFecha(
-                                                                        torneo.fecha_inicio
+                                                                        torneo.fecha_cierre_inscripcion
                                                                     )
                                                                 }
                                                             </td>
@@ -247,7 +247,7 @@ const AdminTorneos = () => {
                                                             <td>
                                                                 {
                                                                     formatearFecha(
-                                                                        torneo.fecha_cierre_inscripcion
+                                                                        torneo.fecha_inicio
                                                                     )
                                                                 }
                                                             </td>

@@ -1,4 +1,5 @@
 import { TorneoCategoria, Torneo, Categoria, Inscripcion, Partido } from '../models/index.js';
+import { obtenerCampeonYSubcampeon } from './campeon.service.js';
 
 export const getDetalleTorneoCategoria = async (torneoCategoriaId) => {
 
@@ -52,15 +53,24 @@ export const getDetalleTorneoCategoria = async (torneoCategoriaId) => {
     }
   );
 
+  let podio = null;
+
+  if (torneoCategoria.estado_competencia === 'finalizado') {
+    podio = await obtenerCampeonYSubcampeon(torneoCategoriaId, torneoCategoria.formato_competencia);
+  }
+
   return {
     id: torneoCategoria.id,
     torneo: torneoCategoria.torneo,
     categoria: torneoCategoria.categoria,
     arancel: torneoCategoria.arancel,
     formato_competencia: torneoCategoria.formato_competencia,
+    estado_competencia: torneoCategoria.estado_competencia,
     equipos_inscriptos: equiposInscriptos,
     partidos_generados: partidosGenerados,
     partidos_jugados: partidosJugados,
-    jornadas: jornadas || 0
+    jornadas: jornadas || 0,
+    campeon: podio?.campeon || null,
+    subcampeon: podio?.subcampeon || null
   };
 };
