@@ -1,47 +1,24 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
-const CompetenciaPublica = () => {
+const AdminFixture = () => {
 
+    const navigate = useNavigate();
     const { id } = useParams();
     const [detalle, setDetalle] = useState(null);
-    const [tabActiva, setTabActiva] = useState("fixture");
+    const [resumen, setResumen] = useState(null);
     const [fixture, setFixture] = useState([]);
+    const [tabla, setTabla] = useState([]);
+    const [mensaje, setMensaje] = useState("");
 
-    const partidosRegular = fixture.filter(partido => partido.fase === "regular");
-
-    const partidosPlayoff = fixture.filter(partido => partido.fase !== "regular");
-
-    const jornadasRegular = partidosRegular.reduce((acc, partido) => {
-        if (!acc[partido.jornada]) {
-            acc[partido.jornada] = [];
-        }
-        acc[partido.jornada].push(partido);
-        return acc;
-    }, {});
-
-    const fasesPlayoff = partidosPlayoff.reduce((acc, partido) => {
-        if (!acc[partido.fase]) {
-            acc[partido.fase] = [];
-        }
-        acc[partido.fase].push(partido);
-        return acc;
-    }, {});
+    const todosJugados = fixture.length > 0 && fixture.every(partido => partido.estado === "jugado");
 
     useEffect(() => {
-        obtenerDetalle();
         obtenerFixture();
-    }, [id]);
-
-    const obtenerDetalle = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}`);
-            const data = await response.json();
-            setDetalle(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+        obtenerTabla();
+        obtenerResumen();
+        obtenerDetalle();
+    }, []);
 
     const obtenerFixture = async () => {
         try {
@@ -53,174 +30,485 @@ const CompetenciaPublica = () => {
         }
     };
 
-    if (!detalle) {
-        return (
-            <div className="container mt-5">
-                <p>Cargando...</p>
-            </div>
-        );
-    }
+    const obtenerTabla = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/tabla`);
+            const data = await response.json();
+            setTabla(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const obtenerResumen = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/resumen`);
+            const data = await response.json();
+            setResumen(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const obtenerDetalle = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}`);
+            
+            if (!response.ok) {
+                navigate("/torneos");
+                return;
+            }
+
+            const data = await response.json();
+            setDetalle(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const renderTablaPartidos = (partidos) => (
+        <table className="table table-bordered table-hover">
+            <thead className="table-light">
+                <tr>
+                    <th>Local</th>
+                    <th>Visitante</th>
+                    <th>Resultado</th>
+                    <th>Sede</th>
+                    <th>Árbitro</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    partidos.map((partido) => (
+                        <tr key={partido.id}>
+                            <td>
+                                {
+                                    partido.local?.Equipo?.nombre
+                                }
+                            </td>
+                            <td>
+                                {
+                                    partido.visitante?.Equipo?.nombre
+                                }
+                            </td>
+                            <td>
+                                {
+                                    partido.estado === "jugado" ? `${partido.puntaje_local} - ${partido.puntaje_visitante}` : "-"
+                                }
+                            </td>
+                            <td>
+                                {
+                                    partido.sede?.nombre || "Sin asignar"
+                                }
+                            </td>
+                            <td>
+                                {
+                                    partido.arbitro ? `${partido.arbitro.nombre} ${partido.arbitro.apellido}` : "Sin asignar"
+                                }
+                            </td>
+                            <td>
+                                {
+                                    partido.fecha ? new Date(partido.fecha).toLocaleDateString("es-AR") : "-"
+                                }
+                            </td>
+                            <td>
+                                {
+                                    partido.estado === "pendiente" &&
+                                    <span className="badge bg-warning text-dark">
+                                        Pendiente
+                                    </span>
+                                }
+                                {
+                                    partido.estado === "jugado" &&
+                                    <span className="badge bg-success">
+                                        Jugado
+                                    </span>
+                                }
+                                {
+                                    partido.estado === "suspendido" &&
+                                    <span className="badge bg-danger">
+                                        Suspendido
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    );
+
+    const partidosRegulares = fixture.filter(partido => !partido.fase || partido.fase === 'regular');
+    const faseRegularFinalizada = partidosRegulares.length > 0 && partidosRegulares.every(partido => partido.estado === 'jugado');
+
+    // Agrupar por jornada
+    const jornadasRegular = {};
+    const fasesPlayoff = {};
+
+    fixture.forEach((partido) => {
+
+        const fase = partido.fase || 'regular';
+
+        // FASE REGULAR
+        if (fase === 'regular') {
+
+            if (!jornadasRegular[partido.jornada]) {
+                jornadasRegular[partido.jornada] = [];
+            }
+
+            jornadasRegular[partido.jornada].push(partido);
+        }
+
+        // PLAYOFFS
+        else {
+            if (!fasesPlayoff[fase]) {
+                fasesPlayoff[fase] = [];
+            }
+
+            fasesPlayoff[fase].push(partido);
+        }
+    });
 
     return (
-        <>
-            <section className="container my-4">
-                <h2>
-                    {detalle.torneo.nombre}
+        <div className="container mt-5 mb-5">
+
+            {/* Header */}
+            <div className="d-flex align-items-center mb-2">
+                <h2 className="me-2">
+                    Fixture
                 </h2>
-                <h4 className="text-muted mb-4">
-                    Categoría {detalle.categoria.nombre}
-                </h4>
-                <div className="row g-3">
+            </div>
 
-                    <div className="col-md-3">
+            {/* Boton */}
+            <div className="d-flex justify-content-between align-items-center mb-4">
+
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate(-1)}
+                >
+                    Volver
+                </button>
+
+            </div>
+
+            {/* Información Resumen Encabezado */}
+            {
+                resumen &&
+
+                <div className="row mb-4">
+
+                    <div className="col-md-2">
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
-                                    Equipos
+                                    Torneo
                                 </small>
-                                <h3>
-                                    {detalle.equipos_inscriptos}
-                                </h3>
+                                <h5>
+                                    {resumen.torneo}
+                                </h5>
                             </div>
                         </div>
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
-                                    Partidos
+                                    Categoría
                                 </small>
-                                <h3>
-                                    {detalle.partidos_generados}
-                                </h3>
+                                <h5>
+                                    {resumen.categoria}
+                                </h5>
                             </div>
                         </div>
                     </div>
 
-                    <div className="col-md-3">
-                        <div className="card shadow-sm">
-                            <div className="card-body text-center">
-                                <small className="text-muted">
-                                    Jugados
-                                </small>
-                                <h3>
-                                    {detalle.partidos_jugados}
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
                                     Formato
                                 </small>
+
                                 <h5>
                                     {{
                                         solo_liga: "Liga",
-                                        playoff_4: "Liga + Play-Off (4)",
-                                        playoff_8: "Liga + Play-Off (8)"
-                                    }[detalle.formato_competencia]}
+                                        playoff_4: "Play-Off (4)",
+                                        playoff_8: "Play-Off (8)"
+                                    }[resumen.formatoCompetencia] || "-"}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-md-2">
+                        <div className="card shadow-sm">
+                            <div className="card-body text-center">
+                                <small className="text-muted">
+                                    Equipos
+                                </small>
+                                <h5>
+                                    {resumen.equipos}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-md-2">
+                        <div className="card shadow-sm">
+                            <div className="card-body text-center">
+                                <small className="text-muted">
+                                    Partidos
+                                </small>
+                                <h5>
+                                    {resumen.partidos}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-md-2">
+                        <div className="card shadow-sm">
+                            <div className="card-body text-center">
+                                <small className="text-muted">
+                                    Jugados
+                                </small>
+                                <h5 className="text-success">
+                                    {resumen.partidosJugados}
                                 </h5>
                             </div>
                         </div>
                     </div>
                 </div>
+            }
 
-                <div className="mt-5">
+            {/* Campeón y Subcampeón */}
+            {
+                detalle?.estado_competencia === "finalizado" &&
+                detalle?.campeon &&
+                detalle?.subcampeon && (
 
-                    <ul className="nav nav-tabs">
+                    <div className="row mb-4">
+                        <div className="col-md-6">
+                            <div className="card border-success">
+                                <div className="card-body text-center">
+                                    <h4>
+                                        Campeón
+                                    </h4>
+                                    <h3 className="text-success">
+                                        {detalle.campeon.nombre}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
 
-                        <li className="nav-item">
+                        <div className="col-md-6">
+                            <div className="card border-secondary">
+                                <div className="card-body text-center">
+                                    <h4>
+                                        Subcampeón
+                                    </h4>
+                                    <h3 className="text-secondary">
+                                        {detalle.subcampeon.nombre}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
 
-                            <button
-                                className={`nav-link ${tabActiva === "fixture"
-                                    ? "active"
-                                    : ""
-                                    }`}
-                                onClick={() => setTabActiva("fixture")}
-                            >
-                                Fixture
-                            </button>
+            {/* Tabla de posiciones */}
+            {
+                tabla.length > 0 && (
+                    <div className="card shadow-sm mb-5">
+                        <div className="card-header bg-dark text-white">
+                            <strong>
+                                Tabla de Posiciones
+                            </strong>
+                        </div>
 
-                        </li>
+                        <div className="card-body p-0">
+                            <div className="table-responsive">
+                                <table className="table table-hover mb-0">
+                                    <thead className="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Equipo</th>
+                                            <th>PJ</th>
+                                            <th>PG</th>
+                                            <th>PE</th>
+                                            <th>PP</th>
+                                            <th>GF</th>
+                                            <th>GC</th>
+                                            <th>DG</th>
+                                            <th>PTS</th>
+                                        </tr>
+                                    </thead>
 
-                        <li className="nav-item">
+                                    <tbody>
+                                        {
+                                            tabla.map((equipo, index) => (
 
-                            <button
-                                className={`nav-link ${tabActiva === "tabla"
-                                    ? "active"
-                                    : ""
-                                    }`}
-                                onClick={() => setTabActiva("tabla")}
-                            >
-                                Tabla
-                            </button>
+                                                <tr key={equipo.equipo_id}>
+                                                    <td>
+                                                        {index + 1}
+                                                    </td>
+                                                    <td>
+                                                        <strong>
+                                                            {equipo.nombre}
+                                                        </strong>
+                                                    </td>
+                                                    <td>{equipo.pj}</td>
+                                                    <td>{equipo.pg}</td>
+                                                    <td>{equipo.pe}</td>
+                                                    <td>{equipo.pp}</td>
+                                                    <td>{equipo.gf}</td>
+                                                    <td>{equipo.gc}</td>
+                                                    <td>
+                                                        {
+                                                            equipo.dg > 0 ? `+${equipo.dg}` : equipo.dg
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <span className="badge bg-success">
+                                                            {equipo.pts}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            )
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
 
-                        </li>
-
-                        <li className="nav-item">
-
-                            <button
-                                className={`nav-link ${tabActiva === "equipos"
-                                    ? "active"
-                                    : ""
-                                    }`}
-                                onClick={() => setTabActiva("equipos")}
-                            >
-                                Equipos
-                            </button>
-
-                        </li>
-
-                    </ul>
-
+            {/* Sin fixture */}
+            {
+                fixture.length === 0 &&
+                <div className="alert alert-secondary">
+                    Esta competencia aún no comenzó.
                 </div>
+            }
 
-                <div className="mt-4">
+            {/* FASE REGULAR */}
+            {
+                Object.keys(jornadasRegular).length > 0 && (
+                    <>
+                        <h4 className="mb-3">Fase Regular</h4>
 
-                    {
-                        tabActiva === "fixture" &&
+                        <div className="accordion" id="accordionFixtureRegular">
 
-                        <div>
+                            {Object.entries(jornadasRegular).map(([jornada, partidos], index) => (
 
-                            <h4>Fixture</h4>
+                                <div key={jornada} className="accordion-item">
 
-                            <p>Próximamente...</p>
+                                    <h2 className="accordion-header">
+                                        <button
+                                            className={`accordion-button ${index !== 0 ? "collapsed" : ""}`}
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target={`#regular-${jornada}`}
+                                        >
+                                            <strong>Jornada {jornada}</strong>
+                                        </button>
+                                    </h2>
 
+                                    <div
+                                        id={`regular-${jornada}`}
+                                        className={`accordion-collapse collapse ${index === 0 ? "show" : ""}`}
+                                        data-bs-parent="#accordionFixtureRegular"
+                                    >
+
+                                        <div className="accordion-body">
+                                            {renderTablaPartidos(partidos)}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            )
+                            )}
                         </div>
-                    }
+                    </>
+                )
+            }
 
-                    {
-                        tabActiva === "tabla" &&
+            {/* PLAYOFFS */}
+            {
+                Object.keys(fasesPlayoff).length > 0 && (
+                    <>
+                        <hr className="my-5" />
+                        <h4 className="mb-3">
+                            Play-offs
+                        </h4>
 
-                        <div>
+                        <div
+                            className="accordion"
+                            id="accordionPlayoffs"
+                        >
 
-                            <h4>Tabla de posiciones</h4>
+                            {
+                                Object.entries(fasesPlayoff).map(
+                                    ([fase, partidos], index) => {
 
-                            <p>Próximamente...</p>
+                                        const tituloFase =
+                                            fase === "cuartos"
+                                                ? "Cuartos de Final"
+                                                : fase === "semifinal"
+                                                    ? "Semifinales"
+                                                    : fase === "final"
+                                                        ? "Final"
+                                                        : fase;
 
+                                        return (
+
+                                            <div
+                                                key={fase}
+                                                className="accordion-item"
+                                            >
+
+                                                <h2 className="accordion-header">
+
+                                                    <button
+                                                        className={`accordion-button ${index !== 0 ? "collapsed" : ""}`}
+                                                        type="button"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target={`#playoff-${fase}`}
+                                                    >
+                                                        <strong>
+                                                            {tituloFase}
+                                                        </strong>
+                                                    </button>
+
+                                                </h2>
+
+                                                <div
+                                                    id={`playoff-${fase}`}
+                                                    className={`accordion-collapse collapse ${index === 0 ? "show" : ""}`}
+                                                    data-bs-parent="#accordionPlayoffs"
+                                                >
+
+                                                    <div className="accordion-body">
+                                                        {renderTablaPartidos(partidos)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                )
+                            }
                         </div>
-                    }
-
-                    {
-                        tabActiva === "equipos" &&
-
-                        <div>
-
-                            <h4>Equipos participantes</h4>
-
-                            <p>Próximamente...</p>
-
-                        </div>
-                    }
-
-                </div>
-            </section>
-        </>
+                    </>
+                )
+            }
+        </div>
     );
 };
 
-export default CompetenciaPublica;
+export default AdminFixture;
