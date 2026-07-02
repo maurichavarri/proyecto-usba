@@ -9,7 +9,8 @@ import Arbitro from './arbitro.model.js';
 import Sede from './sede.model.js';
 import Partido from './partido.model.js';
 import Sancion from './sancion.model.js';
-import Anuncio from './anuncio.model.js'
+import Anuncio from './anuncio.model.js';
+import ImagenCarrusel from './imagenCarrusel.model.js';
 
 // Relaciones
 
@@ -110,5 +111,6 @@ export {
   Sede,
   Partido,
   Sancion,
-  Anuncio
+  Anuncio,
+  ImagenCarrusel
 };

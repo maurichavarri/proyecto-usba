@@ -5,63 +5,56 @@ const CrearAnuncio = () => {
 
     const navigate = useNavigate();
 
-    const [showHelp, setShowHelp] = useState(false);
-
-    const [formData, setFormData] = useState({
-        titulo: "",
-        contenido: ""
-    });
-
+    const [titulo, setTitulo] = useState("");
+    const [contenido, setContenido] = useState("");
+    const [imagen, setImagen] = useState(null);
+    const [preview, setPreview] = useState(null);
     const [mensaje, setMensaje] = useState("");
+    const [loading, setLoading] = useState(false);
+    
+    const handleImagenChange = (e) => {
+        const archivo = e.target.files[0];
+            setImagen(archivo);
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
 
-        setMensaje("");
-    };
 
-    const validarFormulario = () => {
 
-        if (!formData.titulo.trim()) {
-            return "El título es obligatorio.";
-        }
+        const formData = new FormData();
+            formData.append('titulo', titulo);
+            formData.append('contenido', contenido);
+            formData.append('imagen', imagen);
 
-        if (!formData.contenido.trim()) {
-            return "El contenido es obligatorio.";
-        }
-
-        return "";
+        // Previsualización local
+        const reader = new FileReader();
+        reader.onloadend = () => setPreview(reader.result);
+        reader.readAsDataURL(archivo);
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
-        const error = validarFormulario();
-
-        if (error) {
-            setMensaje(error);
-            return;
-        }
+        setLoading(true);
+        setMensaje("");
 
         try {
-
             const token = localStorage.getItem("token");
+
+            // Usamos FormData para poder enviar el archivo junto con los campos
+            const formData = new FormData();
+            formData.append("titulo", titulo);
+            formData.append("contenido", contenido);
+            if (imagen) {
+                formData.append("imagen", imagen);
+            }
 
             const response = await fetch(
                 "http://localhost:3000/api/v1/anuncios/crear",
                 {
                     method: "POST",
-
                     headers: {
-                        "Content-Type": "application/json",
+                        // NO pongas Content-Type acá — el browser lo setea automático con el boundary correcto para FormData
                         Authorization: `Bearer ${token}`
                     },
-
-                    body: JSON.stringify(formData)
+                    body: formData
                 }
             );
 
@@ -76,199 +69,97 @@ const CrearAnuncio = () => {
 
         } catch (error) {
             console.error(error);
-            setMensaje("Error al crear el anuncio.");
+            setMensaje("Error al crear el anuncio");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="container mt-4 mb-5">
+        <div className="container mt-5 mb-5 col-md-8">
 
-            <div className="col-md-8 mx-auto">
+            <h2 className="mb-4">Crear anuncio</h2>
 
-                {/* Título */}
-                <div className="d-flex align-items-center mb-2">
+            <form onSubmit={handleSubmit}>
 
-                    <h2 className="me-2">
-                        Crear Anuncio
-                    </h2>
-
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer",
-                            fontSize: "1.2rem"
+                <div className="mb-3">
+                    <label className="form-label">Título</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={titulo}
+                        onChange={(e) => {
+                            setTitulo(e.target.value);
+                            setMensaje("");
                         }}
-                        onClick={() => setShowHelp(true)}
-                        title="Ayuda"
-                    >
-                        ❓
-                    </span>
-
+                    />
                 </div>
 
-                {/* Breadcrumb */}
-                <nav
-                    className="mb-3"
-                    style={{ fontSize: "0.9rem" }}
-                >
-                    <span
-                        className="text-primary"
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                            navigate("/panel/admin")
-                        }
-                    >
-                        Admin Dashboard
-                    </span>
-
-                    {" > "}
-
-                    <span
-                        className="text-primary"
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                            navigate("/panel/admin/anuncios")
-                        }
-                    >
-                        Anuncios
-                    </span>
-
-                    {" > "}
-
-                    <span className="text-muted">
-                        Crear Anuncio
-                    </span>
-
-                </nav>
-
-                <button
-                    className="btn btn-dark mb-3"
-                    onClick={() => navigate(-1)}
-                >
-                    Volver
-                </button>
-
-                {/* Formulario */}
-                <div className="card shadow-sm">
-
-                    <div className="card-header bg-dark text-white">
-                        <strong>
-                            Formulario de creación
-                        </strong>
-                    </div>
-
-                    <div className="card-body">
-
-                        {
-                            mensaje &&
-                            <div className="alert alert-danger">
-                                {mensaje}
-                            </div>
-                        }
-
-                        <form onSubmit={handleSubmit}>
-
-                            <div className="mb-3">
-
-                                <label className="form-label">
-                                    Título
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="titulo"
-                                    className="form-control"
-                                    value={formData.titulo}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-
-                            <div className="mb-3">
-
-                                <label className="form-label">
-                                    Contenido
-                                </label>
-
-                                <textarea
-                                    name="contenido"
-                                    className="form-control"
-                                    rows="8"
-                                    value={formData.contenido}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                            >
-                                Crear anuncio
-                            </button>
-
-                        </form>
-
-                    </div>
-
+                <div className="mb-3">
+                    <label className="form-label">Contenido</label>
+                    <textarea
+                        className="form-control"
+                        rows="6"
+                        value={contenido}
+                        onChange={(e) => {
+                            setContenido(e.target.value);
+                            setMensaje("");
+                        }}
+                    />
                 </div>
 
-                {/* Modal Ayuda */}
-                {
-                    showHelp && (
-                        <div
-                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                            style={{
-                                backgroundColor:
-                                    "rgba(0,0,0,0.5)",
-                                zIndex: 1050
+                <div className="mb-3">
+                    <label className="form-label">Imagen (opcional)</label>
+                    <input
+                        type="file"
+                        className="form-control"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        onChange={handleImagenChange}
+                    />
+                    <small className="text-muted">Formatos permitidos: JPG, PNG, WEBP, GIF. Máximo 5MB.</small>
+                </div>
+
+                {/* Previsualización */}
+                {preview && (
+                    <div className="mb-3">
+                        <label className="form-label">Vista previa:</label>
+                        <div>
+                            <img
+                                src={preview}
+                                alt="Vista previa"
+                                style={{
+                                    maxWidth: "100%",
+                                    maxHeight: "300px",
+                                    objectFit: "cover",
+                                    borderRadius: "8px",
+                                    border: "1px solid #dee2e6"
+                                }}
+                            />
+                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary mt-2"
+                            onClick={() => {
+                                setImagen(null);
+                                setPreview(null);
                             }}
                         >
+                            Quitar imagen
+                        </button>
+                    </div>
+                )}
 
-                            <div
-                                className="bg-white p-4 rounded shadow"
-                                style={{
-                                    maxWidth: "500px"
-                                }}
-                            >
+                <button className="btn btn-dark" disabled={loading}>
+                    {loading ? "Creando..." : "Crear anuncio"}
+                </button>
 
-                                <div className="d-flex justify-content-between align-items-center mb-3">
+            </form>
 
-                                    <h5>
-                                        ¿Cómo funciona este apartado?
-                                    </h5>
-
-                                    <button
-                                        className="btn-close"
-                                        onClick={() =>
-                                            setShowHelp(false)
-                                        }
-                                    />
-
-                                </div>
-
-                                <p>
-                                    Desde aquí podés crear
-                                    comunicados oficiales para
-                                    los usuarios del sistema.
-                                </p>
-
-                                <p>
-                                    Completá el título y el
-                                    contenido del anuncio.
-                                    Luego presioná
-                                    <strong className="text-primary">
-                                        {" "}Crear anuncio
-                                    </strong>.
-                                </p>
-
-                            </div>
-
-                        </div>
-                    )
-                }
-
-            </div>
+            {mensaje && (
+                <div className="alert alert-danger mt-3">
+                    {mensaje}
+                </div>
+            )}
 
         </div>
     );

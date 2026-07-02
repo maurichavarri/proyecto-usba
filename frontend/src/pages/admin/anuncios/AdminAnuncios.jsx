@@ -1,351 +1,105 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const AdminAnuncios = () => {
+  const [anuncios, setAnuncios] = useState([]);
 
-    const navigate = useNavigate();
+  useEffect(() => {
+    obtenerAnuncios();
+  }, []);
 
-    const [showHelp, setShowHelp] = useState(false);
-    const [anuncios, setAnuncios] = useState([]);
-    const [busqueda, setBusqueda] = useState("");
+  const obtenerAnuncios = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        obtenerAnuncios();
-    }, []);
+      const response = await fetch(
+        "http://localhost:3000/api/v1/anuncios/admin/todos",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-    const obtenerAnuncios = async () => {
+      const data = await response.json();
 
-        try {
+      setAnuncios(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-            const token =
-                localStorage.getItem("token");
+  const cambiarEstado = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
 
-            const response =
-                await fetch(
-                    "http://localhost:3000/api/v1/anuncios/admin/todos",
-                    {
-                        headers: {
-                            Authorization:
-                                `Bearer ${token}`
-                        }
-                    }
-                );
+      await fetch(`http://localhost:3000/api/v1/anuncios/${id}/estado`, {
+        method: "PATCH",
 
-            const data =
-                await response.json();
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-            setAnuncios(data);
+      obtenerAnuncios();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-        } catch (error) {
+  return (
+    <div className="container mt-5 mb-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>Anuncios</h2>
 
-            console.error(error);
-        }
-    };
+        <Link to="/panel/admin/anuncios/crear" className="btn btn-dark">
+          Crear anuncio
+        </Link>
+      </div>
 
-    const cambiarEstado = async (id) => {
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
 
-        try {
+        <tbody>
+          {anuncios.map((anuncio) => (
+            <tr key={anuncio.id}>
+              <td>{anuncio.id}</td>
 
-            const token =
-                localStorage.getItem("token");
+              <td>{anuncio.titulo}</td>
 
-            await fetch(
-                `http://localhost:3000/api/v1/anuncios/${id}/estado`,
-                {
-                    method: "PATCH",
+              <td>{anuncio.estado}</td>
 
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`
-                    }
-                }
-            );
+              <td>{new Date(anuncio.createdAt).toLocaleDateString()}</td>
 
-            obtenerAnuncios();
-
-        } catch (error) {
-
-            console.error(error);
-        }
-    };
-
-    const anunciosFiltrados = anuncios.filter((anuncio) => {
-        const texto = busqueda.toLowerCase();
-        return (
-            anuncio.titulo?.toLowerCase().includes(texto) ||
-            anuncio.contenido?.toLowerCase().includes(texto)
-        );
-    });
-
-    return (
-        <div className="container mt-4 mb-5">
-
-            <div className="col-12">
-
-                {/* Título */}
-                <div className="d-flex align-items-center mb-2">
-
-                    <h2 className="me-2">
-                        Gestión de Anuncios
-                    </h2>
-
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer",
-                            fontSize: "1.2rem"
-                        }}
-                        title="Ayuda"
-                        onClick={() =>
-                            setShowHelp(true)
-                        }
-                    >
-                        ❓
-                    </span>
-
-                </div>
-
-                {/* Breadcrumb */}
-                <nav
-                    className="mb-3"
-                    style={{
-                        fontSize: "0.9rem"
-                    }}
+              <td className="d-flex gap-2">
+                <Link
+                  to={`/panel/admin/anuncios/editar/${anuncio.id}`}
+                  className="btn btn-warning btn-sm"
                 >
-
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer"
-                        }}
-                        onClick={() =>
-                            navigate("/panel/admin")
-                        }
-                    >
-                        Admin Dashboard
-                    </span>
-
-                    {" > "}
-
-                    <span className="text-muted">
-                        Anuncios
-                    </span>
-
-                </nav>
-
-                <div className="d-flex justify-content-between align-items-center mb-3">
-
-                    <button
-                        className="btn btn-dark"
-                        onClick={() => navigate(-1)}
-                    >
-                        Volver
-                    </button>
-
-                    <Link
-                        to="/panel/admin/anuncios/crear"
-                        className="btn btn-primary"
-                    >
-                        Crear anuncio
-                    </Link>
-
-                </div>
-
-                <div className="card shadow-sm">
-
-                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-
-                        <strong className="text-white">
-                            Listado de anuncios
-                        </strong>
-
-                        <input
-                            type="text"
-                            className="form-control w-auto"
-                            placeholder="Buscar..."
-                            value={busqueda}
-                            onChange={(e) =>
-                                setBusqueda(e.target.value)
-                            }
-                        />
-
-                    </div>
-
-                    <div className="card-body">
-
-                        {
-                            anuncios.length === 0 ? (
-
-                                <div className="alert alert-info mb-0">
-                                    No existen anuncios registrados.
-                                </div>
-
-                            ) : (
-
-                                <div className="table-responsive">
-
-                                    <table className="table align-middle">
-
-                                        <thead>
-
-                                            <tr>
-                                                <th>Título</th>
-                                                <th>Contenido</th>
-                                                <th>Estado</th>
-                                                <th>Fecha</th>
-                                                <th>Acciones</th>
-                                            </tr>
-
-                                        </thead>
-
-                                        <tbody>
-
-                                            {
-                                                anunciosFiltrados.length > 0 ? (
-                                                    anunciosFiltrados.map((anuncio) => (
-
-                                                        <tr key={anuncio.id}>
-
-                                                            <td>
-                                                                <strong>
-                                                                    {anuncio.titulo}
-                                                                </strong>
-                                                            </td>
-
-                                                            <td>
-                                                                {
-                                                                    anuncio.contenido?.length > 80
-                                                                        ? anuncio.contenido.substring(0, 80) + "..."
-                                                                        : anuncio.contenido
-                                                                }
-                                                            </td>
-
-                                                            <td>
-
-                                                                {
-                                                                    anuncio.estado === "activo"
-                                                                        ? (
-                                                                            <span className="badge bg-success">
-                                                                                Activo
-                                                                            </span>
-                                                                        )
-                                                                        : (
-                                                                            <span className="badge bg-danger">
-                                                                                Archivado
-                                                                            </span>
-                                                                        )
-                                                                }
-
-                                                            </td>
-
-                                                            <td>
-                                                                {
-                                                                    new Date(anuncio.createdAt).toLocaleDateString()
-                                                                }
-                                                            </td>
-
-                                                            <td>
-
-                                                                <div className="d-flex gap-2">
-
-                                                                    <Link
-                                                                        to={`/panel/admin/anuncios/editar/${anuncio.id}`}
-                                                                        className="btn btn-primary btn-sm"
-                                                                    >
-                                                                        Editar
-                                                                    </Link>
-
-                                                                    <button
-                                                                        className={
-                                                                            anuncio.estado === "activo"
-                                                                                ? "btn btn-danger btn-sm"
-                                                                                : "btn btn-success btn-sm"
-                                                                        }
-                                                                        onClick={() =>
-                                                                            cambiarEstado(anuncio.id)
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            anuncio.estado === "activo"
-                                                                                ? "Archivar"
-                                                                                : "Activar"
-                                                                        }
-                                                                    </button>
-
-                                                                </div>
-
-                                                            </td>
-
-                                                        </tr>
-                                                    ))
-                                                ) : (
-
-                                                    <tr>
-
-                                                        <td
-                                                            colSpan="4"
-                                                            className="text-center text-muted"
-                                                        >
-                                                            No se encontraron anuncios.
-                                                        </td>
-
-                                                    </tr>
-                                                )
-                                            }
-
-                                        </tbody>
-
-                                    </table>
-
-                                </div>
-                            )
-                        }
-
-                    </div>
-
-                </div>
-
-                {/* Modal ayuda */}
-                {
-                    showHelp && (
-
-                        <div
-                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                            style={{
-                                backgroundColor:
-                                    "rgba(0,0,0,0.5)"
-                            }}
-                        >
-
-                            <div
-                                className="bg-white p-4 rounded shadow"
-                                style={{
-                                    maxWidth: "500px"
-                                }}
-                            >
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5>
-                                        ¿Cómo funciona este apartado?
-                                    </h5>
-                                    <button
-                                        className="btn-close"
-                                        onClick={() =>
-                                            setShowHelp(false)
-                                        }
-                                    />
-                                </div>
-                                <p>
-                                    Desde aquí podés administrar los anuncios
-                                    publicados en la plataforma. También podés
-                                    crear nuevos anuncios, editarlos o archivarlos.
-                                </p>
-                            </div>
-                        </div>
-                    )
-                }
-            </div>
-        </div>
-    );
+                  Editar
+                </Link>
+                <Link to="/panel/admin/carrusel">Carrusel</Link>
+                <button
+                  onClick={() => cambiarEstado(anuncio.id)}
+                  className="btn btn-secondary btn-sm"
+                >
+                  {anuncio.estado === "activo" ? "Archivar" : "Activar"}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default AdminAnuncios;
