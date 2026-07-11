@@ -16,6 +16,32 @@ const DashboardAdmin = () => {
             </div>
 
             <div className="row g-4">
+                <div className="col-md-4">
+    <div className="card shadow-sm h-100">
+        <div className="card-body">
+            <h5>Bienvenida</h5>
+            <p>Editar texto e imagen de la sección de bienvenida.</p>
+            <Link to="/panel/admin/bienvenida" className="btn btn-dark">Gestionar</Link>
+        </div>
+    </div>
+</div>
+                {/* Carrusel */}
+<div className="col-md-4">
+    <div className="card shadow-sm h-100">
+        <div className="card-body">
+            <h5>Carrusel</h5>
+            <p>
+                Administrar imágenes del carrusel de inicio.
+            </p>
+            <Link
+                to="/panel/admin/carrusel"
+                className="btn btn-dark"
+            >
+                Gestionar
+            </Link>
+        </div>
+    </div>
+</div>
 
                 {/* Torneos */}
                 <div className="col-md-4">

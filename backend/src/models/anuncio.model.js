@@ -14,6 +14,12 @@ const cols = {
         unique: true,
         allowNull: false
     },
+
+    imagen: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        defaultValue: null
+    },
     contenido: {
         type: DataTypes.TEXT,
         allowNull: false

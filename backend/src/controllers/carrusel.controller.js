@@ -1,3 +1,4 @@
+import { ImagenCarrusel } from '../models/index.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -8,7 +9,7 @@ const __dirname = path.dirname(__filename);
 // Público: solo imágenes activas ordenadas
 export const getImagenesPublicas = async (req, res, next) => {
     try {
-        const imagenes = await CarruselImagen.findAll({
+        const imagenes = await ImagenCarrusel.findAll({
             where: { activo: true },
             order: [['orden', 'ASC'], ['createdAt', 'ASC']]
         });
@@ -21,7 +22,7 @@ export const getImagenesPublicas = async (req, res, next) => {
 // Admin: todas las imágenes
 export const getTodasLasImagenes = async (req, res, next) => {
     try {
-        const imagenes = await CarruselImagen.findAll({
+        const imagenes = await ImagenCarrusel.findAll({
             order: [['orden', 'ASC'], ['createdAt', 'ASC']]
         });
         res.json(imagenes);
@@ -40,7 +41,7 @@ export const crearImagen = async (req, res, next) => {
         const orden = parseInt(req.body.orden) || 0;
         const url = `/uploads/carrusel/${req.file.filename}`;
 
-        const imagen = await CarruselImagen.create({ url, orden });
+        const imagen = await ImagenCarrusel.create({ url, orden });
 
         res.status(201).json(imagen);
     } catch (error) {
@@ -52,7 +53,7 @@ export const crearImagen = async (req, res, next) => {
 // Cambiar activo/inactivo
 export const toggleEstado = async (req, res, next) => {
     try {
-        const imagen = await CarruselImagen.findByPk(req.params.id);
+        const imagen = await ImagenCarrusel.findByPk(req.params.id);
 
         if (!imagen) {
             return res.status(404).json({ message: 'Imagen no encontrada' });
@@ -69,7 +70,7 @@ export const toggleEstado = async (req, res, next) => {
 // Actualizar orden
 export const actualizarOrden = async (req, res, next) => {
     try {
-        const imagen = await CarruselImagen.findByPk(req.params.id);
+        const imagen = await ImagenCarrusel.findByPk(req.params.id);
 
         if (!imagen) {
             return res.status(404).json({ message: 'Imagen no encontrada' });
@@ -92,13 +93,12 @@ export const actualizarOrden = async (req, res, next) => {
 // Eliminar imagen (disco + BD)
 export const eliminarImagen = async (req, res, next) => {
     try {
-        const imagen = await CarruselImagen.findByPk(req.params.id);
+        const imagen = await ImagenCarrusel.findByPk(req.params.id);
 
         if (!imagen) {
             return res.status(404).json({ message: 'Imagen no encontrada' });
         }
 
-        // Borrar archivo del disco
         const rutaArchivo = path.join(__dirname, '../../', imagen.url);
         if (fs.existsSync(rutaArchivo)) {
             fs.unlinkSync(rutaArchivo);

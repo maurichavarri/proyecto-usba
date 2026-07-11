@@ -11,20 +11,11 @@ const CrearAnuncio = () => {
     const [preview, setPreview] = useState(null);
     const [mensaje, setMensaje] = useState("");
     const [loading, setLoading] = useState(false);
-    
+
     const handleImagenChange = (e) => {
         const archivo = e.target.files[0];
-            setImagen(archivo);
-
-
-
-
-        const formData = new FormData();
-            formData.append('titulo', titulo);
-            formData.append('contenido', contenido);
-            formData.append('imagen', imagen);
-
-        // Previsualización local
+        if (!archivo) return;
+        setImagen(archivo);
         const reader = new FileReader();
         reader.onloadend = () => setPreview(reader.result);
         reader.readAsDataURL(archivo);
@@ -38,7 +29,6 @@ const CrearAnuncio = () => {
         try {
             const token = localStorage.getItem("token");
 
-            // Usamos FormData para poder enviar el archivo junto con los campos
             const formData = new FormData();
             formData.append("titulo", titulo);
             formData.append("contenido", contenido);
@@ -51,7 +41,6 @@ const CrearAnuncio = () => {
                 {
                     method: "POST",
                     headers: {
-                        // NO pongas Content-Type acá — el browser lo setea automático con el boundary correcto para FormData
                         Authorization: `Bearer ${token}`
                     },
                     body: formData
@@ -88,10 +77,7 @@ const CrearAnuncio = () => {
                         type="text"
                         className="form-control"
                         value={titulo}
-                        onChange={(e) => {
-                            setTitulo(e.target.value);
-                            setMensaje("");
-                        }}
+                        onChange={(e) => { setTitulo(e.target.value); setMensaje(""); }}
                     />
                 </div>
 
@@ -101,10 +87,7 @@ const CrearAnuncio = () => {
                         className="form-control"
                         rows="6"
                         value={contenido}
-                        onChange={(e) => {
-                            setContenido(e.target.value);
-                            setMensaje("");
-                        }}
+                        onChange={(e) => { setContenido(e.target.value); setMensaje(""); }}
                     />
                 </div>
 
@@ -116,10 +99,9 @@ const CrearAnuncio = () => {
                         accept="image/jpeg,image/png,image/webp,image/gif"
                         onChange={handleImagenChange}
                     />
-                    <small className="text-muted">Formatos permitidos: JPG, PNG, WEBP, GIF. Máximo 5MB.</small>
+                    <small className="text-muted">JPG, PNG, WEBP, GIF. Máximo 5MB.</small>
                 </div>
 
-                {/* Previsualización */}
                 {preview && (
                     <div className="mb-3">
                         <label className="form-label">Vista previa:</label>
@@ -139,10 +121,7 @@ const CrearAnuncio = () => {
                         <button
                             type="button"
                             className="btn btn-sm btn-outline-secondary mt-2"
-                            onClick={() => {
-                                setImagen(null);
-                                setPreview(null);
-                            }}
+                            onClick={() => { setImagen(null); setPreview(null); }}
                         >
                             Quitar imagen
                         </button>
@@ -156,9 +135,7 @@ const CrearAnuncio = () => {
             </form>
 
             {mensaje && (
-                <div className="alert alert-danger mt-3">
-                    {mensaje}
-                </div>
+                <div className="alert alert-danger mt-3">{mensaje}</div>
             )}
 
         </div>
