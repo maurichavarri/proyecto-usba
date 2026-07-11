@@ -10,17 +10,18 @@ import {
 
 import verifyToken from '../middlewares/verifyToken.js';
 import verifyRole from '../middlewares/verifyRole.js';
+import upload from '../middlewares/upload.middleware.js';
 
 const router = Router();
 
+// Admin (SIEMPRE antes de /:id)
+router.get('/admin/todos', verifyToken, verifyRole('admin'), getTodosLosAnuncios);
+router.post('/crear', verifyToken, verifyRole('admin'), upload.single('imagen'), crearAnuncio);
+router.put('/:id', verifyToken, verifyRole('admin'), upload.single('imagen'), actualizarAnuncio);
+router.patch('/:id/estado', verifyToken, verifyRole('admin'), estadoAnuncio);
+
 // Públicas
 router.get('/', getAnuncios);
-
-// Admin
-router.get('/admin/todos', verifyToken, verifyRole('admin'), getTodosLosAnuncios);
 router.get('/:id', getAnuncio);
-router.post('/crear', verifyToken, verifyRole('admin'), crearAnuncio);
-router.put('/:id', verifyToken, verifyRole('admin'), actualizarAnuncio);
-router.patch('/:id/estado', verifyToken, verifyRole('admin'), estadoAnuncio);
 
 export default router;
