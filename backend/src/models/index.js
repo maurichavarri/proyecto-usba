@@ -45,14 +45,21 @@ TorneoCategoria.belongsTo(Torneo, {
 });
 
 // TorneoCategoria - Categoria
-TorneoCategoria.belongsTo(Categoria, { 
+TorneoCategoria.belongsTo(Categoria, {
   foreignKey: 'categoria_id',
   as: 'categoria'
 });
 
 // Equipo - Jugador
-Equipo.hasMany(Jugador, { foreignKey: 'equipo_id' });
-Jugador.belongsTo(Equipo, { foreignKey: 'equipo_id' });
+Equipo.hasMany(Jugador, {
+  foreignKey: "equipo_id",
+  as: "jugadores"
+});
+
+Jugador.belongsTo(Equipo, {
+  foreignKey: "equipo_id",
+  as: "equipo"
+});
 
 // Equipo - Inscripción
 Equipo.hasMany(Inscripcion, { foreignKey: 'equipo_id' });
@@ -60,13 +67,13 @@ Inscripcion.belongsTo(Equipo, { foreignKey: 'equipo_id' });
 
 // TorneoCategoria - Inscripción
 TorneoCategoria.hasMany(Inscripcion, {
-    foreignKey: 'torneo_categoria_id',
-    as: 'inscripciones'
+  foreignKey: 'torneo_categoria_id',
+  as: 'inscripciones'
 });
 
 Inscripcion.belongsTo(TorneoCategoria, {
-    foreignKey: 'torneo_categoria_id',
-    as: 'torneoCategoria'
+  foreignKey: 'torneo_categoria_id',
+  as: 'torneoCategoria'
 });
 
 // Partido
@@ -74,14 +81,14 @@ Partido.belongsTo(Inscripcion, { foreignKey: 'inscripcion_local_id', as: 'local'
 
 Partido.belongsTo(Inscripcion, { foreignKey: 'inscripcion_visitante_id', as: 'visitante' });
 
-Partido.belongsTo(Sede, { 
+Partido.belongsTo(Sede, {
   foreignKey: 'sede_id',
   as: 'sede'
 });
 
-Partido.belongsTo(Arbitro, { 
+Partido.belongsTo(Arbitro, {
   foreignKey: 'arbitro_id',
-  as: 'arbitro' 
+  as: 'arbitro'
 });
 
 // Sanción
@@ -91,13 +98,13 @@ Sancion.belongsTo(Partido, { foreignKey: 'partido_id' });
 
 // Usuario - Arbitro
 Usuario.hasOne(Arbitro, {
-    foreignKey: 'usuario_id',
-    as: 'arbitro'
+  foreignKey: 'usuario_id',
+  as: 'arbitro'
 });
 
 Arbitro.belongsTo(Usuario, {
-    foreignKey: 'usuario_id',
-    as: 'usuario'
+  foreignKey: 'usuario_id',
+  as: 'usuario'
 });
 
 export {

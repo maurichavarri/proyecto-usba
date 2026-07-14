@@ -6,6 +6,7 @@ import Categoria from '../models/categoria.model.js';
 import Partido from '../models/partido.model.js';
 import Sede from '../models/sede.model.js';
 import Arbitro from '../models/arbitro.model.js';
+import { validarJugadoresDuplicados } from "../services/validarJugadoresDuplicados.service.js";
 
 export const obtenerInscripcionesAdmin = async (req, res, next) => {
     try {
@@ -49,24 +50,46 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
         const { id } = req.params;
         const { estado } = req.body;
 
-        // Validación
         if (
-            estado !== 'confirmado' &&
-            estado !== 'rechazado'
+            estado !== "confirmado" &&
+            estado !== "rechazado"
         ) {
             return res.status(400).json({
-                message: 'Estado inválido'
+                message: "Estado inválido"
             });
         }
 
-        const inscripcion =
-            await Inscripcion.findByPk(id);
+        const inscripcion = await Inscripcion.findByPk(id);
 
         if (!inscripcion) {
             return res.status(404).json({
-                message:
-                    'Inscripción no encontrada'
+                message: "Inscripción no encontrada"
             });
+        }
+
+        // SOLO cuando se confirma
+        if (estado === "confirmado") {
+
+            const resultado =
+                await validarJugadoresDuplicados(
+                    inscripcion.equipo_id,
+                    inscripcion.torneo_categoria_id,
+                    inscripcion.id
+                );
+
+            if (!resultado.valido) {
+
+                return res.status(400).json({
+
+                    message:
+                        "No es posible confirmar la inscripción porque existen jugadores que ya participan en esta competencia.",
+
+                    jugadores: resultado.jugadores
+
+                });
+
+            }
+
         }
 
         await inscripcion.update({
@@ -74,8 +97,7 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
         });
 
         res.json({
-            message:
-                `Inscripción ${estado}`
+            message: `Inscripción ${estado}`
         });
 
     } catch (error) {
