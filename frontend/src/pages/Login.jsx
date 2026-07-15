@@ -81,7 +81,7 @@ const Login = () => {
                         maxWidth: "320px",
                         lineHeight: 1.7,
                     }}>
-                        Ingresá para gestionar torneos, equipos y toda la actividad de la USBA.
+                        Ingresá para gestionar tu equipo y jugadores. Luego... competir.
                     </p>
 
                     {/* Líneas decorativas */}
@@ -252,7 +252,7 @@ const Login = () => {
                 }}>
                     ¿No tenés cuenta?{" "}
                     <Link to="/auth/inscribirse" style={{ color: "#e8500a", fontWeight: "700" }}>
-                        Inscribirse
+                        Registrate
                     </Link>
                 </p>
             </div>

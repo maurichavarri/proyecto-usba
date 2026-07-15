@@ -29,15 +29,9 @@ const AdminTorneoCategorias = () => {
 
     const obtenerTorneos = async () => {
         try {
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/torneos"
-            );
-
+            const response = await fetch("http://localhost:3000/api/v1/torneos");
             const data = await response.json();
-
             setTorneos(data);
-
         } catch (error) {
             console.error(error);
         }
@@ -45,15 +39,9 @@ const AdminTorneoCategorias = () => {
 
     const obtenerCategorias = async () => {
         try {
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/categorias"
-            );
-
+            const response = await fetch("http://localhost:3000/api/v1/categorias");
             const data = await response.json();
-
             setCategorias(data);
-
         } catch (error) {
             console.error(error);
         }
@@ -61,37 +49,25 @@ const AdminTorneoCategorias = () => {
 
     const obtenerTorneoCategorias = async () => {
         try {
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/torneo-categorias"
-            );
-
+            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
             const data = await response.json();
-
             setTorneoCategorias(data);
-
         } catch (error) {
             console.error(error);
         }
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         setMensaje("");
-
         try {
-
             const response = await fetch("http://localhost:3000/api/v1/torneo-categorias",
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token} `
                     },
-
                     body: JSON.stringify({
                         torneo_id: torneoId,
                         categoria_id: categoriaId,
@@ -104,18 +80,13 @@ const AdminTorneoCategorias = () => {
             const data = await response.json();
 
             if (!response.ok) {
-
                 setTipoMensaje("danger");
                 setMensaje(data.message);
-
                 return;
             }
 
             setTipoMensaje("success");
-            setMensaje(
-                "Categoría asignada correctamente al torneo."
-            );
-
+            setMensaje("Categoría asignada correctamente al torneo.");
             setTorneoId("");
             setCategoriaId("");
             setArancel("");
@@ -123,33 +94,19 @@ const AdminTorneoCategorias = () => {
             obtenerTorneoCategorias();
 
         } catch (error) {
-
             console.error(error);
-
             setTipoMensaje("danger");
-            setMensaje(
-                "Error al crear la relación."
-            );
+            setMensaje("Error al crear la relación.");
         }
     };
 
-    const totalEquipos = torneoCategorias.reduce(
-        (acc, tc) =>
-            acc + Number(tc.equipos_inscriptos || 0),
-        0
-    );
-
-    const listosParaFixture = torneoCategorias.filter(
-        tc => Number(tc.equipos_inscriptos) >= 4
-    ).length;
+    const totalEquipos = torneoCategorias.reduce((acc, tc) => acc + Number(tc.equipos_inscriptos || 0), 0);
+    const listosParaFixture = torneoCategorias.filter(tc => Number(tc.equipos_inscriptos) >= 4).length;
 
     return (
         <div className="container mt-4 mb-5">
-
             <div className="col-lg-10 mx-auto">
-
                 <div className="d-flex align-items-center mb-2">
-
                     <h2 className="me-2">
                         Torneos y Categorías
                     </h2>
@@ -215,22 +172,17 @@ const AdminTorneoCategorias = () => {
                     </div>
 
                     <div className="card-body">
-
                         {
                             mensaje &&
                             (
-                                <div
-                                    className={`alert alert - ${tipoMensaje} `}
-                                >
+                                <div className={`alert alert - ${tipoMensaje} `}>
                                     {mensaje}
                                 </div>
                             )
                         }
 
                         <form onSubmit={handleSubmit}>
-
                             <div className="mb-3">
-
                                 <label className="form-label">
                                     Torneo
                                 </label>

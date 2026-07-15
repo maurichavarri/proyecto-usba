@@ -4,6 +4,7 @@ import Jugador from '../models/jugador.model.js';
 import TorneoCategoria from '../models/torneoCategoria.model.js';
 import Torneo from '../models/torneo.model.js';
 import Categoria from '../models/categoria.model.js';
+import { validarJugadoresDuplicados } from "../services/validarJugadoresDuplicados.service.js";
 
 
 // DELEGADO
@@ -76,12 +77,27 @@ export const crearInscripcion = async (req, res, next) => {
 
         // Contar jugadores
         const cantidadJugadores = await Jugador.count({
-            where: { equipo_id }
+            where: {
+                equipo_id,
+                estado: "activo"
+            }
         });
+
+        if (cantidadJugadores === 0) {
+            return res.status(400).json({
+                message: "El equipo no posee jugadores activos."
+            });
+        }
 
         if (cantidadJugadores < 5) {
             return res.status(400).json({
-                message: 'El equipo debe tener mínimo 5 jugadores'
+                message: "El equipo debe tener al menos 5 jugadores activos."
+            });
+        }
+
+        if (cantidadJugadores > 12) {
+            return res.status(400).json({
+                message: "El equipo no puede tener más de 12 jugadores activos."
             });
         }
 
@@ -96,6 +112,35 @@ export const crearInscripcion = async (req, res, next) => {
         if (existeInscripcion) {
             return res.status(400).json({
                 message: 'El equipo ya está inscripto'
+            });
+        }
+
+        const resultado = await validarJugadoresDuplicados(equipo_id, torneo_categoria_id);
+
+        if (!resultado.valido) {
+            return res.status(400).json({
+                message: "Existen jugadores que ya participan en esta competencia.",
+                jugadores: resultado.jugadores
+            });
+        }
+
+        // Validar que NO se repita el dorsal dentro del mismo equipo
+        const jugadores = await Jugador.findAll({
+            where: {
+                equipo_id,
+                estado: "activo"
+            }
+        });
+
+        const dorsales = jugadores.map(j => j.dorsal);
+
+        const repetidos = dorsales.filter((dorsal, index) =>
+            dorsales.indexOf(dorsal) !== index
+        );
+
+        if (repetidos.length > 0) {
+            return res.status(400).json({
+                message: "Existen dorsales duplicados dentro del equipo."
             });
         }
 
@@ -192,6 +237,22 @@ export const cambiarEstadoInscripcion = async (req, res, next) => {
         const { id } = req.params;
         const { estado } = req.body;
         const inscripcion = await Inscripcion.findByPk(id);
+
+        // Si el administrador quiere CONFIRMAR la inscripción
+        if (estado === "confirmado") {
+            const resultado = await validarJugadoresDuplicados(
+                inscripcion.equipo_id,
+                inscripcion.torneo_categoria_id,
+                inscripcion.id
+            );
+
+            if (!resultado.valido) {
+                return res.status(400).json({
+                    message: "No es posible confirmar la inscripción porque existen jugadores que ya participan en esta competencia.",
+                    jugadores: resultado.jugadores
+                });
+            }
+        }
 
         if (!inscripcion) {
             return res.status(404).json({
