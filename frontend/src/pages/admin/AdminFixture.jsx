@@ -243,6 +243,9 @@ const AdminFixture = () => {
 
     const partidosRegulares = fixture.filter(partido => !partido.fase || partido.fase === 'regular');
     const faseRegularFinalizada = partidosRegulares.length > 0 && partidosRegulares.every(partido => partido.estado === 'jugado');
+    const existeFinal = fixture.some(partido => partido.fase === "final");
+    const finalJugada = fixture.some(partido => partido.fase === "final" && partido.estado === "jugado");
+    const puedeFinalizarCompetencia = detalle?.formato_competencia === "solo_liga" ? todosJugados : existeFinal && finalJugada;
 
     // Agrupar por jornada
     const jornadasRegular = {};
@@ -370,7 +373,7 @@ const AdminFixture = () => {
                     }
 
                     {
-                        todosJugados &&
+                        puedeFinalizarCompetencia &&
                         detalle?.estado_competencia !== "finalizado" &&
 
                         <button
@@ -380,7 +383,6 @@ const AdminFixture = () => {
                             Finalizar Competencia
                         </button>
                     }
-
                 </div>
 
             </div>

@@ -61,10 +61,12 @@ export const generarFixture = async (torneoCategoriaId) => {
 
     let equipos = inscripciones.map(i => i.id);
 
-    // Mínimo de equipos
-    if (equipos.length < 4) {
+    // Cantidad mínima según el formato
+    const minimoEquipos = torneoCategoria.formato_competencia === "playoff_8" ? 8 : 4;
+
+    if (equipos.length < minimoEquipos) {
         throw new Error(
-            'Se necesitan al menos 4 equipos confirmados para generar el fixture'
+            `Se necesitan al menos ${minimoEquipos} equipos confirmados para generar el fixture.`
         );
     }
 
