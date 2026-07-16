@@ -12,11 +12,8 @@ const AdminFixture = () => {
     const [tabla, setTabla] = useState([]);
     const [mensaje, setMensaje] = useState("");
 
-<<<<<<< HEAD
-=======
     const todosJugados = fixture.length > 0 && fixture.every(partido => partido.estado === "jugado");
 
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
     useEffect(() => {
         obtenerFixture();
         obtenerTabla();
@@ -127,8 +124,6 @@ const AdminFixture = () => {
         }
     };
 
-<<<<<<< HEAD
-=======
     const finalizarCompetencia = async () => {
 
         const confirmar = window.confirm("¿Desea finalizar la competencia?");
@@ -163,7 +158,6 @@ const AdminFixture = () => {
         }
     };
 
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
     const renderTablaPartidos = (partidos) => (
         <table className="table table-bordered table-hover">
             <thead className="table-light">
@@ -249,12 +243,9 @@ const AdminFixture = () => {
 
     const partidosRegulares = fixture.filter(partido => !partido.fase || partido.fase === 'regular');
     const faseRegularFinalizada = partidosRegulares.length > 0 && partidosRegulares.every(partido => partido.estado === 'jugado');
-<<<<<<< HEAD
-=======
     const existeFinal = fixture.some(partido => partido.fase === "final");
     const finalJugada = fixture.some(partido => partido.fase === "final" && partido.estado === "jugado");
     const puedeFinalizarCompetencia = detalle?.formato_competencia === "solo_liga" ? todosJugados : existeFinal && finalJugada;
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
 
     // Agrupar por jornada
     const jornadasRegular = {};
@@ -339,10 +330,7 @@ const AdminFixture = () => {
 
             </nav>
 
-<<<<<<< HEAD
-=======
             {/* Botones */}
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             <div className="d-flex justify-content-between align-items-center mb-4">
 
                 <button
@@ -361,11 +349,7 @@ const AdminFixture = () => {
                             onClick={generarFixture}
                             className="btn btn-primary"
                         >
-<<<<<<< HEAD
-                            ⚙️ Generar Fixture
-=======
                             Generar Fixture
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                         </button>
                     }
 
@@ -384,12 +368,6 @@ const AdminFixture = () => {
                             onClick={generarPlayoffs}
                             className="btn btn-success"
                         >
-<<<<<<< HEAD
-                            🏆 Generar Playoffs
-                        </button>
-                    }
-
-=======
                             Generar Playoffs
                         </button>
                     }
@@ -405,7 +383,6 @@ const AdminFixture = () => {
                             Finalizar Competencia
                         </button>
                     }
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                 </div>
 
             </div>
@@ -418,8 +395,6 @@ const AdminFixture = () => {
                 </div>
             }
 
-<<<<<<< HEAD
-=======
             {
                 detalle?.estado_competencia === "finalizado" &&
                 detalle?.campeon &&
@@ -471,18 +446,13 @@ const AdminFixture = () => {
                 )
             }
 
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             {/* Información Resumen Encabezado */}
             {
                 resumen &&
 
                 <div className="row mb-4">
 
-<<<<<<< HEAD
-                    <div className="col-md-3">
-=======
                     <div className="col-md-2">
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
@@ -495,11 +465,7 @@ const AdminFixture = () => {
                         </div>
                     </div>
 
-<<<<<<< HEAD
-                    <div className="col-md-3">
-=======
                     <div className="col-md-2">
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
@@ -516,8 +482,6 @@ const AdminFixture = () => {
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
-<<<<<<< HEAD
-=======
                                     Formato
                                 </small>
 
@@ -536,7 +500,6 @@ const AdminFixture = () => {
                         <div className="card shadow-sm">
                             <div className="card-body text-center">
                                 <small className="text-muted">
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                     Equipos
                                 </small>
                                 <h5>

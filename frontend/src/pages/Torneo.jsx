@@ -15,21 +15,6 @@ const Torneo = () => {
 
     return (
         <section className="container mt-3 mb-5">
-<<<<<<< HEAD
-            <h2 className="mb-3">Torneos</h2>
-            {data.length === 0 ? (<p>No hay torneos disponibles.</p>) : (
-                <div className="row g-3">
-                    {data.map((torneo, i) => (
-                        <div className="col-6 col-md-4">
-                            <Card
-                                titulo={torneo.nombre}
-                                imagen={img}
-                                descripcion="Ver detalles de este torneo."
-                            />
-                        </div>
-                    ))}
-                </div>)}
-=======
             <h2 className="mb-4">
                 Torneos
             </h2>
