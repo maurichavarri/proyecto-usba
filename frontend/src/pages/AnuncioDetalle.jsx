@@ -17,15 +17,9 @@ const AnuncioDetalle = () => {
           />
         )}
         <div className="card-body">
-<<<<<<< HEAD
-          <h3 className="card-title">{data.titulo}</h3>
-          <small className="text-muted">{data.fecha}</small>
-          <p className="card-text">{data.contenido}</p>
-=======
           <h3 className="card-title">{data?.titulo}</h3>
           <small className="text-muted">{data?.fecha}</small>
           <p className="card-text">{data?.contenido}</p>
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         </div>
       </div>
     </div>

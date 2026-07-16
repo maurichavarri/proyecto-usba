@@ -16,8 +16,6 @@ const DashboardAdmin = () => {
             </div>
 
             <div className="row g-4">
-<<<<<<< HEAD
-=======
                 <div className="col-md-4">
     <div className="card shadow-sm h-100">
         <div className="card-body">
@@ -44,7 +42,6 @@ const DashboardAdmin = () => {
         </div>
     </div>
 </div>
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
 
                 {/* Torneos */}
                 <div className="col-md-4">

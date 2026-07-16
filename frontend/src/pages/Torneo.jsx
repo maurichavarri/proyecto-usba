@@ -152,7 +152,6 @@ const Torneo = () => {
                         </div>
                     )
             }
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         </section>
     );
 };

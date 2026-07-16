@@ -25,12 +25,6 @@ const Home = () => {
   }, []);
 
   return (
-<<<<<<< HEAD
-    <div className="container mt-4 mb-5">
-
-      {/* Carrusel */}
-      <div className="mb-5">
-=======
     <div>
       {/* Carrusel - full width sin container */}
       {imagenesCarrusel === null ? (
@@ -44,7 +38,6 @@ const Home = () => {
           <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "0.9rem" }}>Cargando...</span>
         </div>
       ) : imagenesCarrusel.length > 0 ? (
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         <Carrusel imagenes={imagenesCarrusel} />
       ) : null}
 
@@ -52,18 +45,6 @@ const Home = () => {
       <Bienvenida />
 
       {/* Anuncios */}
-<<<<<<< HEAD
-      <section className="mb-5">
-        <h2 className="mb-3">Últimos anuncios</h2>
-        {data.length === 0 ? (<p>No hay anuncios disponibles.</p>) : (
-          <div className="row g-4">
-            {data?.slice(0, 10).map((anuncio) => (
-              <div className="col-6 col-md-3" key={anuncio.id}>
-                <Link to={`/anuncios/${anuncio.id}`}>
-                  <Card
-                    titulo={anuncio.titulo}
-                    imagen={img}
-=======
       <div className="container mt-5 mb-5">
         <div className="d-flex align-items-baseline justify-content-between mb-4">
           <h2 style={{ fontWeight: "900", letterSpacing: "-0.5px" }}>
@@ -90,7 +71,6 @@ const Home = () => {
                   <Card
                     titulo={anuncio.titulo}
                     imagen={anuncio.imagen ? `http://localhost:3000${anuncio.imagen}` : null}
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     descripcion={anuncio.contenido}
                   />
                 </Link>
@@ -98,11 +78,7 @@ const Home = () => {
             ))}
           </div>
         )}
-<<<<<<< HEAD
-      </section>
-=======
       </div>
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
     </div>
   );
 };
