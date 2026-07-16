@@ -5,9 +5,9 @@ const alias = "Jugador"
 
 const cols = {
     id: {
-        type: DataTypes.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true 
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
     nombre: {
         type: DataTypes.STRING(100),
@@ -19,14 +19,22 @@ const cols = {
     },
     dni: {
         type: DataTypes.STRING(8),
+        allowNull: false,
+        unique: true
+    },
+    dorsal: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     estado: {
-        type: DataTypes.ENUM('activo', 'inactivo'),
-        defaultValue: 'activo',
+        type: DataTypes.ENUM(
+            "activo",
+            "inactivo"
+        ),
+        defaultValue: "activo",
         allowNull: false
     }
-}
+};
 
 const config = {
     tableName: 'jugador',

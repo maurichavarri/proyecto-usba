@@ -1,17 +1,26 @@
 import { Router } from 'express';
-import { getCategorias } from '../controllers/categoria.controller.js';
-import { getCategoria } from '../controllers/categoria.controller.js';
-import { crearCategoria } from '../controllers/categoria.controller.js';
-import { actualizarCategoria } from '../controllers/categoria.controller.js';
-import { estadoCategoria } from '../controllers/categoria.controller.js';
+import {
+    getTodasLasCategorias,
+    getCategorias,
+    getCategoria,
+    crearCategoria,
+    actualizarCategoria,
+    estadoCategoria
+} from '../controllers/categoria.controller.js';
+
+import verifyToken from '../middlewares/verifyToken.js';
+import verifyRole from '../middlewares/verifyRole.js';
 
 const router = Router();
 
+// Públicas
 router.get('/', getCategorias);
 router.get('/:id', getCategoria);
-router.post('/crear', crearCategoria);
-//router.post('/', authMiddleware, roleMiddleware('admin'), crearCategoria);
-router.put('/:id/actualizar', actualizarCategoria);
-router.patch('/:id/estado', estadoCategoria);
+
+// Admin
+router.get('/admin/todas', verifyToken, verifyRole('admin'), getTodasLasCategorias);
+router.post('/crear', verifyToken, verifyRole('admin'), crearCategoria);
+router.put('/:id', verifyToken, verifyRole('admin'), actualizarCategoria);
+router.patch('/:id/estado', verifyToken, verifyRole('admin'), estadoCategoria);
 
 export default router;

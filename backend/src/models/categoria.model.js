@@ -11,6 +11,7 @@ const cols = {
     },
     nombre: {
         type: DataTypes.STRING(50),
+        unique: true,
         allowNull: false
     },
     descripcion: {

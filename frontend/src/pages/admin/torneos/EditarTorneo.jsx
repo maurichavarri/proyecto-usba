@@ -227,6 +227,7 @@ const EditarTorneo = () => {
                             <div className="mb-2">
 
                                 <label className="form-label">
+<<<<<<< HEAD
                                     Fecha inicio
                                 </label>
 
@@ -243,6 +244,8 @@ const EditarTorneo = () => {
                             <div className="mb-2">
 
                                 <label className="form-label">
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                     Cierre de inscripción
                                 </label>
 
@@ -259,6 +262,25 @@ const EditarTorneo = () => {
                             <div className="mb-2">
 
                                 <label className="form-label">
+<<<<<<< HEAD
+=======
+                                    Fecha inicio
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="fechaInicio"
+                                    className="form-control"
+                                    value={formData.fechaInicio}
+                                    onChange={handleChange}
+                                />
+
+                            </div>
+
+                            <div className="mb-2">
+
+                                <label className="form-label">
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                     Fecha fin
                                 </label>
 

@@ -1,32 +1,42 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
-const alias = "Anuncio"
+const alias = "Anuncio";
 
 const cols = {
-    id: { 
-        type: DataTypes.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true 
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
     titulo: {
         type: DataTypes.STRING(100),
+        unique: true,
         allowNull: false
     },
-    descripcion: {
+
+    imagen: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        defaultValue: null
+    },
+    contenido: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    fecha : {
-        type: DataTypes.DATEONLY,
-        allowNull: false
+    estado: {
+        type: DataTypes.ENUM(
+            'activo',
+            'inactivo'
+        ),
+        defaultValue: 'activo'
     }
-}
+};
 
 const config = {
     tableName: 'anuncio',
-    timestamps: false
-}
+    timestamps: true
+};
 
 const Anuncio = sequelize.define(alias, cols, config);
 

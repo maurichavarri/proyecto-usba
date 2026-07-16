@@ -1,14 +1,22 @@
 import { Categoria } from '../models/index.js';
 
+export const getTodasLasCategorias = async (req, res, next) => {
+    try {
+        const categorias = await Categoria.findAll({
+            order: [['id', 'DESC']]
+        });
+        res.json(categorias);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getCategorias = async (req, res, next) => {
     try {
-        // Obtenemos las categorias.
         const categorias = await Categoria.findAll({
             where: { estado: 'activo' }
         });
-
         res.json(categorias);
-
     } catch (error) {
         next(error);
     }
@@ -16,10 +24,8 @@ export const getCategorias = async (req, res, next) => {
 
 export const getCategoria = async (req, res, next) => {
     try {
-        // Obtenemos una categoria.
         const categoria = await Categoria.findByPk(req.params.id);
         res.json(categoria);
-
     } catch (error) {
         next(error);
     }
@@ -27,17 +33,16 @@ export const getCategoria = async (req, res, next) => {
 
 export const crearCategoria = async (req, res, next) => {
     try {
-        // Guardamos en un objeto literal la información de req.body.
         const { nombre, descripcion } = req.body;
-        
-        // Validaciones
+
         if (!nombre || !descripcion) {
             return res.status(400).json({
                 message: 'Todos los campos son obligatorios'
             });
         }
-
-        const existe = await Categoria.findOne({ where: { nombre } });
+        const existe = await Categoria.findOne({
+            where: { nombre }
+        });
 
         if (existe) {
             return res.status(400).json({
@@ -45,12 +50,7 @@ export const crearCategoria = async (req, res, next) => {
             });
         }
 
-        // Creamos una categoría con dicha información.
-        const categoria = await Categoria.create({
-            nombre,
-            descripcion
-        });
-
+        const categoria = await Categoria.create({ nombre, descripcion });
         res.status(201).json(categoria);
 
     } catch (error) {
@@ -58,32 +58,64 @@ export const crearCategoria = async (req, res, next) => {
     }
 };
 
-export const actualizarCategoria = async (req, res, next) => {
-    try{
-        // Guardamos en un objeto literal la información de req.body.
-        const { nombre, descripcion } = req.body;
-        
-        // Obtenemos una categoria a través de la clave primaria que se encuentra en la ruta.
-        const categoria = await Categoria.findByPk(req.params.id);
+export const actualizarCategoria =
+    async (req, res, next) => {
 
-        // Si la categoría no se encontró...
-        if (!categoria) {
-            return res.status(404).json({
-                message: 'Categoria no encontrada'
+        try {
+
+            const { id } = req.params;
+
+            const {
+                nombre,
+                descripcion
+            } = req.body;
+
+            const categoria =
+                await Categoria.findByPk(id);
+
+            if (!categoria) {
+
+                return res.status(404).json({
+                    message:
+                        'Categoría no encontrada'
+                });
+            }
+
+            // Verificar nombre duplicado
+            const existe =
+                await Categoria.findOne({
+                    where: {
+                        nombre
+                    }
+                });
+
+            // Si existe Y no es la misma categoría
+            if (
+                existe &&
+                existe.id !== categoria.id
+            ) {
+
+                return res.status(400).json({
+                    message:
+                        'Ya existe una categoría con ese nombre'
+                });
+            }
+
+            await categoria.update({
+                nombre,
+                descripcion
             });
+
+            res.json({
+                message:
+                    'Categoría actualizada'
+            });
+
+        } catch (error) {
+
+            next(error);
         }
-
-        // Si toda la información es correcta. Hacemos el UPDATE correspondiente.
-        await categoria.update({
-            nombre: nombre ?? categoria.nombre,
-            descripcion: descripcion ?? categoria.descripcion
-        });
-
-        res.json(categoria);
-    } catch (error) {
-        next(error);
-    }
-}
+    };
 
 export const estadoCategoria = async (req, res, next) => {
     try {
@@ -91,19 +123,15 @@ export const estadoCategoria = async (req, res, next) => {
 
         if (!categoria) {
             return res.status(404).json({
-                message: 'Categoria no encontrada'
+                message: 'Categoría no encontrada'
             });
         }
 
         const nuevoEstado = categoria.estado === 'activo' ? 'inactivo' : 'activo';
-
         await categoria.update({ estado: nuevoEstado });
-
-        res.json({
-            message: `Categoria ${nuevoEstado}`
-        });
+        res.json({ message: `Categoría ${nuevoEstado}` });
 
     } catch (error) {
         next(error);
     }
-}
+};

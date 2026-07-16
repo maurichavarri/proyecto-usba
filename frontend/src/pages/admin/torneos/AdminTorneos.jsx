@@ -15,6 +15,7 @@ const AdminTorneos = () => {
 
     const obtenerTorneos = async () => {
         try {
+<<<<<<< HEAD
 
             const token =
                 localStorage.getItem("token");
@@ -26,10 +27,20 @@ const AdminTorneos = () => {
                         headers: {
                             Authorization:
                                 `Bearer ${token}`
+=======
+            const token = localStorage.getItem("token");
+
+            const response =
+                await fetch("http://localhost:3000/api/v1/torneos/admin/todos",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                         }
                     }
                 );
 
+<<<<<<< HEAD
             const data =
                 await response.json();
 
@@ -37,11 +48,18 @@ const AdminTorneos = () => {
 
         } catch (error) {
 
+=======
+            const data = await response.json();
+            setTorneos(data);
+
+        } catch (error) {
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             console.error(error);
         }
     };
 
     const cambiarEstado = async (id) => {
+<<<<<<< HEAD
 
         try {
 
@@ -55,6 +73,15 @@ const AdminTorneos = () => {
                     headers: {
                         Authorization:
                             `Bearer ${token}`
+=======
+        try {
+            const token = localStorage.getItem("token");
+            await fetch(`http://localhost:3000/api/v1/torneos/${id}/estado`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     }
                 }
             );
@@ -62,7 +89,10 @@ const AdminTorneos = () => {
             obtenerTorneos();
 
         } catch (error) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             console.error(error);
         }
     };
@@ -73,16 +103,22 @@ const AdminTorneos = () => {
     };
 
     const torneosFiltrados = torneos.filter((torneo) => {
+<<<<<<< HEAD
 
         const texto = busqueda.toLowerCase();
 
         return (
             torneo.nombre?.toLowerCase().includes(texto)
         );
+=======
+        const texto = busqueda.toLowerCase();
+        return (torneo.nombre?.toLowerCase().includes(texto));
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
     });
 
     return (
         <div className="container mt-4 mb-5">
+<<<<<<< HEAD
 
             <div className="col-12">
 
@@ -90,6 +126,12 @@ const AdminTorneos = () => {
 
                 <div className="d-flex align-items-center mb-2">
 
+=======
+            <div className="col-12">
+
+                {/* Título */}
+                <div className="d-flex align-items-center mb-2">
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     <h2 className="me-2">
                         Gestión de Torneos
                     </h2>
@@ -106,11 +148,17 @@ const AdminTorneos = () => {
                     >
                         ❓
                     </span>
+<<<<<<< HEAD
 
                 </div>
 
                 {/* Breadcrumb */}
 
+=======
+                </div>
+
+                {/* Breadcrumb */}
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                 <nav
                     className="mb-3"
                     style={{
@@ -139,7 +187,10 @@ const AdminTorneos = () => {
                 </nav>
 
                 {/* Botones */}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                 <div className="d-flex justify-content-between mb-3">
 
                     <button
@@ -163,9 +214,13 @@ const AdminTorneos = () => {
                 {/* Tabla */}
 
                 <div className="card shadow-sm">
+<<<<<<< HEAD
 
                     <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
 
+=======
+                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                         <strong>
                             Torneos registrados
                         </strong>
@@ -179,6 +234,7 @@ const AdminTorneos = () => {
                                 setBusqueda(e.target.value)
                             }
                         />
+<<<<<<< HEAD
 
                     </div>
 
@@ -281,6 +337,55 @@ const AdminTorneos = () => {
                                                                             </span>
                                                                         )
                                                                 }
+=======
+                    </div>
+
+                    <div className="card-body">
+                        {
+                            torneos.length === 0 ? (
+                                <div className="alert alert-info mb-0">
+                                    No existen torneos registrados.
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Cierre inscripción</th>
+                                                <th>Inicio</th>
+                                                <th>Fin</th>
+                                                <th>Inscripciones</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {
+                                                torneosFiltrados.length > 0 ? (
+                                                    torneosFiltrados.map((torneo) => (
+                                                        <tr key={torneo.id}>
+                                                            <td>
+                                                                <strong>{torneo.nombre}</strong>
+                                                            </td>
+                                                            <td>{formatearFecha(torneo.fecha_cierre_inscripcion)}</td>
+                                                            <td>{formatearFecha(torneo.fecha_inicio)}</td>
+                                                            <td>{formatearFecha(torneo.fecha_fin)}</td>
+                                                            <td>
+                                                                {new Date() <= new Date(torneo.fecha_cierre_inscripcion)
+                                                                    ? (
+                                                                        <span className="badge bg-success">
+                                                                            Abiertas
+                                                                        </span>
+                                                                    )
+                                                                    : (
+                                                                        <span className="badge bg-danger">
+                                                                            Cerradas
+                                                                        </span>
+                                                                    )
+                                                                }
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
 
                                                             </td>
 
@@ -299,13 +404,19 @@ const AdminTorneos = () => {
                                                                             </span>
                                                                         )
                                                                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                                             </td>
 
                                                             <td>
 
                                                                 <div className="d-flex gap-2">
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                                                     <Link
                                                                         to={`/panel/admin/torneos/editar/${torneo.id}`}
                                                                         className="btn btn-primary btn-sm"
@@ -314,6 +425,7 @@ const AdminTorneos = () => {
                                                                     </Link>
 
                                                                     <button
+<<<<<<< HEAD
                                                                         className={
                                                                             torneo.estado === "activo"
                                                                                 ? "btn btn-danger btn-sm"
@@ -324,6 +436,13 @@ const AdminTorneos = () => {
                                                                                 torneo.id
                                                                             )
                                                                         }
+=======
+                                                                        className={torneo.estado === "activo"
+                                                                            ? "btn btn-danger btn-sm"
+                                                                            : "btn btn-success btn-sm"
+                                                                        }
+                                                                        onClick={() => cambiarEstado(torneo.id)}
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                                                     >
                                                                         {
                                                                             torneo.estado === "activo"
@@ -331,6 +450,7 @@ const AdminTorneos = () => {
                                                                                 : "Activar"
                                                                         }
                                                                     </button>
+<<<<<<< HEAD
 
                                                                 </div>
 
@@ -369,6 +489,29 @@ const AdminTorneos = () => {
 
                 {/* Modal Ayuda */}
 
+=======
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="text-center text-muted">
+                                                            No se encontraron torneos.
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+
+                {/* Modal Ayuda */}
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                 {
                     showHelp && (
 
@@ -441,9 +584,13 @@ const AdminTorneos = () => {
 
                     )
                 }
+<<<<<<< HEAD
 
             </div>
 
+=======
+            </div>
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         </div>
     );
 };

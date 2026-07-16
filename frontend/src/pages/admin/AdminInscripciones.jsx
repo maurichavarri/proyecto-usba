@@ -14,6 +14,7 @@ const AdminInscripciones = () => {
     }, []);
 
     const obtenerInscripciones = async () => {
+<<<<<<< HEAD
 
         try {
 
@@ -26,6 +27,14 @@ const AdminInscripciones = () => {
                     headers: {
                         Authorization:
                             `Bearer ${token}`
+=======
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:3000/api/v1/admin/inscripciones",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     }
                 }
             );
@@ -39,6 +48,7 @@ const AdminInscripciones = () => {
             setInscripciones(data);
 
         } catch (error) {
+<<<<<<< HEAD
 
             console.error(error);
 
@@ -67,6 +77,22 @@ const AdminInscripciones = () => {
                             "application/json",
                         Authorization:
                             `Bearer ${token}`
+=======
+            console.error(error);
+            setMensaje("Error al cargar inscripciones");
+        }
+    };
+
+    const cambiarEstado = async (id, estado) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`http://localhost:3000/api/v1/admin/inscripciones/${id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     },
                     body: JSON.stringify({
                         estado
@@ -77,26 +103,47 @@ const AdminInscripciones = () => {
             const data = await response.json();
 
             if (!response.ok) {
+<<<<<<< HEAD
                 throw new Error(data.message);
+=======
+                let mensaje = data.message;
+                if (data.jugadores) {
+                    mensaje += "\n\n";
+                    data.jugadores.forEach(j => {
+                        mensaje += `• ${j.nombre} (${j.equipo})\n`;
+                    });
+                }
+                alert(mensaje);
+                return;
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             }
 
             obtenerInscripciones();
 
         } catch (error) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             console.error(error);
         }
     };
 
     return (
         <div className="container mt-4 mb-5">
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             <div className="col-12">
 
                 {/* Título */}
 
                 <div className="d-flex align-items-center mb-2">
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     <h2 className="me-2">
                         Gestión de Inscripciones
                     </h2>
@@ -364,6 +411,7 @@ const AdminInscripciones = () => {
                                     Sólo los equipos confirmados participarán
                                     en la generación del fixture.
                                 </p>
+<<<<<<< HEAD
 
                             </div>
 
@@ -371,6 +419,12 @@ const AdminInscripciones = () => {
                     )
                 }
 
+=======
+                            </div>
+                        </div>
+                    )
+                }
+>>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             </div>
 
         </div>
