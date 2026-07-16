@@ -20,7 +20,7 @@ const AnuncioDetalle = () => {
         <div className="card-body">
           <h3 className="card-title">{data.titulo}</h3>
           <small className="text-muted">{data.fecha}</small>
-          <p className="card-text">{data.descripcion}</p>
+          <p className="card-text">{data.contenido}</p>
         </div>
       </div>
     </div>
