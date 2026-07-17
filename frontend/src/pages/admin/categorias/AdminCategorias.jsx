@@ -27,9 +27,13 @@ const AdminCategorias = () => {
                 }
             );
 
-            const data = await response.json();
+           const data = await response.json();
 
+            if (Array.isArray(data)) {
             setCategorias(data);
+        } else {
+        setCategorias([]);
+        }
 
         } catch (error) {
             console.error(error);

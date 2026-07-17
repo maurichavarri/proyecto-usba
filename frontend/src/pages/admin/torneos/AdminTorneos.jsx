@@ -27,10 +27,17 @@ const AdminTorneos = () => {
                 );
 
             const data = await response.json();
-            setTorneos(data);
+            if (!response.ok) {
+                console.error("Error backned:", data);
+            setTorneos([]);
+            return;
+            }
+
+            setTorneos(Array.isArray(data) ? data : []);
 
         } catch (error) {
             console.error(error);
+            setTorneos([]);
         }
     };
 
