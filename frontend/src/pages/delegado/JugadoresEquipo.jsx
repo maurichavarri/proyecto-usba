@@ -1,15 +1,4 @@
 import { useEffect, useState } from "react";
-<<<<<<< HEAD
-import { useParams } from "react-router-dom";
-
-const JugadoresEquipo = () => {
-
-    const { id } = useParams();
-    const [jugadores, setJugadores] = useState([]);
-    const [nombre, setNombre] = useState("");
-    const [apellido, setApellido] = useState("");
-    const [dni, setDni] = useState("");
-=======
 import { useParams, Link, useNavigate } from "react-router-dom";
 
 const JugadoresEquipo = () => {
@@ -27,7 +16,6 @@ const JugadoresEquipo = () => {
 
     const [mensaje, setMensaje] = useState("");
     const [showHelp, setShowHelp] = useState(false);
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
 
     useEffect(() => {
         obtenerJugadores();
@@ -57,8 +45,6 @@ const JugadoresEquipo = () => {
         }
     };
 
-<<<<<<< HEAD
-=======
     const editarJugador = (jugador) => {
         setJugadorEditando(jugador);
         setNombre(jugador.nombre);
@@ -108,28 +94,10 @@ const JugadoresEquipo = () => {
         }
     };
 
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem("token");
-<<<<<<< HEAD
-            const response = await fetch("http://localhost:3000/api/v1/delegado/jugadores",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        nombre,
-                        apellido,
-                        dni,
-                        equipo_id: id
-                    })
-                }
-            );
-=======
             const url = jugadorEditando ? `http://localhost:3000/api/v1/delegado/jugadores/${jugadorEditando.id}` : "http://localhost:3000/api/v1/delegado/jugadores";
             const metodo = jugadorEditando ? "PUT" : "POST";
 
@@ -148,7 +116,6 @@ const JugadoresEquipo = () => {
                     equipo_id: id
                 })
             });
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
 
             const data = await response.json();
 
@@ -160,33 +127,21 @@ const JugadoresEquipo = () => {
             setNombre("");
             setApellido("");
             setDni("");
-<<<<<<< HEAD
-=======
             setDorsal("");
             setJugadorEditando(null);
             setMensaje(jugadorEditando ? "Jugador actualizado correctamente." : "Jugador agregado correctamente.");
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
 
             // Recargar jugadores
             obtenerJugadores();
 
         } catch (error) {
-<<<<<<< HEAD
-            alert(error.message);
-=======
             setMensaje(error.message);
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             console.error(error);
         }
     };
 
     return (
         <div className="container mt-5 mb-5">
-<<<<<<< HEAD
-            <h2 className="mb-4">
-                Jugadores del equipo
-            </h2>
-=======
             {/* Título */}
             <div className="d-flex align-items-center mb-2">
                 <h2 className="me-2">
@@ -240,18 +195,13 @@ const JugadoresEquipo = () => {
                 </div>
             }
 
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             {/* Formulario */}
             <form
                 onSubmit={handleSubmit}
                 className="card p-4 shadow-sm mb-4"
             >
                 <div className="row">
-<<<<<<< HEAD
-                    <div className="col-md-4 mb-3">
-=======
                     <div className="col-md-3 mb-3">
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                         <input
                             type="text"
                             placeholder="Nombre"
@@ -261,12 +211,8 @@ const JugadoresEquipo = () => {
                             required
                         />
                     </div>
-<<<<<<< HEAD
-                    <div className="col-md-4 mb-3">
-=======
 
                     <div className="col-md-3 mb-3">
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                         <input
                             type="text"
                             placeholder="Apellido"
@@ -276,15 +222,6 @@ const JugadoresEquipo = () => {
                             required
                         />
                     </div>
-<<<<<<< HEAD
-                    <div className="col-md-4 mb-3">
-                        <input
-                            type="text"
-                            placeholder="DNI"
-                            className="form-control"
-                            value={dni}
-                            onChange={(e) => setDni(e.target.value)}
-=======
 
                     <div className="col-md-3 mb-3">
                         <input
@@ -310,17 +247,10 @@ const JugadoresEquipo = () => {
                             min="0"
                             max="99"
                             onChange={(e) => setDorsal(e.target.value)}
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                             required
                         />
                     </div>
                 </div>
-<<<<<<< HEAD
-                <button className="btn btn-dark">
-                    Agregar jugador
-                </button>
-            </form>
-=======
 
                 <div className="gap-2">
                     <button className="btn btn-dark">
@@ -349,34 +279,10 @@ const JugadoresEquipo = () => {
                 </div>
             </form>
 
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             {/* Tabla */}
             <div className="card shadow-sm">
                 <div className="card-body">
                     <table className="table">
-<<<<<<< HEAD
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>DNI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                jugadores.map((jugador) => (
-
-                                    <tr key={jugador.id}>
-
-                                        <td>{jugador.nombre}</td>
-
-                                        <td>{jugador.apellido}</td>
-
-                                        <td>{jugador.dni}</td>
-
-                                    </tr>
-                                ))
-=======
                         <thead className="table-dark">
                             <tr>
                                 <th>Dorsal</th>
@@ -436,14 +342,11 @@ const JugadoresEquipo = () => {
                                             </td>
                                         </tr>
                                     ))
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                             }
                         </tbody>
                     </table>
                 </div>
             </div>
-<<<<<<< HEAD
-=======
 
             {/* Modal Ayuda */}
             {
@@ -484,7 +387,6 @@ const JugadoresEquipo = () => {
                     </div>
                 )
             }
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         </div>
     );
 };

@@ -29,21 +29,9 @@ const AdminTorneoCategorias = () => {
 
     const obtenerTorneos = async () => {
         try {
-<<<<<<< HEAD
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/torneos"
-            );
-
-            const data = await response.json();
-
-            setTorneos(data);
-
-=======
             const response = await fetch("http://localhost:3000/api/v1/torneos");
             const data = await response.json();
             setTorneos(data);
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         } catch (error) {
             console.error(error);
         }
@@ -51,21 +39,9 @@ const AdminTorneoCategorias = () => {
 
     const obtenerCategorias = async () => {
         try {
-<<<<<<< HEAD
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/categorias"
-            );
-
-            const data = await response.json();
-
-            setCategorias(data);
-
-=======
             const response = await fetch("http://localhost:3000/api/v1/categorias");
             const data = await response.json();
             setCategorias(data);
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         } catch (error) {
             console.error(error);
         }
@@ -73,55 +49,25 @@ const AdminTorneoCategorias = () => {
 
     const obtenerTorneoCategorias = async () => {
         try {
-<<<<<<< HEAD
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/torneo-categorias"
-            );
-
-            const data = await response.json();
-
-            setTorneoCategorias(data);
-
-=======
             const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
             const data = await response.json();
             setTorneoCategorias(data);
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
         } catch (error) {
             console.error(error);
         }
     };
 
     const handleSubmit = async (e) => {
-<<<<<<< HEAD
-
-        e.preventDefault();
-
-        setMensaje("");
-
-        try {
-
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias",
-                {
-                    method: "POST",
-
-=======
         e.preventDefault();
         setMensaje("");
         try {
             const response = await fetch("http://localhost:3000/api/v1/torneo-categorias",
                 {
                     method: "POST",
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token} `
                     },
-<<<<<<< HEAD
-
-=======
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     body: JSON.stringify({
                         torneo_id: torneoId,
                         categoria_id: categoriaId,
@@ -134,27 +80,13 @@ const AdminTorneoCategorias = () => {
             const data = await response.json();
 
             if (!response.ok) {
-<<<<<<< HEAD
-
                 setTipoMensaje("danger");
                 setMensaje(data.message);
-
-=======
-                setTipoMensaje("danger");
-                setMensaje(data.message);
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                 return;
             }
 
             setTipoMensaje("success");
-<<<<<<< HEAD
-            setMensaje(
-                "Categoría asignada correctamente al torneo."
-            );
-
-=======
             setMensaje("Categoría asignada correctamente al torneo.");
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
             setTorneoId("");
             setCategoriaId("");
             setArancel("");
@@ -162,35 +94,6 @@ const AdminTorneoCategorias = () => {
             obtenerTorneoCategorias();
 
         } catch (error) {
-<<<<<<< HEAD
-
-            console.error(error);
-
-            setTipoMensaje("danger");
-            setMensaje(
-                "Error al crear la relación."
-            );
-        }
-    };
-
-    const totalEquipos = torneoCategorias.reduce(
-        (acc, tc) =>
-            acc + Number(tc.equipos_inscriptos || 0),
-        0
-    );
-
-    const listosParaFixture = torneoCategorias.filter(
-        tc => Number(tc.equipos_inscriptos) >= 4
-    ).length;
-
-    return (
-        <div className="container mt-4 mb-5">
-
-            <div className="col-lg-10 mx-auto">
-
-                <div className="d-flex align-items-center mb-2">
-
-=======
             console.error(error);
             setTipoMensaje("danger");
             setMensaje("Error al crear la relación.");
@@ -204,7 +107,6 @@ const AdminTorneoCategorias = () => {
         <div className="container mt-4 mb-5">
             <div className="col-lg-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                     <h2 className="me-2">
                         Torneos y Categorías
                     </h2>
@@ -270,33 +172,17 @@ const AdminTorneoCategorias = () => {
                     </div>
 
                     <div className="card-body">
-<<<<<<< HEAD
-
-                        {
-                            mensaje &&
-                            (
-                                <div
-                                    className={`alert alert - ${tipoMensaje} `}
-                                >
-=======
                         {
                             mensaje &&
                             (
                                 <div className={`alert alert - ${tipoMensaje} `}>
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                     {mensaje}
                                 </div>
                             )
                         }
 
                         <form onSubmit={handleSubmit}>
-<<<<<<< HEAD
-
                             <div className="mb-3">
-
-=======
-                            <div className="mb-3">
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                 <label className="form-label">
                                     Torneo
                                 </label>
@@ -545,10 +431,6 @@ const AdminTorneoCategorias = () => {
                                                     </td>
 
                                                     <td>
-<<<<<<< HEAD
-
-=======
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                                         {
                                                             Number(tc.equipos_inscriptos) >= 4
                                                                 ? (
@@ -562,10 +444,6 @@ const AdminTorneoCategorias = () => {
                                                                     </span>
                                                                 )
                                                         }
-<<<<<<< HEAD
-
-=======
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                                     </td>
 
                                                     <td>
@@ -579,23 +457,6 @@ const AdminTorneoCategorias = () => {
                                                     </td>
 
                                                     <td>
-<<<<<<< HEAD
-
-                                                        {
-                                                            Number(tc.equipos_inscriptos) >= 4
-                                                                ? (
-                                                                    <span className="badge bg-primary">
-                                                                        Listo para generar
-                                                                    </span>
-                                                                )
-                                                                : (
-                                                                    <span className="badge bg-warning text-dark">
-                                                                        Esperando equipos
-                                                                    </span>
-                                                                )
-                                                        }
-
-=======
                                                         {
                                                             tc.estado_competencia === "configuracion" &&
                                                             <span className="badge bg-secondary">
@@ -614,7 +475,6 @@ const AdminTorneoCategorias = () => {
                                                                 Finalizado
                                                             </span>
                                                         }
->>>>>>> 0b8be21bc3b50ac81593f59fd22c154e50f8db91
                                                     </td>
 
                                                     <td>
