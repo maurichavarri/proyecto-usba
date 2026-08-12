@@ -5,13 +5,22 @@ const AdminInscripciones = () => {
 
     const navigate = useNavigate();
 
-    const [showHelp, setShowHelp] = useState(false);
+    const [paginaActual, setPaginaActual] = useState(1);
+    const inscripcionesPorPagina = 10;
+
     const [inscripciones, setInscripciones] = useState([]);
+
+    const [showHelp, setShowHelp] = useState(false);
     const [mensaje, setMensaje] = useState("");
+    const [busqueda, setBusqueda] = useState("");
 
     useEffect(() => {
         obtenerInscripciones();
     }, []);
+
+    useEffect(() => {
+        setPaginaActual(1);
+    }, [busqueda]);
 
     const obtenerInscripciones = async () => {
         try {
@@ -23,15 +32,11 @@ const AdminInscripciones = () => {
                     }
                 }
             );
-
             const data = await response.json();
-
             if (!response.ok) {
                 throw new Error(data.message);
             }
-
             setInscripciones(data);
-
         } catch (error) {
             console.error(error);
             setMensaje("Error al cargar inscripciones");
@@ -75,87 +80,104 @@ const AdminInscripciones = () => {
         }
     };
 
+    const inscripcionesFiltradas = inscripciones.filter((inscripcion) => {
+        const texto = busqueda.toLowerCase();
+
+        const nombreEquipo = inscripcion.Equipo?.nombre?.toLowerCase() || "";
+        const nombreTorneo = inscripcion.torneoCategoria?.torneo?.nombre?.toLowerCase() || "";
+        const nombreCategoria = inscripcion.torneoCategoria?.categoria?.nombre?.toLowerCase() || "";
+
+        return (
+            nombreEquipo.includes(texto) ||
+            nombreTorneo.includes(texto) ||
+            nombreCategoria.includes(texto)
+        );
+    });
+
+    const totalPaginas = Math.ceil(inscripcionesFiltradas.length / inscripcionesPorPagina);
+    const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
+    const indiceFin = indiceInicio + inscripcionesPorPagina;
+    const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
+
     return (
         <div className="container mt-4 mb-5">
             <div className="col-12">
 
                 {/* Título */}
-
-                <div className="d-flex align-items-center mb-2">
+                <div className="d-flex align-items-center mb-1">
                     <h2 className="me-2">
                         Gestión de Inscripciones
                     </h2>
-
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer",
-                            fontSize: "1.2rem"
-                        }}
-                        onClick={() =>
-                            setShowHelp(true)
-                        }
-                    >
+                    <span className="text-primary" style={{ cursor: "pointer", fontSize: "1.2rem" }} onClick={() => setShowHelp(true)}>
                         ❓
                     </span>
-
                 </div>
 
                 {/* Breadcrumb */}
-
-                <nav
-                    className="mb-3"
-                    style={{
-                        fontSize: "0.9rem"
-                    }}
-                >
-
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer"
-                        }}
-                        onClick={() =>
-                            navigate("/panel/admin")
-                        }
-                    >
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
                         Admin Dashboard
                     </span>
-
                     {" > "}
-
                     <span className="text-muted">
                         Inscripciones
                     </span>
-
                 </nav>
 
-                <button
-                    className="btn btn-dark mb-3"
-                    onClick={() => navigate(-1)}
-                >
+                <button className="btn btn-dark mb-3" onClick={() => navigate(-1)}>
                     Volver
                 </button>
 
-                {
-                    mensaje &&
-                    <div className="alert alert-danger">
-                        {mensaje}
-                    </div>
-                }
-
                 <div className="card shadow-sm">
-
-                    <div className="card-header bg-dark text-white">
-
+                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                         <strong>
                             Inscripciones recibidas
                         </strong>
 
+                        {
+                            totalPaginas > 1 && (
+                                <div className="d-flex justify-content-center align-items-center gap-2">
+
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === 1}
+                                        onClick={() =>
+                                            setPaginaActual(paginaActual - 1)
+                                        }
+                                    >
+                                        Anterior
+                                    </button>
+
+                                    <span className="mx-2">
+                                        Página {paginaActual} de {totalPaginas}
+                                    </span>
+
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === totalPaginas}
+                                        onClick={() =>
+                                            setPaginaActual(paginaActual + 1)
+                                        }
+                                    >
+                                        Siguiente
+                                    </button>
+
+                                </div>
+                            )
+                        }
+
+                        <input
+                            type="text"
+                            className="form-control w-auto"
+                            placeholder="Buscar..."
+                            value={busqueda}
+                            onChange={(e) =>
+                                setBusqueda(e.target.value)
+                            }
+                        />
                     </div>
 
                     <div className="card-body">
-
                         {
                             inscripciones.length === 0
                                 ? (
@@ -165,11 +187,8 @@ const AdminInscripciones = () => {
                                 )
                                 : (
                                     <div className="table-responsive">
-
                                         <table className="table align-middle">
-
                                             <thead>
-
                                                 <tr>
                                                     <th>Equipo</th>
                                                     <th>Torneo</th>
@@ -181,130 +200,106 @@ const AdminInscripciones = () => {
                                             </thead>
 
                                             <tbody>
-
                                                 {
-                                                    inscripciones.map(
-                                                        (inscripcion) => (
-
-                                                            <tr
-                                                                key={
-                                                                    inscripcion.id
+                                                    inscripcionesFiltradas.length > 0 ? (inscripcionesPaginadas.map((inscripcion) => (
+                                                        <tr key={inscripcion.id}>
+                                                            <td>
+                                                                {
+                                                                    inscripcion.Equipo?.nombre
                                                                 }
-                                                            >
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    inscripcion.torneoCategoria?.torneo?.nombre
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    inscripcion.torneoCategoria?.categoria?.nombre
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    inscripcion.estado === "pendiente" &&
+                                                                    (
+                                                                        <span className="badge bg-warning text-dark">
+                                                                            Pendiente
+                                                                        </span>
+                                                                    )
+                                                                }
 
-                                                                <td>
-                                                                    {
-                                                                        inscripcion
-                                                                            .Equipo
-                                                                            ?.nombre
-                                                                    }
-                                                                </td>
+                                                                {
+                                                                    inscripcion.estado === "confirmado" &&
+                                                                    (
+                                                                        <span className="badge bg-success">
+                                                                            Confirmado
+                                                                        </span>
+                                                                    )
+                                                                }
 
-                                                                <td>
-                                                                    {
-                                                                        inscripcion
-                                                                            .torneoCategoria
-                                                                            ?.torneo
-                                                                            ?.nombre
-                                                                    }
-                                                                </td>
+                                                                {
+                                                                    inscripcion.estado === "rechazado" &&
+                                                                    (
+                                                                        <span className="badge bg-danger">
+                                                                            Rechazado
+                                                                        </span>
+                                                                    )
+                                                                }
 
-                                                                <td>
-                                                                    {
-                                                                        inscripcion
-                                                                            .torneoCategoria
-                                                                            ?.categoria
-                                                                            ?.nombre
-                                                                    }
-                                                                </td>
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    inscripcion.estado === "pendiente" &&
+                                                                    (
+                                                                        <div className="d-flex gap-2">
 
-                                                                <td>
+                                                                            <button
+                                                                                className="btn btn-success btn-sm"
+                                                                                onClick={() =>
+                                                                                    cambiarEstado(
+                                                                                        inscripcion.id,
+                                                                                        "confirmado"
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                Confirmar
+                                                                            </button>
 
-                                                                    {
-                                                                        inscripcion.estado === "pendiente" &&
-                                                                        (
-                                                                            <span className="badge bg-warning text-dark">
-                                                                                Pendiente
-                                                                            </span>
-                                                                        )
-                                                                    }
+                                                                            <button
+                                                                                className="btn btn-danger btn-sm"
+                                                                                onClick={() =>
+                                                                                    cambiarEstado(
+                                                                                        inscripcion.id,
+                                                                                        "rechazado"
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                Rechazar
+                                                                            </button>
 
-                                                                    {
-                                                                        inscripcion.estado === "confirmado" &&
-                                                                        (
-                                                                            <span className="badge bg-success">
-                                                                                Confirmado
-                                                                            </span>
-                                                                        )
-                                                                    }
-
-                                                                    {
-                                                                        inscripcion.estado === "rechazado" &&
-                                                                        (
-                                                                            <span className="badge bg-danger">
-                                                                                Rechazado
-                                                                            </span>
-                                                                        )
-                                                                    }
-
-                                                                </td>
-
-                                                                <td>
-
-                                                                    {
-                                                                        inscripcion.estado === "pendiente" &&
-                                                                        (
-                                                                            <div className="d-flex gap-2">
-
-                                                                                <button
-                                                                                    className="btn btn-success btn-sm"
-                                                                                    onClick={() =>
-                                                                                        cambiarEstado(
-                                                                                            inscripcion.id,
-                                                                                            "confirmado"
-                                                                                        )
-                                                                                    }
-                                                                                >
-                                                                                    Confirmar
-                                                                                </button>
-
-                                                                                <button
-                                                                                    className="btn btn-danger btn-sm"
-                                                                                    onClick={() =>
-                                                                                        cambiarEstado(
-                                                                                            inscripcion.id,
-                                                                                            "rechazado"
-                                                                                        )
-                                                                                    }
-                                                                                >
-                                                                                    Rechazar
-                                                                                </button>
-
-                                                                            </div>
-                                                                        )
-                                                                    }
-
-                                                                </td>
-
-                                                            </tr>
-                                                        )
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td colSpan="4" className="text-center text-muted">
+                                                                No se encontraron inscripciones.
+                                                            </td>
+                                                        </tr>
                                                     )
                                                 }
-
                                             </tbody>
-
                                         </table>
-
                                     </div>
                                 )
                         }
-
                     </div>
-
                 </div>
 
                 {/* Modal ayuda */}
-
                 {
                     showHelp && (
 
@@ -324,18 +319,15 @@ const AdminInscripciones = () => {
                             >
 
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-
                                     <h5>
                                         ¿Cómo funciona?
                                     </h5>
-
                                     <button
                                         className="btn-close"
                                         onClick={() =>
                                             setShowHelp(false)
                                         }
                                     />
-
                                 </div>
 
                                 <p>
@@ -354,8 +346,7 @@ const AdminInscripciones = () => {
                     )
                 }
             </div>
-
-        </div>
+        </div >
     );
 };
 
