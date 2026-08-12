@@ -15,15 +15,9 @@ const AdminSedes = () => {
 
     const obtenerSedes = async () => {
         try {
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/sedes"
-            );
-
+            const response = await fetch("http://localhost:3000/api/v1/sedes");
             const data = await response.json();
-
             setSedes(data);
-
         } catch (error) {
             console.error(error);
         }
@@ -44,7 +38,6 @@ const AdminSedes = () => {
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">
-
                     <h2 className="me-2">
                         Gestión de Sedes
                     </h2>
@@ -60,14 +53,10 @@ const AdminSedes = () => {
                     >
                         ❓
                     </span>
-
                 </div>
 
                 {/* Breadcrumb */}
-                <nav
-                    className="mb-3"
-                    style={{ fontSize: "0.9rem" }}
-                >
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                     <span
                         className="text-primary"
                         style={{ cursor: "pointer" }}
@@ -83,12 +72,10 @@ const AdminSedes = () => {
                     <span className="text-muted">
                         Sedes
                     </span>
-
                 </nav>
 
                 {/* Botones */}
                 <div className="d-flex justify-content-between mb-3">
-
                     <button
                         className="btn btn-dark"
                         onClick={() =>
@@ -104,12 +91,10 @@ const AdminSedes = () => {
                     >
                         Crear sede
                     </Link>
-
                 </div>
 
                 {/* Tabla */}
                 <div className="card shadow-sm">
-
                     <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
 
                         <strong>

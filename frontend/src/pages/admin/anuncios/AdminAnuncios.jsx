@@ -6,6 +6,7 @@ const AdminAnuncios = () => {
     const [anuncios, setAnuncios] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [cargando, setCargando] = useState(true);
+    const [showHelp, setShowHelp] = useState(false);
 
     useEffect(() => {
         obtenerAnuncios();
@@ -53,21 +54,31 @@ const AdminAnuncios = () => {
         <div className="container mt-4 mb-5">
 
             {/* Encabezado */}
-            <div className="d-flex align-items-center justify-content-between mb-2">
+            <div className="d-flex align-items-center mb-1">
                 <h2>Gestión de Anuncios</h2>
-                <Link to="/panel/admin/anuncios/crear" className="btn btn-primary">
-                    + Crear anuncio
-                </Link>
+                <span style={{ cursor: "pointer", fontSize: "1.2rem" }} className="text-primary" onClick={() => setShowHelp(true)}>
+                    ❓
+                </span>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="mb-4" style={{ fontSize: "0.9rem" }}>
+            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                 <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
                     Admin Dashboard
                 </span>
                 {" > "}
                 <span className="text-muted">Anuncios</span>
             </nav>
+
+            {/* Botones */}
+            <div className="d-flex justify-content-between mb-3">
+                <button className="btn btn-dark" onClick={() => navigate(-1)}>
+                    Volver
+                </button>
+                <Link to="/panel/admin/anuncios/crear" className="btn btn-primary">
+                    Crear anuncio
+                </Link>
+            </div>
 
             <div className="card shadow-sm">
                 <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
@@ -139,8 +150,8 @@ const AdminAnuncios = () => {
                                                         : anuncio.contenido}
                                                 </td>
                                                 <td>
-                                                    <span className={`badge ${anuncio.estado === "activo" ? "bg-success" : "bg-secondary"}`}>
-                                                        {anuncio.estado === "activo" ? "Activo" : "Archivado"}
+                                                    <span className={`badge ${anuncio.estado === "activo" ? "bg-success" : "bg-danger"}`}>
+                                                        {anuncio.estado === "activo" ? "Visible" : "Oculto"}
                                                     </span>
                                                 </td>
                                                 <td className="text-muted" style={{ whiteSpace: "nowrap" }}>
@@ -158,7 +169,7 @@ const AdminAnuncios = () => {
                                                             className={anuncio.estado === "activo" ? "btn btn-danger btn-sm" : "btn btn-success btn-sm"}
                                                             onClick={() => cambiarEstado(anuncio.id)}
                                                         >
-                                                            {anuncio.estado === "activo" ? "Archivar" : "Activar"}
+                                                            {anuncio.estado === "activo" ? "Ocultar" : "Mostrar"}
                                                         </button>
                                                     </div>
                                                 </td>
@@ -176,6 +187,31 @@ const AdminAnuncios = () => {
                         </div>
                     )}
                 </div>
+
+                {/* Modal Ayuda */}
+                {
+                    showHelp && (
+                        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div className="bg-white p-4 rounded shadow" style={{ maxWidth: "550px" }}>
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>¿Cómo funciona este apartado?</h5>
+                                    <button className="btn-close" onClick={() => setShowHelp(false)} />
+                                </div>
+                                <p>
+                                    Desde esta sección podés
+                                    administrar todos los anuncios
+                                    de USBA.
+                                </p>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
         </div>
     );
