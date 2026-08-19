@@ -6,21 +6,23 @@ const Categoria = () => {
     const { data } = useFetch("http://localhost:3000/api/v1/categorias");
 
     return (
-        <section className="container mt-3 mb-5">
-            <h2 className="mb-3">Categorias</h2>
-            {data.length === 0 ? (<p>No hay categorías disponibles.</p>) : (
-                <div className="row g-3">
-                    {data.map((categoria, i) => (
-                        <div className="col-6 col-md-4">
-                            <Card
-                                titulo={categoria.nombre}
-                                imagen={img}
-                                descripcion={categoria.descripcion}
-                            />
-                        </div>
-                    ))}
-                </div>
-            )}
+        <section className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
+                <h2 className="mb-3">Categorias</h2>
+                {data.length === 0 ? (<p>No hay categorías disponibles.</p>) : (
+                    <div className="row g-3">
+                        {data.map((categoria, i) => (
+                            <div className="col-6 col-md-4">
+                                <Card
+                                    titulo={categoria.nombre}
+                                    imagen={img}
+                                    descripcion={categoria.descripcion}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </section>
     );
 };

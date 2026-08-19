@@ -69,8 +69,21 @@ const MisInscripciones = () => {
 
     const obtenerTorneoCategorias = async () => {
         try {
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias/disponibles",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Error al obtener torneos");
+            }
+
             setTorneoCategorias(data);
 
         } catch (error) {
@@ -128,14 +141,19 @@ const MisInscripciones = () => {
         );
     });
 
+    const numeroPlantel = (equipo) => {
+        const equiposMismoNombre = equipos.filter(e => e.nombre.toLowerCase() === equipo.nombre.toLowerCase());
+        return equiposMismoNombre.findIndex(e => e.id === equipo.id) + 1;
+    };
+
     const totalPaginas = Math.ceil(inscripcionesFiltradas.length / inscripcionesPorPagina);
     const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
     const indiceFin = indiceInicio + inscripcionesPorPagina;
     const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-12">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-1">
@@ -195,13 +213,14 @@ const MisInscripciones = () => {
                                     <option value="">
                                         Seleccionar equipo
                                     </option>
+
                                     {
                                         equipos.map((equipo) => (
                                             <option
                                                 key={equipo.id}
                                                 value={equipo.id}
                                             >
-                                                {equipo.nombre}
+                                                {equipo.nombre} — Plantel {equipo.creado_en} · #{numeroPlantel(equipo)} — {equipo.cantidad_jugadores} jugadores — {equipo.cantidad_competencias} competencias
                                             </option>
                                         ))
                                     }
@@ -226,8 +245,8 @@ const MisInscripciones = () => {
                                     }
                                 </select>
                             </div>
-                            
-                            <button className="btn btn-dark">
+
+                            <button className="btn btn-primary">
                                 Inscribirse
                             </button>
                         </form>

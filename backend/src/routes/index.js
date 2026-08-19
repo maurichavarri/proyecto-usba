@@ -17,6 +17,7 @@ import sedeRoutes from './sede.routes.js';
 import arbitroRoutes from './arbitro.routes.js';
 import bienvenidaRoutes from './bienvenida.routes.js';
 import adminRoutes from './admin.routes.js';
+import sancionRoutes from './sancion.routes.js';
 
 const router = Router();
 
@@ -34,12 +35,15 @@ router.use('/delegado/equipos', equipoRoutes);
 router.use('/delegado/jugadores', jugadorRoutes);
 router.use('/delegado/inscripciones', inscripcionRoutes);
 
+// Arbitro
+router.use('/arbitros', arbitroRoutes);
+router.use('/arbitros', sancionRoutes);
+
 // Admin
 router.use('/bienvenida', bienvenidaRoutes);
 router.use('/carrusel', carruselRoutes); 
 router.use('/admin', adminRoutes);
 router.use('/sedes', sedeRoutes);
-router.use('/arbitros', arbitroRoutes);
 router.use('/partidos', partidoRoutes);
 
 export default router;

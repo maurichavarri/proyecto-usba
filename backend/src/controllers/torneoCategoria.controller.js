@@ -6,6 +6,7 @@ import { calcularTablaPosiciones } from '../services/tabla.service.js';
 import { generarPlayoffs } from '../services/playoff.service.js';
 
 import { Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 
 export const crearTorneoCategoria = async (req, res, next) => {
     try {
@@ -63,6 +64,56 @@ export const getTorneoCategorias = async (req, res, next) => {
                     model: Torneo,
                     as: 'torneo',
                     attributes: ['id', 'nombre']
+                },
+                {
+                    model: Categoria,
+                    as: 'categoria',
+                    attributes: ['id', 'nombre']
+                }
+            ],
+
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(`
+                            (
+                                SELECT COUNT(*)
+                                FROM inscripcion
+                                WHERE inscripcion.torneo_categoria_id = TorneoCategoria.id
+                            )
+                        `),
+                        'equipos_inscriptos'
+                    ]
+                ]
+            }
+        });
+
+        res.json(data);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getTorneoCategoriasDisponibles = async (req, res, next) => {
+    try {
+
+        const data = await TorneoCategoria.findAll({
+            include: [
+                {
+                    model: Torneo,
+                    as: 'torneo',
+                    attributes: [
+                        'id',
+                        'nombre',
+                        'fecha_cierre_inscripcion'
+                    ],
+                    where: {
+                        estado: 'activo',
+                        fecha_cierre_inscripcion: {
+                            [Op.gte]: new Date()
+                        }
+                    }
                 },
                 {
                     model: Categoria,

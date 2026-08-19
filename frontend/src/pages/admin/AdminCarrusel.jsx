@@ -161,8 +161,8 @@ const AdminCarrusel = () => {
     };
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-md-12 mx-auto">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">Sección Carrusel</h2>
                     <span

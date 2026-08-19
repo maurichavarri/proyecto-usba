@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import Jugador from '../models/jugador.model.js';
 import Equipo from '../models/equipo.model.js';
+import Sancion from "../models/sancion.model.js";
 import { plantelBloqueado } from "../services/plantelBloqueado.service.js";
 
 export const crearJugador = async (req, res, next) => {
@@ -108,7 +109,30 @@ export const obtenerJugadoresPorEquipo = async (req, res, next) => {
         const jugadores = await Jugador.findAll({
             where: {
                 equipo_id: equipoId
-            }
+            },
+            include: [
+                {
+                    model: Sancion,
+                    as: 'sanciones',
+                    where: {
+                        estado: 'activa'
+                    },
+                    required: false,
+                    attributes: [
+                        'id',
+                        'falta',
+                        'tipo',
+                        'descripcion',
+                        'fecha',
+                        'fechas_suspension',
+                        'fechas_cumplidas',
+                        'estado'
+                    ]
+                }
+            ],
+            order: [
+                ['dorsal', 'ASC']
+            ]
         });
 
         res.json(jugadores);
