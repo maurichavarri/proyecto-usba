@@ -4,6 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 const AdminTorneos = () => {
 
     const navigate = useNavigate();
+
+    const [paginaActual, setPaginaActual] = useState(1);
+    const inscripcionesPorPagina = 10;
+
     const [torneos, setTorneos] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
     const [busqueda, setBusqueda] = useState("");
@@ -62,9 +66,14 @@ const AdminTorneos = () => {
         return (torneo.nombre?.toLowerCase().includes(texto));
     });
 
+    const totalPaginas = Math.ceil(inscripcionesFiltradas.length / inscripcionesPorPagina);
+    const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
+    const indiceFin = indiceInicio + inscripcionesPorPagina;
+    const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
+
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-12">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-1">
@@ -103,6 +112,36 @@ const AdminTorneos = () => {
                         <strong>
                             Torneos registrados
                         </strong>
+
+                        {
+                            totalPaginas > 1 && (
+                                <div className="d-flex justify-content-center align-items-center gap-2">
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === 1}
+                                        onClick={() =>
+                                            setPaginaActual(paginaActual - 1)
+                                        }
+                                    >
+                                        Anterior
+                                    </button>
+
+                                    <span className="mx-2">
+                                        Página {paginaActual} de {totalPaginas}
+                                    </span>
+
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === totalPaginas}
+                                        onClick={() =>
+                                            setPaginaActual(paginaActual + 1)
+                                        }
+                                    >
+                                        Siguiente
+                                    </button>
+                                </div>
+                            )
+                        }
 
                         <input
                             type="text"
@@ -233,10 +272,10 @@ const AdminTorneos = () => {
                                 zIndex: 1050
                             }}
                         >
-                            <div className="bg-white p-4 rounded shadow" style={{maxWidth: "550px"}}>
+                            <div className="bg-white p-4 rounded shadow" style={{ maxWidth: "550px" }}>
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <h5>¿Cómo funciona este apartado?</h5>
-                                    <button className="btn-close" onClick={() => setShowHelp(false)}/>
+                                    <button className="btn-close" onClick={() => setShowHelp(false)} />
                                 </div>
                                 <p>
                                     Desde esta sección podés

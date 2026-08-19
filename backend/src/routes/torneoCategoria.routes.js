@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
     crearTorneoCategoria,
     getTorneoCategorias,
+    getTorneoCategoriasDisponibles,
     getDetalle,
     generarFixtureController,
     getFixture,
@@ -21,6 +22,9 @@ router.post('/', verifyToken, verifyRole('admin'), crearTorneoCategoria);
 
 // Obtener todas
 router.get('/', getTorneoCategorias);
+
+// Obtener todas (disponibles)
+router.get('/disponibles', verifyToken, verifyRole('delegado'), getTorneoCategoriasDisponibles);
 
 // Obtener detalle
 router.get('/:id', getDetalle);

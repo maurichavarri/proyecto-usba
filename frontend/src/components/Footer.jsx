@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-dark text-white mt-auto">
-      <div className="container py-4">
-        <div className="row">
+      <div className="container py-3">
+        <div className="row justify-content-center text-center">
 
           {/* Marca */}
           <div className="col-md-3 mb-3">
@@ -29,10 +29,10 @@ const Footer = () => {
           <div className="col-md-3 mb-3">
             <h6>Contacto</h6>
             <p className="mb-1">contacto@usba.com</p>
-            <p className="mb-1">+54 9 385 XXX XXXX</p>
+            <p className="mb-1">+54 9 3856 11-6571</p>
           </div>
 
-          {/* Redes */}
+          {/* Redes 
           <div className="col-md-3 mb-3">
             <h6>Redes</h6>
             <div className="d-flex flex-column">
@@ -41,6 +41,7 @@ const Footer = () => {
               <a href="#" className="text-white text-decoration-none">Twitter</a>
             </div>
           </div>
+          */}
 
         </div>
       </div>

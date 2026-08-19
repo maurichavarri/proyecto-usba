@@ -69,8 +69,21 @@ const MisInscripciones = () => {
 
     const obtenerTorneoCategorias = async () => {
         try {
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias/disponibles",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Error al obtener torneos");
+            }
+
             setTorneoCategorias(data);
 
         } catch (error) {
@@ -128,14 +141,19 @@ const MisInscripciones = () => {
         );
     });
 
+    const numeroPlantel = (equipo) => {
+        const equiposMismoNombre = equipos.filter(e => e.nombre.toLowerCase() === equipo.nombre.toLowerCase());
+        return equiposMismoNombre.findIndex(e => e.id === equipo.id) + 1;
+    };
+
     const totalPaginas = Math.ceil(inscripcionesFiltradas.length / inscripcionesPorPagina);
     const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
     const indiceFin = indiceInicio + inscripcionesPorPagina;
     const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-12">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-1">
@@ -195,13 +213,14 @@ const MisInscripciones = () => {
                                     <option value="">
                                         Seleccionar equipo
                                     </option>
+
                                     {
                                         equipos.map((equipo) => (
                                             <option
                                                 key={equipo.id}
                                                 value={equipo.id}
                                             >
-                                                {equipo.nombre}
+                                                {equipo.nombre} — Plantel {equipo.creado_en} · #{numeroPlantel(equipo)} — {equipo.cantidad_jugadores} jugadores — {equipo.cantidad_competencias} competencias
                                             </option>
                                         ))
                                     }
@@ -226,8 +245,8 @@ const MisInscripciones = () => {
                                     }
                                 </select>
                             </div>
-                            
-                            <button className="btn btn-dark">
+
+                            <button className="btn btn-primary">
                                 Inscribirse
                             </button>
                         </form>
@@ -282,61 +301,70 @@ const MisInscripciones = () => {
                         />
                     </div>
 
-                    <div className="card shadow-sm">
-                        <div className="card-body">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>Equipo</th>
-                                        <th>Torneo</th>
-                                        <th>Categoría</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        inscripcionesFiltradas.length > 0 ? (inscripcionesPaginadas.map((inscripcion) => (
-                                            <tr key={inscripcion.id}>
-                                                <td>
-                                                    {inscripcion.Equipo?.nombre}
-                                                </td>
-                                                <td>
-                                                    {
-                                                        inscripcion.torneoCategoria?.torneo?.nombre
-                                                    }
-                                                </td>
-                                                <td>
-                                                    {
-                                                        inscripcion.torneoCategoria?.categoria?.nombre
-                                                    }
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        className={
-                                                            inscripcion.estado === 'confirmado'
-                                                                ? 'badge bg-success'
-                                                                : inscripcion.estado === 'rechazado'
-                                                                    ? 'badge bg-danger'
-                                                                    : 'badge bg-warning text-dark'
-                                                        }
-                                                    >
-                                                        {inscripcion.estado}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))
-                                        ) : (
+                    <div className="card-body">
+                        {
+                            inscripciones.length === 0 ? (
+                                <div className="alert alert-info mb-0">
+                                    No hay inscripciones registradas.
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle">
+                                        <thead>
                                             <tr>
-                                                <td colSpan="4" className="text-center text-muted">
-                                                    No se encontraron inscripciones.
-                                                </td>
+                                                <th>Equipo</th>
+                                                <th>Torneo</th>
+                                                <th>Categoría</th>
+                                                <th>Estado</th>
                                             </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                inscripcionesFiltradas.length > 0 ? (inscripcionesPaginadas.map((inscripcion) => (
+                                                    <tr key={inscripcion.id}>
+                                                        <td>
+                                                            {inscripcion.Equipo?.nombre}
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                inscripcion.torneoCategoria?.torneo?.nombre
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                inscripcion.torneoCategoria?.categoria?.nombre
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                className={
+                                                                    inscripcion.estado === 'confirmado'
+                                                                        ? 'badge bg-success'
+                                                                        : inscripcion.estado === 'rechazado'
+                                                                            ? 'badge bg-danger'
+                                                                            : 'badge bg-warning text-dark'
+                                                                }
+                                                            >
+                                                                {inscripcion.estado}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="text-center text-muted">
+                                                            No se encontraron inscripciones.
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )
+                        }
                     </div>
+
                 </div>
 
                 {/* Modal ayuda */}

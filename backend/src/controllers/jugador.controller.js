@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import Jugador from '../models/jugador.model.js';
 import Equipo from '../models/equipo.model.js';
+import Sancion from "../models/sancion.model.js";
 import { plantelBloqueado } from "../services/plantelBloqueado.service.js";
 
 export const crearJugador = async (req, res, next) => {
@@ -38,6 +39,19 @@ export const crearJugador = async (req, res, next) => {
         if (equipo.id_usuario_creador !== usuarioId) {
             return res.status(403).json({
                 message: 'No autorizado'
+            });
+        }
+
+        // Validar cantidad máxima de jugadores
+        const cantidadJugadores = await Jugador.count({
+            where: {
+                equipo_id
+            }
+        });
+
+        if (cantidadJugadores >= 12) {
+            return res.status(400).json({
+                message: "El equipo ya alcanzó el máximo permitido de 12 jugadores."
             });
         }
 
@@ -108,7 +122,30 @@ export const obtenerJugadoresPorEquipo = async (req, res, next) => {
         const jugadores = await Jugador.findAll({
             where: {
                 equipo_id: equipoId
-            }
+            },
+            include: [
+                {
+                    model: Sancion,
+                    as: 'sanciones',
+                    where: {
+                        estado: 'activa'
+                    },
+                    required: false,
+                    attributes: [
+                        'id',
+                        'falta',
+                        'tipo',
+                        'descripcion',
+                        'fecha',
+                        'fechas_suspension',
+                        'fechas_cumplidas',
+                        'estado'
+                    ]
+                }
+            ],
+            order: [
+                ['dorsal', 'ASC']
+            ]
         });
 
         res.json(jugadores);
