@@ -18,6 +18,8 @@ const JugadoresEquipo = () => {
     const [mostrarHistorial, setMostrarHistorial] = useState(false);
     const [cargandoHistorial, setCargandoHistorial] = useState(false);
 
+    const [mostrarLimiteJugadores, setMostrarLimiteJugadores] = useState(false);
+
     const [mensaje, setMensaje] = useState("");
     const [showHelp, setShowHelp] = useState(false);
 
@@ -166,8 +168,12 @@ const JugadoresEquipo = () => {
             obtenerJugadores();
 
         } catch (error) {
-            setMensaje(error.message);
             console.error(error);
+            if (error.message === "El equipo ya alcanzó el máximo permitido de 12 jugadores.") {
+                setMostrarLimiteJugadores(true);
+                return;
+            }
+            setMensaje(error.message);
         }
     };
 
@@ -506,8 +512,18 @@ const JugadoresEquipo = () => {
                                 <ul>
                                     <li>Crear nuevos jugadores.</li>
                                     <li>Modificar los jugadores.</li>
-                                    <li>Desactivarlos o activarlos.</li>
+                                    <li>Ver historial de sanciones y disponibilidad.</li>
                                 </ul>
+
+                                <b>IMPORTANTE</b>
+                                <p>- <b>NO</b> se pueden eliminar jugadores.
+                                <br />
+                                - <b>SI</b> se puede editar la información de los mismos,
+                                siempre y cuando el equipo <b>NO</b> haya registrado una inscripción
+                                en una competencia a lo largo de su historial. Una vez que hayas registrado
+                                el equipo en al menos 1 (una) competencia, por cuestiones de seguridad,
+                                ya no quedará habilitada la opción para modificar la información de los 
+                                mismos.</p>
                             </div>
                         </div>
                     )
@@ -687,6 +703,61 @@ const JugadoresEquipo = () => {
                                 </div>
                             </div>
                         </div>
+                    )
+                }
+
+                {/* Modal de Maximo de Jugadores */}
+                {
+                    mostrarLimiteJugadores && (
+
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow text-center"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "450px"
+                                }}
+                            >
+
+                                <div
+                                    className="text-warning mb-3"
+                                    style={{
+                                        fontSize: "3rem"
+                                    }}
+                                >
+                                    ⚠
+                                </div>
+
+                                <h4>
+                                    Plantel completo
+                                </h4>
+
+                                <p className="text-muted">
+                                    El equipo ya alcanzó el máximo permitido de
+                                    <strong> 12 jugadores</strong>.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-dark"
+                                    onClick={() =>
+                                        setMostrarLimiteJugadores(false)
+                                    }
+                                >
+                                    Aceptar
+                                </button>
+
+                            </div>
+
+                        </div>
+
                     )
                 }
             </div >

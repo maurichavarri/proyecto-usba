@@ -301,61 +301,70 @@ const MisInscripciones = () => {
                         />
                     </div>
 
-                    <div className="card shadow-sm">
-                        <div className="card-body">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>Equipo</th>
-                                        <th>Torneo</th>
-                                        <th>Categoría</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        inscripcionesFiltradas.length > 0 ? (inscripcionesPaginadas.map((inscripcion) => (
-                                            <tr key={inscripcion.id}>
-                                                <td>
-                                                    {inscripcion.Equipo?.nombre}
-                                                </td>
-                                                <td>
-                                                    {
-                                                        inscripcion.torneoCategoria?.torneo?.nombre
-                                                    }
-                                                </td>
-                                                <td>
-                                                    {
-                                                        inscripcion.torneoCategoria?.categoria?.nombre
-                                                    }
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        className={
-                                                            inscripcion.estado === 'confirmado'
-                                                                ? 'badge bg-success'
-                                                                : inscripcion.estado === 'rechazado'
-                                                                    ? 'badge bg-danger'
-                                                                    : 'badge bg-warning text-dark'
-                                                        }
-                                                    >
-                                                        {inscripcion.estado}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))
-                                        ) : (
+                    <div className="card-body">
+                        {
+                            inscripciones.length === 0 ? (
+                                <div className="alert alert-info mb-0">
+                                    No hay inscripciones registradas.
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle">
+                                        <thead>
                                             <tr>
-                                                <td colSpan="4" className="text-center text-muted">
-                                                    No se encontraron inscripciones.
-                                                </td>
+                                                <th>Equipo</th>
+                                                <th>Torneo</th>
+                                                <th>Categoría</th>
+                                                <th>Estado</th>
                                             </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                inscripcionesFiltradas.length > 0 ? (inscripcionesPaginadas.map((inscripcion) => (
+                                                    <tr key={inscripcion.id}>
+                                                        <td>
+                                                            {inscripcion.Equipo?.nombre}
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                inscripcion.torneoCategoria?.torneo?.nombre
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                inscripcion.torneoCategoria?.categoria?.nombre
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                className={
+                                                                    inscripcion.estado === 'confirmado'
+                                                                        ? 'badge bg-success'
+                                                                        : inscripcion.estado === 'rechazado'
+                                                                            ? 'badge bg-danger'
+                                                                            : 'badge bg-warning text-dark'
+                                                                }
+                                                            >
+                                                                {inscripcion.estado}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="text-center text-muted">
+                                                            No se encontraron inscripciones.
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )
+                        }
                     </div>
+
                 </div>
 
                 {/* Modal ayuda */}
