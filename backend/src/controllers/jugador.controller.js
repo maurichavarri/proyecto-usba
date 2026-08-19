@@ -42,6 +42,19 @@ export const crearJugador = async (req, res, next) => {
             });
         }
 
+        // Validar cantidad máxima de jugadores
+        const cantidadJugadores = await Jugador.count({
+            where: {
+                equipo_id
+            }
+        });
+
+        if (cantidadJugadores >= 12) {
+            return res.status(400).json({
+                message: "El equipo ya alcanzó el máximo permitido de 12 jugadores."
+            });
+        }
+
         // Validar DNI repetido EN EL EQUIPO
         const existeJugador = await Jugador.findOne({
             where: {
