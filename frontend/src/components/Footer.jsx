@@ -21,7 +21,6 @@ const Footer = () => {
               <li><Link className="text-white text-decoration-none" to="/torneos">Torneos</Link></li>
               <li><Link className="text-white text-decoration-none" to="/categorias">Categorías</Link></li>
               <li><Link className="text-white text-decoration-none" to="/anuncios">Anuncios</Link></li>
-              <li><Link className="text-white text-decoration-none" to="/contactos">Contactos</Link></li>
             </ul>
           </div>
 

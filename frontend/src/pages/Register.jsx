@@ -66,10 +66,11 @@ const Register = () => {
                     padding: "60px",
                     color: "#fff",
                 }}>
+                    {/* 
                     <div style={{
                         fontSize: "4rem",
                         marginBottom: "24px",
-                    }}>🏀</div>
+                    }}>🏀</div>*/}
                     <h1 style={{
                         fontSize: "clamp(2rem, 3vw, 3rem)",
                         fontWeight: "900",
@@ -118,7 +119,7 @@ const Register = () => {
             }}>
                 {/* Logo */}
                 <div style={{ marginBottom: "40px" }}>
-                    <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🏀</div>
+                    {/*<div style={{ fontSize: "2rem", marginBottom: "8px" }}>🏀</div>*/}
                     <div style={{
                         color: "#e8500a",
                         fontSize: "11px",

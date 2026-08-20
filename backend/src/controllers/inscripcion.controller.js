@@ -5,10 +5,10 @@ import TorneoCategoria from '../models/torneoCategoria.model.js';
 import Torneo from '../models/torneo.model.js';
 import Categoria from '../models/categoria.model.js';
 import { validarJugadoresDuplicados } from "../services/validarJugadoresDuplicados.service.js";
+import { obtenerFechaActualArgentina } from "../utils/fecha.utils.js";
 
 
 // DELEGADO
-
 export const crearInscripcion = async (req, res, next) => {
     try {
         const { equipo_id, torneo_categoria_id } = req.body;
@@ -57,12 +57,13 @@ export const crearInscripcion = async (req, res, next) => {
 
         // Validar fechas
         const torneo = torneoCategoria.torneo;
-        const hoy = new Date();
-        const fechaInicio = new Date(torneo.fecha_inicio);
-        const fechaCierre = new Date(torneo.fecha_cierre_inscripcion);
+
+        const hoy = obtenerFechaActualArgentina();
+        const fechaInicio = torneo.fecha_inicio;
+        const fechaCierre = torneo.fecha_cierre_inscripcion;
 
         // El torneo ya comenzó
-        if (hoy > fechaInicio) {
+        if (hoy >= fechaInicio) {
             return res.status(400).json({
                 message: 'El torneo ya comenzó y/o finalizó'
             });
@@ -196,7 +197,6 @@ export const obtenerMisInscripciones = async (req, res, next) => {
 
 
 // ADMIN
-
 export const getInscripciones = async (req, res, next) => {
     try {
         const inscripciones = await Inscripcion.findAll({

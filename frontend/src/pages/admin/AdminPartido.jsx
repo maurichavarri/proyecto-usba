@@ -9,6 +9,9 @@ const AdminPartido = () => {
     const [partido, setPartido] = useState(null);
     const [sedes, setSedes] = useState([]);
     const [arbitros, setArbitros] = useState([]);
+    const [mensaje, setMensaje] = useState("");
+    const [mostrarModalIncompleto, setMostrarModalIncompleto] = useState(false);
+    const [mostrarModalFinalizar, setMostrarModalFinalizar] = useState(false);
 
     const [formData, setFormData] = useState({
         fecha: "",
@@ -19,13 +22,22 @@ const AdminPartido = () => {
         puntaje_visitante: ""
     });
 
-    const [mensaje, setMensaje] = useState("");
-
     useEffect(() => {
         obtenerPartido();
         obtenerSedes();
         obtenerArbitros();
     }, []);
+
+    const formatearFechaHoraInput = (fecha) => {
+        if (!fecha) return "";
+        const date = new Date(fecha);
+        const anio = date.getFullYear();
+        const mes = String(date.getMonth() + 1).padStart(2, "0");
+        const dia = String(date.getDate()).padStart(2, "0");
+        const horas = String(date.getHours()).padStart(2, "0");
+        const minutos = String(date.getMinutes()).padStart(2, "0");
+        return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
+    };
 
     const obtenerPartido = async () => {
         try {
@@ -33,7 +45,7 @@ const AdminPartido = () => {
             const data = await response.json();
             setPartido(data);
             setFormData({
-                fecha: data.fecha ? new Date(data.fecha).toISOString().slice(0, 16) : "",
+                fecha: formatearFechaHoraInput(data.fecha),
                 sede_id: data.sede_id || "",
                 arbitro_id: data.arbitro_id || "",
                 estado: data.estado || "pendiente",
@@ -47,96 +59,80 @@ const AdminPartido = () => {
     };
 
     const obtenerSedes = async () => {
-
         try {
-
-            const response =
-                await fetch(
-                    "http://localhost:3000/api/v1/sedes"
-                );
-
-            const data =
-                await response.json();
-
+            const response = await fetch("http://localhost:3000/api/v1/sedes");
+            const data = await response.json();
             setSedes(data);
-
         } catch (error) {
-
             console.error(error);
         }
     };
 
     const obtenerArbitros = async () => {
-
         try {
-
-            const response =
-                await fetch(
-                    "http://localhost:3000/api/v1/arbitros"
-                );
-
-            const data =
-                await response.json();
-
+            const response = await fetch("http://localhost:3000/api/v1/arbitros");
+            const data = await response.json();
             setArbitros(data);
-
         } catch (error) {
-
             console.error(error);
         }
     };
 
     const handleChange = (e) => {
-
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
-
         setMensaje("");
     };
 
     const validarFormulario = () => {
-
-        if (!formData.fecha) {
-            return "Debe indicar fecha y hora.";
+        // Mientras no esté jugado, permitimos guardar incompleto.
+        if (formData.estado !== "jugado") {
+            return "";
         }
 
+        // Para cerrar definitivamente el partido,
+        // todos los campos son obligatorios.
         if (
-            formData.estado === "jugado"
+            !formData.fecha ||
+            !formData.sede_id ||
+            !formData.arbitro_id ||
+            formData.puntaje_local === "" ||
+            formData.puntaje_visitante === ""
         ) {
-
-            if (
-                formData.puntaje_local === "" ||
-                formData.puntaje_visitante === ""
-            ) {
-                return "Debe cargar ambos resultados.";
-            }
+            return "PARTIDO_INCOMPLETO";
         }
-
         return "";
     };
 
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
-        const error = validarFormulario();
-
-        if (error) {
-            setMensaje(error);
-            return;
-        }
+    const guardarPartido = async () => {
 
         try {
+
             const token = localStorage.getItem("token");
 
             const payload = {
                 ...formData,
-                sede_id: formData.sede_id === "" ? null : Number(formData.sede_id),
-                arbitro_id: formData.arbitro_id === "" ? null : Number(formData.arbitro_id),
-                puntaje_local: formData.puntaje_local === "" ? null : Number(formData.puntaje_local),
-                puntaje_visitante: formData.puntaje_visitante === "" ? null : Number(formData.puntaje_visitante)
+                sede_id:
+                    formData.sede_id === ""
+                        ? null
+                        : Number(formData.sede_id),
+
+                arbitro_id:
+                    formData.arbitro_id === ""
+                        ? null
+                        : Number(formData.arbitro_id),
+
+                puntaje_local:
+                    formData.puntaje_local === ""
+                        ? null
+                        : Number(formData.puntaje_local),
+
+                puntaje_visitante:
+                    formData.puntaje_visitante === ""
+                        ? null
+                        : Number(formData.puntaje_visitante)
             };
 
             if (payload.estado !== "jugado") {
@@ -144,7 +140,8 @@ const AdminPartido = () => {
                 payload.puntaje_visitante = null;
             }
 
-            const response = await fetch(`http://localhost:3000/api/v1/partidos/${id}`,
+            const response = await fetch(
+                `http://localhost:3000/api/v1/partidos/${id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -172,8 +169,27 @@ const AdminPartido = () => {
         }
     };
 
-    if (!partido) {
+    const handleSubmit = async (e) => {
 
+        e.preventDefault();
+
+        const error = validarFormulario();
+
+        if (error === "PARTIDO_INCOMPLETO") {
+            setMostrarModalIncompleto(true);
+            return;
+        }
+
+        // Si va a pasar a jugado, primero pedir confirmación.
+        if (formData.estado === "jugado") {
+            setMostrarModalFinalizar(true);
+            return;
+        }
+
+        await guardarPartido();
+    };
+
+    if (!partido) {
         return (
             <div className="container mt-5">
                 Cargando...
@@ -481,14 +497,150 @@ const AdminPartido = () => {
                         </div>
                     }
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                    >
-                        Guardar cambios
-                    </button>
+                    {
+                        partido.estado === "jugado" ? (
+                            <div className="alert alert-success mb-0">
+                                Partido finalizado. Los datos ya no pueden modificarse.
+                            </div>
+                        ) : (
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                            >
+                                Guardar cambios
+                            </button>
+                        )
+                    }
 
                 </form>
+
+                {
+                    mostrarModalIncompleto && (
+
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow text-center"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "480px"
+                                }}
+                            >
+
+                                <div
+                                    className="text-warning mb-3"
+                                    style={{ fontSize: "3rem" }}
+                                >
+                                    ⚠
+                                </div>
+
+                                <h4>
+                                    Datos incompletos
+                                </h4>
+
+                                <p className="text-muted">
+                                    Para marcar el partido como jugado debe completar
+                                    la fecha y hora, sede, árbitro y ambos resultados.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-dark"
+                                    onClick={() =>
+                                        setMostrarModalIncompleto(false)
+                                    }
+                                >
+                                    Aceptar
+                                </button>
+
+                            </div>
+
+                        </div>
+                    )
+                }
+
+                {
+                    mostrarModalFinalizar && (
+
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "500px"
+                                }}
+                            >
+
+                                <div className="text-center">
+
+                                    <div
+                                        className="text-warning mb-2"
+                                        style={{ fontSize: "3rem" }}
+                                    >
+                                        ⚠
+                                    </div>
+
+                                    <h4>
+                                        Finalizar partido
+                                    </h4>
+
+                                    <p>
+                                        ¿Estás seguro de marcar este partido como
+                                        <strong> jugado</strong>?
+                                    </p>
+
+                                </div>
+
+                                <div className="alert alert-warning">
+                                    Una vez finalizado el partido, sus datos
+                                    no podrán volver a modificarse.
+                                </div>
+
+                                <div className="d-flex justify-content-center gap-2">
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={() =>
+                                            setMostrarModalFinalizar(false)
+                                        }
+                                    >
+                                        Cancelar
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        onClick={async () => {
+
+                                            setMostrarModalFinalizar(false);
+
+                                            await guardarPartido();
+                                        }}
+                                    >
+                                        Aceptar y finalizar
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    )
+                }
 
             </div>
 

@@ -8,9 +8,12 @@ const AdminFixture = () => {
     const [detalle, setDetalle] = useState(null);
     const [resumen, setResumen] = useState(null);
     const [showHelp, setShowHelp] = useState(false);
+    const [mostrarModalFixture, setMostrarModalFixture] = useState(false);
     const [fixture, setFixture] = useState([]);
     const [tabla, setTabla] = useState([]);
     const [mensaje, setMensaje] = useState("");
+    const [mostrarModalPlayoff, setMostrarModalPlayoff] = useState(false);
+    const [mostrarModalFinalizar, setMostrarModalFinalizar] = useState(false);
 
     const todosJugados = fixture.length > 0 && fixture.every(partido => partido.estado === "jugado");
 
@@ -42,8 +45,6 @@ const AdminFixture = () => {
     };
 
     const generarFixture = async () => {
-        const confirmar = window.confirm("¿Desea generar el fixture?");
-        if (!confirmar) return;
         try {
             const token = localStorage.getItem("token");
             const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/fixture`,
@@ -84,8 +85,20 @@ const AdminFixture = () => {
 
     const obtenerDetalle = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}`);
+            const token = localStorage.getItem("token");
+            const response = await fetch(`http://localhost:3000/api/v1/admin/torneo-categorias/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             const data = await response.json();
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Error al obtener la competencia"
+                );
+            }
             setDetalle(data);
         } catch (error) {
             console.error(error);
@@ -93,10 +106,6 @@ const AdminFixture = () => {
     };
 
     const generarPlayoffs = async () => {
-
-        const confirmar = window.confirm("¿Generar playoffs?");
-        if (!confirmar) return;
-
         try {
             const token = localStorage.getItem("token");
             const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/playoffs`,
@@ -125,10 +134,6 @@ const AdminFixture = () => {
     };
 
     const finalizarCompetencia = async () => {
-
-        const confirmar = window.confirm("¿Desea finalizar la competencia?");
-        if (!confirmar) return;
-
         try {
             const token = localStorage.getItem("token");
             const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/finalizar`,
@@ -346,7 +351,7 @@ const AdminFixture = () => {
                             fixture.length === 0 &&
 
                             <button
-                                onClick={generarFixture}
+                                onClick={() => setMostrarModalFixture(true)}
                                 className="btn btn-primary"
                             >
                                 Generar Fixture
@@ -365,7 +370,7 @@ const AdminFixture = () => {
                             ) &&
 
                             <button
-                                onClick={generarPlayoffs}
+                                onClick={() => setMostrarModalPlayoff(true)}
                                 className="btn btn-success"
                             >
                                 Generar Playoffs
@@ -378,7 +383,7 @@ const AdminFixture = () => {
 
                             <button
                                 className="btn btn-danger"
-                                onClick={finalizarCompetencia}
+                                onClick={() => setMostrarModalFinalizar(true)}
                             >
                                 Finalizar Competencia
                             </button>
@@ -797,6 +802,247 @@ const AdminFixture = () => {
 
                                 <p className="mb-0">Una vez generados los partidos, las posiciones se actualizarán automáticamente a medida que se carguen los resultados.</p>
                             </div>
+                        </div>
+                    )
+                }
+
+                {/* Modal de Generar Fixture */}
+                {
+                    mostrarModalFixture && (
+
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "500px"
+                                }}
+                            >
+
+                                <div className="text-center mb-3">
+
+                                    <div
+                                        className="text-warning"
+                                        style={{
+                                            fontSize: "3rem"
+                                        }}
+                                    >
+                                        ⚠
+                                    </div>
+
+                                    <h4>
+                                        Generar Fixture
+                                    </h4>
+
+                                </div>
+
+                                <p className="text-center">
+                                    ¿Estás seguro de que deseas generar el Fixture?
+                                </p>
+
+                                <div className="alert alert-warning">
+
+                                    <strong>Advertencia:</strong>
+
+                                    <br />
+
+                                    Una vez generado el Fixture, esta acción no podrá deshacerse.
+
+                                    <br /><br />
+
+                                    La información del torneo vinculado tampoco podrá modificarse.
+
+                                </div>
+
+                                <div className="d-flex justify-content-center gap-2">
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={() =>
+                                            setMostrarModalFixture(false)
+                                        }
+                                    >
+                                        Cancelar
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        onClick={() => {
+                                            setMostrarModalFixture(false);
+                                            generarFixture();
+                                        }}
+                                    >
+                                        Aceptar y generar
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    )
+                }
+
+                {
+                    mostrarModalPlayoff && (
+
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "500px"
+                                }}
+                            >
+
+                                <div className="text-center">
+
+                                    <div
+                                        className="text-warning mb-2"
+                                        style={{ fontSize: "3rem" }}
+                                    >
+                                        ⚠
+                                    </div>
+
+                                    <h4>
+                                        Generar Play-Off
+                                    </h4>
+
+                                    <p>
+                                        ¿Estás seguro de que deseas generar la fase de Play-Off?
+                                    </p>
+
+                                </div>
+
+                                <div className="alert alert-warning">
+                                    Una vez generado el Play-Off, los equipos clasificados
+                                    quedarán definidos según la tabla de posiciones de la
+                                    fase regular.
+                                </div>
+
+                                <div className="d-flex justify-content-center gap-2">
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={() =>
+                                            setMostrarModalPlayoff(false)
+                                        }
+                                    >
+                                        Cancelar
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-success"
+                                        onClick={async () => {
+
+                                            setMostrarModalPlayoff(false);
+
+                                            await generarPlayoffs();
+                                        }}
+                                    >
+                                        Aceptar y generar
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    )
+                }
+
+                {
+                    mostrarModalFinalizar && (
+
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "500px"
+                                }}
+                            >
+
+                                <div className="text-center">
+
+                                    <div
+                                        className="text-danger mb-2"
+                                        style={{ fontSize: "3rem" }}
+                                    >
+                                        ⚠
+                                    </div>
+
+                                    <h4>
+                                        Finalizar Competencia
+                                    </h4>
+
+                                    <p>
+                                        ¿Estás seguro de que deseas finalizar la competencia?
+                                    </p>
+
+                                </div>
+
+                                <div className="alert alert-danger">
+                                    Esta acción marcará la competencia como finalizada.
+                                    El campeón y subcampeón quedarán definidos y ya no
+                                    se podrán realizar cambios deportivos sobre la competencia.
+                                </div>
+
+                                <div className="d-flex justify-content-center gap-2">
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        onClick={() =>
+                                            setMostrarModalFinalizar(false)
+                                        }
+                                    >
+                                        Cancelar
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        onClick={async () => {
+
+                                            setMostrarModalFinalizar(false);
+
+                                            await finalizarCompetencia();
+                                        }}
+                                    >
+                                        Aceptar y finalizar
+                                    </button>
+
+                                </div>
+
+                            </div>
+
                         </div>
                     )
                 }
