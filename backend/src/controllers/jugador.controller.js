@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import Jugador from '../models/jugador.model.js';
 import Equipo from '../models/equipo.model.js';
 import Sancion from "../models/sancion.model.js";
+import Inscripcion from "../models/inscripcion.model.js";
 import { plantelBloqueado } from "../services/plantelBloqueado.service.js";
 
 export const crearJugador = async (req, res, next) => {
@@ -87,7 +88,8 @@ export const crearJugador = async (req, res, next) => {
 
         if (bloqueado) {
             return res.status(400).json({
-                message: "No es posible agregar jugadores porque el equipo ya posee una inscripción confirmada."
+                code: "PLANTEL_BLOQUEADO",
+                message: "No es posible agregar jugadores porque el equipo ya realizó una inscripción."
             });
         }
 
@@ -182,6 +184,25 @@ export const editarJugador = async (req, res, next) => {
             });
         }
 
+        const usuarioId = req.usuario.id;
+
+        const equipo = await Equipo.findByPk(jugador.equipo_id);
+
+        if (!equipo || equipo.id_usuario_creador !== usuarioId) {
+            return res.status(403).json({
+                message: "No autorizado"
+            });
+        }
+
+        const bloqueado = await plantelBloqueado(jugador.equipo_id);
+
+        if (bloqueado) {
+            return res.status(400).json({
+                code: "PLANTEL_BLOQUEADO",
+                message: "No es posible editar el jugador porque el equipo ya realizó una inscripción."
+            });
+        }
+
         const { nombre, apellido, dni, dorsal } = req.body;
 
         if (!nombre.trim()) {
@@ -240,17 +261,11 @@ export const editarJugador = async (req, res, next) => {
             });
         }
 
-        const bloqueado = await plantelBloqueado(jugador.equipo_id);
-
-        if (bloqueado && dni !== jugador.dni) {
-            return res.status(400).json({
-                message: "No es posible modificar el DNI porque el equipo ya posee una inscripción confirmada."
-            });
-        }
-
         await jugador.update({ nombre, apellido, dni, dorsal });
 
-        res.json({ message: "Jugador actualizado correctamente", jugador });
+        res.json({
+            message: "Jugador actualizado correctamente", jugador
+        });
 
     } catch (error) {
         next(error);

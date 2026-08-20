@@ -7,6 +7,7 @@ import Partido from '../models/partido.model.js';
 import Sede from '../models/sede.model.js';
 import Arbitro from '../models/arbitro.model.js';
 import { validarJugadoresDuplicados } from "../services/validarJugadoresDuplicados.service.js";
+import { obtenerFechaActualArgentina } from "../utils/fecha.utils.js";
 
 export const obtenerInscripcionesAdmin = async (req, res, next) => {
     try {
@@ -50,10 +51,7 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
         const { id } = req.params;
         const { estado } = req.body;
 
-        if (
-            estado !== "confirmado" &&
-            estado !== "rechazado"
-        ) {
+        if (estado !== "confirmado" && estado !== "rechazado") {
             return res.status(400).json({
                 message: "Estado inválido"
             });
@@ -67,38 +65,58 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
             });
         }
 
-        // SOLO cuando se confirma
+        // Validación para NO poder confirmar inscripción, cuando ya caducó la fecha de la misma
         if (estado === "confirmado") {
+            const torneoCategoria = await TorneoCategoria.findByPk(inscripcion.torneo_categoria_id,
+                {
+                    include: [
+                        {
+                            model: Torneo,
+                            as: "torneo",
+                            attributes: [
+                                "fecha_cierre_inscripcion"
+                            ]
+                        }
+                    ]
+                }
+            );
 
-            const resultado =
-                await validarJugadoresDuplicados(
-                    inscripcion.equipo_id,
-                    inscripcion.torneo_categoria_id,
-                    inscripcion.id
-                );
-
-            if (!resultado.valido) {
-
-                return res.status(400).json({
-
-                    message:
-                        "No es posible confirmar la inscripción porque existen jugadores que ya participan en esta competencia.",
-
-                    jugadores: resultado.jugadores
-
+            if (!torneoCategoria) {
+                return res.status(404).json({
+                    message: "Torneo-categoría no encontrado"
                 });
-
             }
 
+            const hoy = obtenerFechaActualArgentina();
+            const fechaCierre = torneoCategoria.torneo.fecha_cierre_inscripcion;
+
+            if (hoy > fechaCierre) {
+                return res.status(400).json({
+                    code: "INSCRIPCION_CERRADA",
+                    message:
+                        "No es posible aceptar. El período de inscripción finalizó."
+                });
+            }
         }
 
-        await inscripcion.update({
-            estado
-        });
+        // SOLO cuando se confirma
+        if (estado === "confirmado") {
+            const resultado = await validarJugadoresDuplicados(
+                inscripcion.equipo_id,
+                inscripcion.torneo_categoria_id,
+                inscripcion.id
+            );
 
-        res.json({
-            message: `Inscripción ${estado}`
-        });
+            if (!resultado.valido) {
+                return res.status(400).json({
+                    message: "No es posible confirmar la inscripción porque existen jugadores que ya participan en esta competencia.",
+                    jugadores: resultado.jugadores
+                });
+            }
+        }
+
+        await inscripcion.update({ estado });
+        res.json({ message: `Inscripción ${estado}` });
 
     } catch (error) {
         next(error);

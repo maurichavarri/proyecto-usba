@@ -1,4 +1,5 @@
 import { Inscripcion, Partido, TorneoCategoria, Torneo } from "../models/index.js";
+import { obtenerFechaActualArgentina } from "../utils/fecha.utils.js";
 
 export const generarFixture = async (torneoCategoriaId) => {
 
@@ -22,12 +23,14 @@ export const generarFixture = async (torneoCategoriaId) => {
     }
 
     // NUEVA VALIDACIÓN
-    const hoy = new Date();
+    const hoy = obtenerFechaActualArgentina();
 
-    const fechaCierre = new Date(torneoCategoria.torneo.fecha_cierre_inscripcion);
+    const fechaCierre = torneoCategoria.torneo.fecha_cierre_inscripcion;
 
     if (hoy <= fechaCierre) {
-        throw new Error("Todavía no finalizó el período de inscripción.");
+        throw new Error(
+            "Todavía no finalizó el período de inscripción."
+        );
     }
 
     // Verificar si ya fue generado
