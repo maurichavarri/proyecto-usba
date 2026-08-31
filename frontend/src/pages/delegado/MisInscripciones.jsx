@@ -60,7 +60,15 @@ const MisInscripciones = () => {
             );
 
             const data = await response.json();
-            setEquipos(data);
+
+            // Procesar los equipos para formatear la fecha
+            const equiposProcesados = data.map(equipo => ({
+                ...equipo,
+                creado_en_formateado: equipo.creado_en ? new Date(equipo.creado_en).toLocaleDateString('es-AR') : 'Sin fecha'
+            }));
+
+            setEquipos(equiposProcesados);
+
 
         } catch (error) {
             console.error(error);
@@ -220,7 +228,7 @@ const MisInscripciones = () => {
                                                 key={equipo.id}
                                                 value={equipo.id}
                                             >
-                                                {equipo.nombre} — Plantel {equipo.creado_en} · #{numeroPlantel(equipo)} — {equipo.cantidad_jugadores} jugadores — {equipo.cantidad_competencias} competencias
+                                                {equipo.nombre} — Plantel {equipo.creado_en_formateado || 'Sin fecha'} · #{numeroPlantel(equipo)} — {equipo.cantidad_jugadores} jugadores — {equipo.cantidad_competencias} competencias
                                             </option>
                                         ))
                                     }

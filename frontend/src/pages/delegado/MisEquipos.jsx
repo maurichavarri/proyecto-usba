@@ -226,7 +226,7 @@ const MisEquipos = () => {
                                                 equiposFiltrados.length > 0 ? (equiposFiltrados.map((equipo) => (
                                                     <tr key={equipo.id}>
                                                         <td><strong>{equipo.nombre}</strong></td>
-                                                        <td>{equipo.creado_en} · #{numeroPlantel(equipo)}</td>
+                                                        <td>{equipo.creado_en ? new Date(equipo.creado_en).toLocaleDateString('es-AR') : 'Sin fecha'} · #{numeroPlantel(equipo)}</td>
                                                         {/* <td>{equipo.descripcion || "-"}</td> */}
                                                         <td>{equipo.cantidad_jugadores}</td>
                                                         <td>{equipo.cantidad_competencias}</td>
