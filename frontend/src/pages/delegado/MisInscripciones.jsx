@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const MisInscripciones = () => {
+
+    const navigate = useNavigate();
 
     const [inscripciones, setInscripciones] = useState([]);
     const [equipos, setEquipos] = useState([]);
@@ -127,6 +130,16 @@ const MisInscripciones = () => {
 
     return (
         <div className="container mt-4 mb-5">
+            {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/delegado")}
+                >
+                    ← Regresar al panel
+                </button>
+            </div>
+
             <h2 className="mb-4">
                 Mis Inscripciones
             </h2>

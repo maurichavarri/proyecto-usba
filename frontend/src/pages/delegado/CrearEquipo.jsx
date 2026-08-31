@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CrearEquipo = () => {
+
+    const navigate = useNavigate();
 
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
@@ -41,6 +44,15 @@ const CrearEquipo = () => {
     return (
         <div className="container mt-5 mb-5">
             <h2>Crear Equipo</h2>
+             {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/delegado")}
+                >
+                    ← Regresar al panel
+                </button>
+            </div>
             <form onSubmit={handleSubmit}>
                 {/* Nombre */}
                 <div className="mb-3">

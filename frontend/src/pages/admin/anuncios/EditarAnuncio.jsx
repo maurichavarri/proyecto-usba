@@ -110,7 +110,15 @@ const EditarAnuncio = () => {
         <div className="container mt-5 mb-5 col-md-8">
 
             <h2 className="mb-4">Editar anuncio</h2>
-
+                {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/admin/anuncios")}
+                >
+                    ← Regresar al panel 
+                </button>
+            </div>
             <form onSubmit={handleSubmit}>
 
                 <div className="mb-3">

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MisEquipos = () => {
 
+    const navigate = useNavigate();
     const [equipos, setEquipos] = useState([]);
 
     useEffect(() => {
@@ -36,6 +37,16 @@ const MisEquipos = () => {
 
     return (
         <div className="container mt-5 mb-5">
+            {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/delegado")}
+                >
+                    ← Regresar al panel
+                </button>
+            </div>
+
             <div className="d-flex justify-content-between align-items-center mb-2">
                 <h2>Mis Equipos</h2>
             </div>

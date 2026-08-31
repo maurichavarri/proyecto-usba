@@ -68,7 +68,15 @@ const CrearAnuncio = () => {
         <div className="container mt-5 mb-5 col-md-8">
 
             <h2 className="mb-4">Crear anuncio</h2>
-
+                {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/admin/anuncios")}
+                >
+                    ← Regresar al panel 
+                </button>
+            </div>
             <form onSubmit={handleSubmit}>
 
                 <div className="mb-3">
@@ -90,6 +98,8 @@ const CrearAnuncio = () => {
                         onChange={(e) => { setContenido(e.target.value); setMensaje(""); }}
                     />
                 </div>
+
+             
 
                 <div className="mb-3">
                     <label className="form-label">Imagen (opcional)</label>

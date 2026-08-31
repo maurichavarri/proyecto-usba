@@ -310,7 +310,7 @@ const AdminFixture = () => {
                     to="/panel/admin"
                     className="text-primary"
                 >
-                    Admin Dashboard
+                    Panel del Administrador
                 </Link>
 
                 {" > "}
@@ -335,10 +335,10 @@ const AdminFixture = () => {
 
                 <button
                     className="btn btn-dark"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate("/panel/admin/torneo-categorias")}
                 >
-                    Volver
-                </button>
+                    ← Regresar a Torneos y Categorias
+                </button> 
 
                 <div className="d-flex gap-2">
 

@@ -136,7 +136,7 @@ const CrearCategoria = () => {
                             navigate("/panel/admin")
                         }
                     >
-                        Admin Dashboard
+                        Panel del Administrador
                     </span>
 
                     {" > "}
@@ -169,7 +169,7 @@ const CrearCategoria = () => {
                         navigate(-1)
                     }
                 >
-                    Volver
+                    Regresar a gestion de categorias
                 </button>
 
                 <div className="card shadow-sm">

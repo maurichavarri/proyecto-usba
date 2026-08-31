@@ -62,12 +62,26 @@ const AdminAnuncios = () => {
 
             {/* Breadcrumb */}
             <nav className="mb-4" style={{ fontSize: "0.9rem" }}>
-                <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
-                    Admin Dashboard
+                <span
+                    className="text-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    Panel de Administrador
                 </span>
                 {" > "}
                 <span className="text-muted">Anuncios</span>
             </nav>
+
+            {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    ← Regresar al panel 
+                </button>
+            </div>
 
             <div className="card shadow-sm">
                 <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">

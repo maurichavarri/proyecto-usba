@@ -71,17 +71,31 @@ const AdminBienvenida = () => {
     return (
         <div className="container mt-4 mb-5 col-md-8">
 
+            {/* Título */}
             <div className="d-flex align-items-center justify-content-between mb-2">
                 <h2>Editar Sección Bienvenida</h2>
             </div>
 
-            <nav className="mb-4" style={{ fontSize: "0.9rem" }}>
-                <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
-                    Admin Dashboard
+            {/* Breadcrumb */}
+            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                <span
+                    className="text-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    Panel del Administrador
                 </span>
                 {" > "}
                 <span className="text-muted">Bienvenida</span>
             </nav>
+
+            {/* Botón */}
+            <button
+                className="btn btn-dark mb-3"
+                onClick={() => navigate("/panel/admin")}
+            >
+                ← Regresar al panel
+            </button>
 
             {mensaje && (
                 <div className={`alert alert-${mensaje.tipo}`}>{mensaje.texto}</div>

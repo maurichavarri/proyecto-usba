@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminCarrusel = () => {
+    const navigate = useNavigate();
     const [imagenes, setImagenes] = useState([]);
     const [imagenArchivo, setImagenArchivo] = useState(null);
     const [preview, setPreview] = useState(null);
@@ -159,7 +161,30 @@ const AdminCarrusel = () => {
 
     return (
         <div className="container mt-4 mb-5">
-            <h1 className="mb-4">Administración del Carrusel</h1>
+
+            {/* Título */}
+            <h1 className="mb-2">Administración del Carrusel</h1>
+
+            {/* Breadcrumb */}
+            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                <span
+                    className="text-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    Panel del Administrador
+                </span>
+                {" > "}
+                <span className="text-muted">Carrusel</span>
+            </nav>
+
+            {/* Botón volver */}
+            <button
+                className="btn btn-dark mb-4"
+                onClick={() => navigate("/panel/admin")}
+            >
+                ← Regresar al panel
+            </button>
 
             {/* Toast de feedback */}
             {mensaje && (
