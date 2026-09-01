@@ -1,7 +1,7 @@
 import { TorneoCategoria, Torneo, Categoria, Inscripcion, Partido } from '../models/index.js';
 import { obtenerCampeonYSubcampeon } from './campeon.service.js';
 
-export const getDetalleTorneoCategoria = async (torneoCategoriaId) => {
+export const getDetalleTorneoCategoria = async (torneoCategoriaId, permitirConfiguracion = false) => {
 
   const torneoCategoria = await TorneoCategoria.findByPk(
     torneoCategoriaId,
@@ -37,7 +37,7 @@ export const getDetalleTorneoCategoria = async (torneoCategoriaId) => {
     throw new Error('Torneo-Categoría no encontrado');
   }
 
-  if (torneoCategoria.estado_competencia === "configuracion") {
+  if (torneoCategoria.estado_competencia === "configuracion" && !permitirConfiguracion) {
     throw new Error("La competencia todavía no se encuentra publicada");
   }
 

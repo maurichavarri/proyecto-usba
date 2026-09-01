@@ -187,6 +187,21 @@ export const actualizarTorneo = async (req, res, next) => {
             });
         }
 
+        const competenciaConFixture = await TorneoCategoria.findOne({
+            where: {
+                torneo_id: torneo.id,
+                fixture_generado: true
+            }
+        });
+
+        if (competenciaConFixture) {
+            return res.status(400).json({
+                code: "TORNEO_CON_FIXTURE",
+                message:
+                    "No es posible editar el torneo porque una de sus competencias ya tiene un fixture generado."
+            });
+        }
+
         await torneo.update({ nombre, fecha_inicio, fecha_fin, fecha_cierre_inscripcion });
 
         res.json({

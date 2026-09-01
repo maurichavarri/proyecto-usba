@@ -45,73 +45,67 @@ export const procesarSancionesPorPartido = async (partidoId) => {
             }
         });
 
-        for (const jugador of jugadores) {
-            const sancionesActivas = await Sancion.findAll({
-                where: {
-                    jugador_id: jugador.id,
-                    estado: 'activa'
-                }
-            });
+        for (const sancion of sancionesActivas) {
 
-            for (const sancion of sancionesActivas) {
-                if (sancion.partido_id === partidoActual.id) {
-                    continue;
-                }
-
-                const partidoSancion = await Partido.findByPk(
-                    sancion.partido_id
-                );
-
-                if (!partidoSancion) {
-                    continue;
-                }
-
-                const faseActual = ordenFases[partidoActual.fase];
-                const faseSancion = ordenFases[partidoSancion.fase];
-
-                let esPosterior = false;
-
-                if (faseActual > faseSancion) {
-                    esPosterior = true;
-                } else if (faseActual === faseSancion) {
-                    esPosterior = partidoActual.jornada > partidoSancion.jornada;
-                }
-
-                if (!esPosterior) {
-                    continue;
-                }
-
-                const nuevasFechasCumplidas = sancion.fechas_cumplidas + 1;
-
-                if (nuevasFechasCumplidas >= sancion.fechas_suspension) {
-                    await sancion.update({
-                        fechas_cumplidas: sancion.fechas_suspension,
-                        estado: 'cumplida'
-                    });
-                } else {
-                    await sancion.update({
-                        fechas_cumplidas: nuevasFechasCumplidas
-                    });
-                }
+            // No contar el mismo partido
+            // donde se generó la sanción
+            if (sancion.partido_id === partidoActual.id) {
+                continue;
             }
 
-            // Revisar el estado GENERAL del jugador
-            const sancionesPendientes = await Sancion.count({
-                where: {
-                    jugador_id: jugador.id,
-                    estado: 'activa'
-                }
-            });
+            const partidoSancion = await Partido.findByPk(sancion.partido_id);
 
-            if (sancionesPendientes === 0) {
-                await jugador.update({
-                    estado: 'activo'
+            if (!partidoSancion) {
+                continue;
+            }
+
+            const faseActual = ordenFases[partidoActual.fase];
+            const faseSancion = ordenFases[partidoSancion.fase];
+            let esPosterior = false;
+
+            if (faseActual > faseSancion) {
+                esPosterior = true;
+
+            } else if (faseActual === faseSancion) {
+                esPosterior = partidoActual.jornada > partidoSancion.jornada;
+            }
+
+            if (!esPosterior) {
+                continue;
+            }
+
+            const nuevasFechasCumplidas = sancion.fechas_cumplidas + 1;
+
+            if (nuevasFechasCumplidas >= sancion.fechas_suspension) {
+                await sancion.update({
+                    fechas_cumplidas: sancion.fechas_suspension,
+                    estado: 'cumplida'
                 });
+
             } else {
-                await jugador.update({
-                    estado: 'inactivo'
+                await sancion.update({
+                    fechas_cumplidas: nuevasFechasCumplidas
                 });
             }
+        }
+
+        // Revisar el estado GENERAL del jugador
+        // después de procesar todas sus sanciones.
+        const sancionesPendientes = await Sancion.count({
+            where: {
+                jugador_id: jugador.id,
+                estado: 'activa'
+            }
+        });
+
+        if (sancionesPendientes === 0) {
+            await jugador.update({
+                estado: 'activo'
+            });
+        } else {
+            await jugador.update({
+                estado: 'inactivo'
+            });
         }
     }
 };

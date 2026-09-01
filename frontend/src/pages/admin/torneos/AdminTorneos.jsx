@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { formatearFecha, obtenerFechaActual, inscripcionesAbiertas } from "../../../utils/fecha.utils";
 
 const AdminTorneos = () => {
 
     const navigate = useNavigate();
 
     const [paginaActual, setPaginaActual] = useState(1);
-    const inscripcionesPorPagina = 10;
+    const torneosPorPagina = 10;
 
     const [torneos, setTorneos] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
@@ -63,20 +64,15 @@ const AdminTorneos = () => {
         }
     };
 
-    const formatearFecha = (fecha) => {
-        if (!fecha) return "-";
-        return new Date(fecha).toLocaleDateString();
-    };
-
     const torneosFiltrados = torneos.filter((torneo) => {
         const texto = busqueda.toLowerCase();
         return (torneo.nombre?.toLowerCase().includes(texto));
     });
 
-    const totalPaginas = Math.ceil(inscripcionesFiltradas.length / inscripcionesPorPagina);
-    const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
-    const indiceFin = indiceInicio + inscripcionesPorPagina;
-    const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
+    const totalPaginas = Math.ceil(torneosFiltrados.length / torneosPorPagina);
+    const indiceInicio = (paginaActual - 1) * torneosPorPagina;
+    const indiceFin = indiceInicio + torneosPorPagina;
+    const torneosPaginados = torneosFiltrados.slice(indiceInicio, indiceFin);
 
     return (
         <div className="container mt-5 mb-5">
@@ -193,19 +189,19 @@ const AdminTorneos = () => {
                                                         <td>{formatearFecha(torneo.fecha_inicio)}</td>
                                                         <td>{formatearFecha(torneo.fecha_fin)}</td>
                                                         <td>
-                                                            {new Date() <= new Date(torneo.fecha_cierre_inscripcion)
-                                                                ? (
-                                                                    <span className="badge bg-success">
-                                                                        Abiertas
-                                                                    </span>
-                                                                )
-                                                                : (
-                                                                    <span className="badge bg-danger">
-                                                                        Cerradas
-                                                                    </span>
-                                                                )
+                                                            {
+                                                                inscripcionesAbiertas(torneo.fecha_cierre_inscripcion)
+                                                                    ? (
+                                                                        <span className="badge bg-success">
+                                                                            Abiertas
+                                                                        </span>
+                                                                    )
+                                                                    : (
+                                                                        <span className="badge bg-danger">
+                                                                            Cerradas
+                                                                        </span>
+                                                                    )
                                                             }
-
                                                         </td>
 
                                                         <td>

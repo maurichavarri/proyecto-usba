@@ -11,6 +11,7 @@ const AdminInscripciones = () => {
     const [inscripciones, setInscripciones] = useState([]);
 
     const [showHelp, setShowHelp] = useState(false);
+    const [mostrarModal, setMostrarModal] = useState(false);
     const [mensaje, setMensaje] = useState("");
     const [busqueda, setBusqueda] = useState("");
 
@@ -62,7 +63,17 @@ const AdminInscripciones = () => {
             const data = await response.json();
 
             if (!response.ok) {
+
+                if (data.code === "INSCRIPCION_CERRADA") {
+                    setMensaje(
+                        "No es posible aceptar. El período de inscripción finalizó."
+                    );
+                    setMostrarModal(true);
+                    return;
+                }
+
                 let mensaje = data.message;
+
                 if (data.jugadores) {
                     mensaje += "\n\n";
                     data.jugadores.forEach(j => {
@@ -341,6 +352,52 @@ const AdminInscripciones = () => {
                                     Sólo los equipos confirmados participarán
                                     en la generación del fixture.
                                 </p>
+                            </div>
+                        </div>
+                    )
+                }
+
+                {/* Modal de Advertencia Inscripción */}
+                {
+                    mostrarModal && (
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+                            <div
+                                className="bg-white p-4 rounded shadow text-center"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "450px"
+                                }}
+                            >
+                                <div
+                                    className="text-warning mb-3"
+                                    style={{ fontSize: "3rem" }}
+                                >
+                                    ⚠
+                                </div>
+
+                                <h4>
+                                    Inscripción cerrada
+                                </h4>
+
+                                <p className="text-muted">
+                                    {mensaje}
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-dark"
+                                    onClick={() =>
+                                        setMostrarModal(false)
+                                    }
+                                >
+                                    Aceptar
+                                </button>
                             </div>
                         </div>
                     )
