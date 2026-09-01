@@ -320,12 +320,21 @@ const AdminFixture = () => {
 
                     {" > "}
 
+<<<<<<< HEAD
                     <Link
                         to="/panel/admin/torneo-categorias"
                         className="text-primary"
                     >
                         Torneos - Categorías
                     </Link>
+=======
+                <Link
+                    to="/panel/admin"
+                    className="text-primary"
+                >
+                    Panel del Administrador
+                </Link>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
 
                     {" > "}
 
@@ -347,8 +356,17 @@ const AdminFixture = () => {
 
                     <div className="d-flex gap-2">
 
+<<<<<<< HEAD
                         {
                             fixture.length === 0 &&
+=======
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/admin/torneo-categorias")}
+                >
+                    ← Regresar a Torneos y Categorias
+                </button> 
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
 
                             <button
                                 onClick={() => setMostrarModalFixture(true)}

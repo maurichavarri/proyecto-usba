@@ -33,9 +33,7 @@ const AdminTorneoCategorias = () => {
             const response = await fetch("http://localhost:3000/api/v1/torneos");
             const data = await response.json();
             setTorneos(data);
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     const obtenerCategorias = async () => {
@@ -43,9 +41,7 @@ const AdminTorneoCategorias = () => {
             const response = await fetch("http://localhost:3000/api/v1/categorias");
             const data = await response.json();
             setCategorias(data);
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     const obtenerTorneoCategorias = async () => {
@@ -53,30 +49,26 @@ const AdminTorneoCategorias = () => {
             const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
             const data = await response.json();
             setTorneoCategorias(data);
-        } catch (error) {
-            console.error(error);
-        }
+        } catch (error) { console.error(error); }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMensaje("");
         try {
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token} `
-                    },
-                    body: JSON.stringify({
-                        torneo_id: torneoId,
-                        categoria_id: categoriaId,
-                        arancel,
-                        formato_competencia: formatoCompetencia
-                    })
-                }
-            );
+            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    torneo_id: torneoId,
+                    categoria_id: categoriaId,
+                    arancel,
+                    formato_competencia: formatoCompetencia
+                })
+            });
 
             const data = await response.json();
 
@@ -91,7 +83,6 @@ const AdminTorneoCategorias = () => {
             setTorneoId("");
             setCategoriaId("");
             setArancel("");
-
             obtenerTorneoCategorias();
 
         } catch (error) {
@@ -119,25 +110,28 @@ const AdminTorneoCategorias = () => {
     return (
         <div className="container mt-4 mb-5">
             <div className="col-lg-10 mx-auto">
+<<<<<<< HEAD
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">
                         Torneos y Categorías
                     </h2>
+=======
+
+                {/* Título */}
+                <div className="d-flex align-items-center mb-2">
+                    <h2 className="me-2">Torneos y Categorías</h2>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                     <span
                         className="text-primary"
-                        style={{
-                            cursor: "pointer",
-                            fontSize: "1.2rem"
-                        }}
+                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
                         title="Ayuda"
-                        onClick={() =>
-                            setShowHelp(true)
-                        }
+                        onClick={() => setShowHelp(true)}
                     >
                         ❓
                     </span>
                 </div>
 
+<<<<<<< HEAD
                 <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                     <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
                         Admin Dashboard
@@ -150,193 +144,154 @@ const AdminTorneoCategorias = () => {
 
                 <button className="btn btn-dark mb-3" onClick={() => navigate(-1)}>
                     Volver
+=======
+                {/* Breadcrumb */}
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel del Administrador
+                    </span>
+                    {" > "}
+                    <span className="text-muted">Torneos - Categorías</span>
+                </nav>
+
+                <button
+                    className="btn btn-dark mb-3"
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    ← Regresar al panel
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                 </button>
 
+                {/* Formulario */}
                 <div className="card shadow-sm mb-4">
                     <div className="card-header bg-dark text-white">
+<<<<<<< HEAD
                         <strong>
                             Asignar categoría a torneo
                         </strong>
+=======
+                        <strong>Asignar categoría a torneo</strong>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                     </div>
-
                     <div className="card-body">
-                        {
-                            mensaje &&
-                            (
-                                <div className={`alert alert - ${tipoMensaje} `}>
-                                    {mensaje}
-                                </div>
-                            )
-                        }
+                        {mensaje && (
+                            <div className={`alert alert-${tipoMensaje}`}>{mensaje}</div>
+                        )}
 
                         <form onSubmit={handleSubmit}>
                             <div className="mb-3">
-                                <label className="form-label">
-                                    Torneo
-                                </label>
-
+                                <label className="form-label">Torneo</label>
                                 <select
                                     className="form-select"
                                     value={torneoId}
-                                    onChange={(e) =>
-                                        setTorneoId(
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => setTorneoId(e.target.value)}
                                     required
                                 >
-
-                                    <option value="">
-                                        Seleccionar torneo
-                                    </option>
-
-                                    {
-                                        torneos.map(
-                                            (torneo) => (
-                                                <option
-                                                    key={torneo.id}
-                                                    value={torneo.id}
-                                                >
-                                                    {torneo.nombre}
-                                                </option>
-                                            )
-                                        )
-                                    }
-
+                                    <option value="">Seleccionar torneo</option>
+                                    {torneos.map((torneo) => (
+                                        <option key={torneo.id} value={torneo.id}>
+                                            {torneo.nombre}
+                                        </option>
+                                    ))}
                                 </select>
-
                             </div>
 
                             <div className="mb-3">
-
-                                <label className="form-label">
-                                    Categoría
-                                </label>
-
+                                <label className="form-label">Categoría</label>
                                 <select
                                     className="form-select"
                                     value={categoriaId}
-                                    onChange={(e) =>
-                                        setCategoriaId(
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => setCategoriaId(e.target.value)}
                                     required
                                 >
-
-                                    <option value="">
-                                        Seleccionar categoría
-                                    </option>
-
-                                    {
-                                        categorias.map(
-                                            (categoria) => (
-                                                <option
-                                                    key={categoria.id}
-                                                    value={categoria.id}
-                                                >
-                                                    {categoria.nombre}
-                                                </option>
-                                            )
-                                        )
-                                    }
-
+                                    <option value="">Seleccionar categoría</option>
+                                    {categorias.map((categoria) => (
+                                        <option key={categoria.id} value={categoria.id}>
+                                            {categoria.nombre}
+                                        </option>
+                                    ))}
                                 </select>
-
                             </div>
 
                             <div className="mb-4">
-                                <label className="form-label">
-                                    Arancel
-                                </label>
-
+                                <label className="form-label">Arancel</label>
                                 <input
                                     type="number"
                                     className="form-control"
                                     value={arancel}
-                                    onChange={(e) =>
-                                        setArancel(
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => setArancel(e.target.value)}
                                     required
                                 />
                             </div>
 
                             <div className="mb-4">
-                                <label className="form-label">
-                                    Formato
-                                </label>
-
+                                <label className="form-label">Formato</label>
                                 <select
                                     className="form-select"
                                     value={formatoCompetencia}
-                                    onChange={(e) =>
-                                        setFormatoCompetencia(
-                                            e.target.value
-                                        )
-                                    }
+                                    onChange={(e) => setFormatoCompetencia(e.target.value)}
                                 >
-
-                                    <option value="solo_liga">
-                                        Solo Liga
-                                    </option>
-
-                                    <option value="playoff_4">
-                                        Liga + Playoff Top 4
-                                    </option>
-
-                                    <option value="playoff_8">
-                                        Liga + Playoff Top 8
-                                    </option>
-
+                                    <option value="solo_liga">Solo Liga</option>
+                                    <option value="playoff_4">Liga + Playoff Top 4</option>
+                                    <option value="playoff_8">Liga + Playoff Top 8</option>
                                 </select>
                             </div>
 
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                            >
+                            <button type="submit" className="btn btn-primary">
                                 Guardar relación
                             </button>
-
                         </form>
-
                     </div>
-
                 </div>
 
+<<<<<<< HEAD
                 {/*
+=======
+                {/* Resumen */}
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                 <div className="row mb-4">
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
                                 <h6 className="text-muted">
                                     Relaciones
                                 </h6>
                                 <h3>
                                     {torneoCategorias.length}
                                 </h3>
+=======
+                                <h6 className="text-muted">Relaciones</h6>
+                                <h3>{torneoCategorias.length}</h3>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                             </div>
                         </div>
                     </div>
-
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
                                 <h6 className="text-muted">
                                     Equipos Inscriptos
                                 </h6>
                                 <h3>
                                     {totalEquipos}
                                 </h3>
+=======
+                                <h6 className="text-muted">Equipos Inscriptos</h6>
+                                <h3>{totalEquipos}</h3>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                             </div>
                         </div>
                     </div>
-
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
                                 <h6 className="text-muted">
                                     Listos para Fixture
                                 </h6>
@@ -348,8 +303,18 @@ const AdminTorneoCategorias = () => {
                     </div>
                 </div> 
                 */}
+=======
+                                <h6 className="text-muted">Listos para Fixture</h6>
+                                <h3>{listosParaFixture}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
 
+                {/* Tabla */}
                 <div className="card shadow-sm">
+<<<<<<< HEAD
                     <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                         <strong>
                             Competencias
@@ -364,9 +329,13 @@ const AdminTorneoCategorias = () => {
                                 setBusqueda(e.target.value)
                             }
                         />
+=======
+                    <div className="card-header bg-dark text-white">
+                        <strong>Categorías asignadas</strong>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                     </div>
-
                     <div className="card-body">
+<<<<<<< HEAD
                         {
                             torneoCategorias.length === 0 ? (
                                 <div className="alert alert-info mb-0">
@@ -516,6 +485,56 @@ const AdminTorneoCategorias = () => {
                                 </div>
                             )
                         }
+=======
+                        <div className="table-responsive">
+                            <table className="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Torneo</th>
+                                        <th>Categoría</th>
+                                        <th>Equipos</th>
+                                        <th>Formato</th>
+                                        <th>Estado</th>
+                                        <th>Arancel</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {torneoCategorias.map((tc) => (
+                                        <tr key={tc.id}>
+                                            <td>{tc.torneo?.nombre}</td>
+                                            <td>{tc.categoria?.nombre}</td>
+                                            <td>
+                                                {Number(tc.equipos_inscriptos) >= 4 ? (
+                                                    <span className="badge bg-success">{tc.equipos_inscriptos} equipos</span>
+                                                ) : (
+                                                    <span className="badge bg-danger">{tc.equipos_inscriptos || 0}/4 mínimos</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {tc.formato_competencia === "solo_liga" ? "Solo Liga"
+                                                    : tc.formato_competencia === "playoff_4" ? "Playoff Top 4"
+                                                        : "Playoff Top 8"}
+                                            </td>
+                                            <td>
+                                                {tc.estado_competencia === "configuracion" && <span className="badge bg-secondary">En Configuración</span>}
+                                                {tc.estado_competencia === "en_curso" && <span className="badge bg-success">En Curso</span>}
+                                                {tc.estado_competencia === "finalizado" && <span className="badge bg-dark">Finalizado</span>}
+                                            </td>
+                                            <td>
+                                                <span className="badge bg-primary">${tc.arancel}</span>
+                                            </td>
+                                            <td>
+                                                <Link to={`/panel/admin/fixture/${tc.id}`} className="btn btn-dark btn-sm">
+                                                    Ver Fixture
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                     </div>
                 </div>
 
@@ -558,6 +577,22 @@ const AdminTorneoCategorias = () => {
                     )
                 }
             </div>
+
+            {/* Modal ayuda */}
+            {showHelp && (
+                <div
+                    className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                    style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+                >
+                    <div className="bg-white p-4 rounded shadow" style={{ maxWidth: "500px" }}>
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5>¿Cómo funciona este apartado?</h5>
+                            <button className="btn-close" onClick={() => setShowHelp(false)} />
+                        </div>
+                        <p>Desde aquí podés asignar categorías a los torneos existentes, definir el formato de competencia y el arancel.</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

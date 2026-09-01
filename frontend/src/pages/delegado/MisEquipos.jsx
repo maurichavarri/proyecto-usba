@@ -4,9 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 const MisEquipos = () => {
 
     const navigate = useNavigate();
+<<<<<<< HEAD
 
     const [showHelp, setShowHelp] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+=======
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
     const [equipos, setEquipos] = useState([]);
 
     const [nombre, setNombre] = useState("");
@@ -99,6 +102,7 @@ const MisEquipos = () => {
 
     return (
         <div className="container mt-5 mb-5">
+<<<<<<< HEAD
             <div className="col-lg-10 mx-auto">
                 {/* Titulo */}
                 <div className="d-flex align-items-center mb-1">
@@ -108,6 +112,45 @@ const MisEquipos = () => {
                     <span style={{ cursor: "pointer", fontSize: "1.2rem" }} className="text-primary" onClick={() => setShowHelp(true)}>
                         ❓
                     </span>
+=======
+            {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/delegado")}
+                >
+                    ← Regresar al panel
+                </button>
+            </div>
+
+            <div className="d-flex justify-content-between align-items-center mb-2">
+                <h2>Mis Equipos</h2>
+            </div>
+            {equipos.length === 0 ? (<p>No tienes equipos creados.</p>) : (
+                <div className="row">
+                    {
+                        equipos.map((equipo) => (
+                            <div key={equipo.id} className="col-md-4 mb-3">
+                                <div className="card h-100 shadow-sm">
+                                    <div className="card-body">
+                                        <h5 className="card-title">
+                                            {equipo.nombre}
+                                        </h5>
+                                        <p className="card-text">
+                                            {equipo.descripcion}
+                                        </p>
+                                        <Link
+                                            to={`/panel/delegado/equipos/${equipo.id}/jugadores`}
+                                            className="btn btn-dark"
+                                        >
+                                            Ver jugadores
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                 </div>
 
                 {/* Breadcrumb */}

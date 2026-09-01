@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
 
 const AdminCarrusel = () => {
     const navigate = useNavigate();
@@ -161,6 +165,7 @@ const AdminCarrusel = () => {
     };
 
     return (
+<<<<<<< HEAD
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
@@ -175,6 +180,38 @@ const AdminCarrusel = () => {
                     >
                         ❓
                     </span>
+=======
+        <div className="container mt-4 mb-5">
+
+            {/* Título */}
+            <h1 className="mb-2">Administración del Carrusel</h1>
+
+            {/* Breadcrumb */}
+            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                <span
+                    className="text-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    Panel del Administrador
+                </span>
+                {" > "}
+                <span className="text-muted">Carrusel</span>
+            </nav>
+
+            {/* Botón volver */}
+            <button
+                className="btn btn-dark mb-4"
+                onClick={() => navigate("/panel/admin")}
+            >
+                ← Regresar al panel
+            </button>
+
+            {/* Toast de feedback */}
+            {mensaje && (
+                <div className={`alert alert-${mensaje.tipo} alert-dismissible`} role="alert">
+                    {mensaje.texto}
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                 </div>
 
                 <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
