@@ -13,8 +13,11 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 
 import MisEquipos from "./pages/delegado/MisEquipos";
+import CrearEquipo from "./pages/delegado/CrearEquipo";
 import JugadoresEquipo from "./pages/delegado/JugadoresEquipo";
+import CrearJugador from "./pages/delegado/CrearJugador";
 import MisInscripciones from "./pages/delegado/MisInscripciones";
+import CrearInscripcion from "./pages/delegado/CrearInscripcion";
 import DashboardDelegado from "./pages/delegado/DashboardDelegado";
 
 import ArbitroDashboard from "./pages/arbitro/ArbitroDashboard";
@@ -63,8 +66,11 @@ function App() {
 
           {/* Delegado */}
           <Route path="/panel/delegado/equipos" element={<ProtectedRoute roles={["delegado"]}><MisEquipos /></ProtectedRoute>} />
+          <Route path="/panel/delegado/equipos/crear" element={<CrearEquipo />}/>
           <Route path="/panel/delegado/equipos/:id/jugadores" element={<ProtectedRoute roles={["delegado"]}><JugadoresEquipo /></ProtectedRoute>} />
+          <Route path="/panel/delegado/equipos/:id/jugadores/crear" element={<CrearJugador />} />
           <Route path="/panel/delegado/inscripciones" element={<ProtectedRoute roles={["delegado"]}><MisInscripciones /></ProtectedRoute>} />
+          <Route path="/panel/delegado/inscripciones/crear"element={<ProtectedRoute roles={["delegado"]}> <CrearInscripcion /></ProtectedRoute>}/>
           <Route path="/panel/delegado" element={<ProtectedRoute roles={["delegado"]}><DashboardDelegado /></ProtectedRoute>} />
 
           {/* Arbitro */}
