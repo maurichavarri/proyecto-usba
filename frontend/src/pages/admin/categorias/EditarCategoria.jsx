@@ -125,7 +125,7 @@ const EditarCategoria = () => {
                             navigate("/panel/admin")
                         }
                     >
-                        Admin Dashboard
+                        Panel del Administrador
                     </span>
 
                     {" > "}
@@ -156,7 +156,7 @@ const EditarCategoria = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Volver
+                    Regresar a gestion de categorias
                 </button>
 
                 <div className="card shadow-sm">

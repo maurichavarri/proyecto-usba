@@ -99,7 +99,7 @@ const CrearTorneo = () => {
                         style={{ cursor: "pointer" }}
                         onClick={() => navigate("/panel/admin")}
                     >
-                        Admin Dashboard
+                        Panel del Administrador
                     </span>
                     {" > "}
                     <span
@@ -117,7 +117,7 @@ const CrearTorneo = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Volver
+                    Regresar a gestion de torneos
                 </button>
 
                 {/* Card con header y formulario */}

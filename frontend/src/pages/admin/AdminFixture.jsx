@@ -321,10 +321,10 @@ const AdminFixture = () => {
                     {" > "}
 
                     <Link
-                        to="/panel/admin/torneo-categorias"
+                        to="/panel/admin"
                         className="text-primary"
                     >
-                        Torneos - Categorías
+                        Panel del Administrador
                     </Link>
 
                     {" > "}
@@ -347,16 +347,19 @@ const AdminFixture = () => {
 
                     <div className="d-flex gap-2">
 
-                        {
-                            fixture.length === 0 &&
+                        <button
+                            className="btn btn-dark"
+                            onClick={() => navigate("/panel/admin/torneo-categorias")}
+                        >
+                            ← Regresar a Torneos y Categorias
+                        </button>
 
-                            <button
-                                onClick={() => setMostrarModalFixture(true)}
-                                className="btn btn-primary"
-                            >
-                                Generar Fixture
-                            </button>
-                        }
+                        <button
+                            onClick={() => setMostrarModalFixture(true)}
+                            className="btn btn-primary"
+                        >
+                            Generar Fixture
+                        </button>
 
                         {
                             detalle &&

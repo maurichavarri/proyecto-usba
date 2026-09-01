@@ -123,7 +123,7 @@ const CrearSede = () => {
                             navigate("/panel/admin")
                         }
                     >
-                        Admin Dashboard
+                        Panel del Administrador
                     </span>
 
                     {" > "}
@@ -150,7 +150,7 @@ const CrearSede = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Volver
+                    Regresar a gestion de sedes
                 </button>
 
                 <div className="card shadow-sm">

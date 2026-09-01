@@ -155,7 +155,7 @@ const EditarTorneo = () => {
                             )
                         }
                     >
-                        Admin Dashboard
+                        Panel del Administrador
                     </span>
 
                     {" > "}
@@ -188,7 +188,7 @@ const EditarTorneo = () => {
                         navigate(-1)
                     }
                 >
-                    Volver
+                    Regresar a gestion de torneos
                 </button>
 
                 <div className="card shadow-sm">

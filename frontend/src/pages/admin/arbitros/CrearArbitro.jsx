@@ -152,7 +152,7 @@ const CrearArbitro = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Volver
+                    Regresar a gestion de arbitros
                 </button>
 
                 <div className="card shadow-sm">

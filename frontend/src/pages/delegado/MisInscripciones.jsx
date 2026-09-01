@@ -5,9 +5,6 @@ const MisInscripciones = () => {
 
     const navigate = useNavigate();
 
-    const [paginaActual, setPaginaActual] = useState(1);
-    const inscripcionesPorPagina = 10;
-
     const [inscripciones, setInscripciones] = useState([]);
     const [equipos, setEquipos] = useState([]);
     const [torneoCategorias, setTorneoCategorias] = useState([]);
@@ -152,8 +149,20 @@ const MisInscripciones = () => {
     const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
 
     return (
-        <div className="container mt-5 mb-5">
-            <div className="col-lg-10 mx-auto">
+        <div className="container mt-4 mb-5">
+            {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/delegado")}
+                >
+                    ← Regresar al panel
+                </button>
+            </div>
+
+            <h2 className="mb-4">
+                Mis Inscripciones
+            </h2>
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-1">
@@ -410,7 +419,6 @@ const MisInscripciones = () => {
                     )
                 }
             </div>
-        </div>
     );
 };
 

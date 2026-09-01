@@ -51,14 +51,49 @@ const AdminAnuncios = () => {
     });
 
     return (
-        <div className="container mt-5 mb-5">
-            <div className="col-lg-10 mx-auto">
-                {/* Encabezado */}
-                <div className="d-flex align-items-center mb-1">
-                    <h2>Gestión de Anuncios</h2>
-                    <span style={{ cursor: "pointer", fontSize: "1.2rem" }} className="text-primary" onClick={() => setShowHelp(true)}>
-                        ❓
-                    </span>
+        <div className="container mt-4 mb-5">
+
+            {/* Encabezado */}
+            <div className="d-flex align-items-center justify-content-between mb-2">
+                <h2>Gestión de Anuncios</h2>
+                <Link to="/panel/admin/anuncios/crear" className="btn btn-primary">
+                    + Crear anuncio
+                </Link>
+            </div>
+
+            {/* Breadcrumb */}
+            <nav className="mb-4" style={{ fontSize: "0.9rem" }}>
+                <span
+                    className="text-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    Panel de Administrador
+                </span>
+                {" > "}
+                <span className="text-muted">Anuncios</span>
+            </nav>
+
+            {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    ← Regresar al panel 
+                </button>
+            </div>
+
+            <div className="card shadow-sm">
+                <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <strong>Listado de anuncios</strong>
+                    <input
+                        type="text"
+                        className="form-control w-auto"
+                        placeholder="Buscar..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
                 </div>
 
                 {/* Breadcrumb */}
