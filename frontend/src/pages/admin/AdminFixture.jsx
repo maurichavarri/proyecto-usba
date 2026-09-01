@@ -325,11 +325,7 @@ const AdminFixture = () => {
                         to="/panel/admin/torneo-categorias"
                         className="text-primary"
                     >
-<<<<<<< HEAD
                         Torneos - Categorías
-=======
-                        Torneo - Categorías
->>>>>>> a738da2 (Puliendo detalles del Front-end)
                     </Link>
 =======
                 <Link
@@ -339,6 +335,12 @@ const AdminFixture = () => {
                     Panel del Administrador
                 </Link>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+                    <Link
+                        to="/panel/admin/torneo-categorias"
+                        className="text-primary"
+                    >
+                        Torneo - Categorías
+                    </Link>
 
                     {" > "}
 
@@ -361,7 +363,6 @@ const AdminFixture = () => {
                     <div className="d-flex gap-2">
 
 <<<<<<< HEAD
-<<<<<<< HEAD
                         {
                             fixture.length === 0 &&
 =======
@@ -380,14 +381,6 @@ const AdminFixture = () => {
                                 Generar Fixture
                             </button>
                         }
-=======
-                        <button
-                            onClick={() => setMostrarModalFixture(true)}
-                            className="btn btn-primary"
-                        >
-                            Generar Fixture
-                        </button>
->>>>>>> a738da2 (Puliendo detalles del Front-end)
 
                         {
                             detalle &&

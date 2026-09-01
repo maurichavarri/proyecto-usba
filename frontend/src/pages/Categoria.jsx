@@ -1,20 +1,6 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-=======
-import { useFetch } from "../hooks/useFetch";
-import img from "../assets/img/pelota-basquet-2.jpeg";
->>>>>>> 63c6e1b (cambios de administrador y delegados)
-
-const Categoria = () => {
-  const navigate = useNavigate();
-  console.log("✅ Categoria renderizando");
-=======
 import { useFetch } from "../hooks/useFetch";
 import img from "../assets/img/pelota-basquet-2.jpeg";
 
-<<<<<<< HEAD
 
 const colores = {
     fondo: "#0a0a0a",
@@ -25,54 +11,6 @@ const colores = {
     naranjaOscuro: "#c94008",
     texto: "#ffffff",
     textoSecundario: "rgba(255,255,255,0.55)"
-=======
-    return (
-        <>
-            {/* HERO DEPORTIVO */}
-            <section className="cat-hero">
-                <div className="container cat-hero-inner">
-                    <span className="cat-hero-eyebrow">USBA · Básquet Amateur</span>
-                    <h1 className="cat-hero-title">
-                        Categorías
-                        <span>en juego</span>
-                    </h1>
-                    <p className="cat-hero-sub text-light">
-                        Elegí tu división. Cada categoría tiene su propio formato,
-                        equipos y calendario dentro del torneo.
-                    </p>
-                </div>
-            </section>
-
-            {/* GRID */}
-            <section className="cat-grid-section">
-                <div className="container">
-                    {data.length === 0 ? (
-                        <p className="text-muted">No hay categorías disponibles.</p>
-                    ) : (
-                        <div className="row g-4">
-                            {data.map((categoria, i) => (
-                                <div key={categoria.id ?? i} className="col-6 col-md-4 col-lg-3">
-                                    <div className="cat-card">
-                                        <img src={img} alt={categoria.nombre} className="cat-card-img" />
-                                        <span className="cat-card-number">
-                                            {String(i + 1).padStart(2, "0")}
-                                        </span>
-                                        <div className="cat-card-content">
-                                            <span className="cat-card-tag">División</span>
-                                            <div className="cat-card-line" />
-                                            <h3 className="cat-card-title">{categoria.nombre}</h3>
-                                            <p className="cat-card-desc">{categoria.descripcion}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </section>
-        </>
-    );
->>>>>>> 63c6e1b (cambios de administrador y delegados)
 };
 
 
@@ -82,7 +20,6 @@ const Categoria = () => {
         "http://localhost:3000/api/v1/categorias"
     );
 
->>>>>>> e896a9c (Proyecto CASI terminado)
 
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
