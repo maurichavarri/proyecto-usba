@@ -315,16 +315,16 @@ const AdminFixture = () => {
                         to="/panel/admin"
                         className="text-primary"
                     >
-                        Admin Dashboard
+                        Panel del Administrador
                     </Link>
 
                     {" > "}
 
                     <Link
-                        to="/panel/admin"
+                        to="/panel/admin/torneo-categorias"
                         className="text-primary"
                     >
-                        Panel del Administrador
+                        Torneo - Categorías
                     </Link>
 
                     {" > "}
@@ -340,19 +340,12 @@ const AdminFixture = () => {
 
                     <button
                         className="btn btn-dark"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate("/panel/admin/torneo-categorias")}
                     >
-                        Volver
+                        ← Regresar a Torneos y Categorias
                     </button>
 
                     <div className="d-flex gap-2">
-
-                        <button
-                            className="btn btn-dark"
-                            onClick={() => navigate("/panel/admin/torneo-categorias")}
-                        >
-                            ← Regresar a Torneos y Categorias
-                        </button>
 
                         <button
                             onClick={() => setMostrarModalFixture(true)}

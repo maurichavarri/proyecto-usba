@@ -32,8 +32,8 @@ const AdminSedes = () => {
     });
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-12">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">
@@ -70,7 +70,7 @@ const AdminSedes = () => {
                         ← Regresar al panel
                     </button>
                     <Link to="/panel/admin/sedes/crear" className="btn btn-primary">
-                        Crear sede
+                        + Crear sede
                     </Link>
                 </div>
 

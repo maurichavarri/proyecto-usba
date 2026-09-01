@@ -4,18 +4,14 @@ import { useState } from "react";
 const CrearCategoria = () => {
 
     const navigate = useNavigate();
-
     const [showHelp, setShowHelp] = useState(false);
-
     const [formData, setFormData] = useState({
         nombre: "",
         descripcion: ""
     });
-
     const [error, setError] = useState("");
 
     const handleChange = (e) => {
-
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -23,18 +19,14 @@ const CrearCategoria = () => {
     };
 
     const validateForm = () => {
-
         if (!formData.nombre.trim()) {
             return "El nombre de la categoría es obligatorio.";
         }
-
         return "";
     };
 
     const handleCreate = async (e) => {
-
         e.preventDefault();
-
         const validationError = validateForm();
 
         if (validationError) {
@@ -45,66 +37,42 @@ const CrearCategoria = () => {
         setError("");
 
         try {
-
-            const token =
-                localStorage.getItem("token");
-
-            const response =
-                await fetch(
-                    "http://localhost:3000/api/v1/categorias/crear",
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://localhost:3000/api/v1/categorias/crear",
                     {
                         method: "POST",
-
                         headers: {
-                            "Content-Type":
-                                "application/json",
-
-                            Authorization:
-                                `Bearer ${token}`
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`
                         },
-
                         body: JSON.stringify(formData)
                     }
                 );
 
-            const data =
-                await response.json();
+            const data = await response.json();
 
             if (!response.ok) {
-
                 setError(
                     data.message ||
                     "Error al crear categoría"
                 );
-
                 return;
             }
-
-            navigate(
-                "/panel/admin/categorias"
-            );
+            navigate("/panel/admin/categorias");
 
         } catch (error) {
-
             console.error(error);
-
-            setError(
-                "Error al crear categoría"
-            );
+            setError("Error al crear categoría");
         }
     };
 
     return (
-        <div className="container mt-4 mb-5">
-
-            <div className="col-md-8 mx-auto">
-
+        <div className="container mt-5 mb-5">
+            <div className="col-md-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
-
                     <h2 className="me-2">
                         Crear Categoría
                     </h2>
-
                     <span
                         style={{
                             cursor: "pointer",
@@ -118,7 +86,6 @@ const CrearCategoria = () => {
                     >
                         ❓
                     </span>
-
                 </div>
 
                 <nav
@@ -169,7 +136,7 @@ const CrearCategoria = () => {
                         navigate(-1)
                     }
                 >
-                    Regresar a gestion de categorias
+                    ← Regresar a gestion de categorias
                 </button>
 
                 <div className="card shadow-sm">
@@ -259,32 +226,24 @@ const CrearCategoria = () => {
                             >
 
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-
                                     <h5>
                                         ¿Cómo funciona este apartado?
                                     </h5>
-
                                     <button
                                         className="btn-close"
                                         onClick={() =>
                                             setShowHelp(false)
                                         }
                                     />
-
                                 </div>
-
                                 <p>
                                     Desde aquí podés crear nuevas categorías que luego podrán asociarse a torneos y utilizarse para las inscripciones de equipos.
                                 </p>
-
                             </div>
-
                         </div>
                     )
                 }
-
             </div>
-
         </div>
     );
 };

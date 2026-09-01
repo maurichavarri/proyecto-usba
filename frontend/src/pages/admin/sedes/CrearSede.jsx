@@ -4,43 +4,33 @@ import { useNavigate } from "react-router-dom";
 const CrearSede = () => {
 
     const navigate = useNavigate();
-
     const [showHelp, setShowHelp] = useState(false);
-
     const [formData, setFormData] = useState({
         nombre: "",
         direccion: ""
     });
-
     const [mensaje, setMensaje] = useState("");
 
     const handleChange = (e) => {
-
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
-
         setMensaje("");
     };
 
     const validarFormulario = () => {
-
         if (!formData.nombre.trim()) {
             return "El nombre es obligatorio.";
         }
-
         if (!formData.direccion.trim()) {
             return "La dirección es obligatoria.";
         }
-
         return "";
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         const error = validarFormulario();
 
         if (error) {
@@ -49,19 +39,14 @@ const CrearSede = () => {
         }
 
         try {
-
             const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/sedes",
+            const response = await fetch("http://localhost:3000/api/v1/sedes",
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`
                     },
-
                     body: JSON.stringify(formData)
                 }
             );
@@ -72,30 +57,21 @@ const CrearSede = () => {
                 setMensaje(data.message);
                 return;
             }
-
             navigate("/panel/admin/sedes");
 
         } catch (error) {
-
             console.error(error);
-
-            setMensaje(
-                "Error al crear la sede."
-            );
+            setMensaje("Error al crear la sede.");
         }
     };
 
     return (
-        <div className="container mt-4 mb-5">
-
-            <div className="col-md-8 mx-auto">
-
+        <div className="container mt-5 mb-5">
+            <div className="col-md-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
-
                     <h2 className="me-2">
                         Crear Sede
                     </h2>
-
                     <span
                         className="text-primary"
                         style={{
@@ -108,14 +84,12 @@ const CrearSede = () => {
                     >
                         ❓
                     </span>
-
                 </div>
 
                 <nav
                     className="mb-3"
                     style={{ fontSize: "0.9rem" }}
                 >
-
                     <span
                         className="text-primary"
                         style={{ cursor: "pointer" }}
@@ -143,14 +117,13 @@ const CrearSede = () => {
                     <span className="text-muted">
                         Crear Sede
                     </span>
-
                 </nav>
 
                 <button
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Regresar a gestion de sedes
+                    ← Regresar a gestion de sedes
                 </button>
 
                 <div className="card shadow-sm">

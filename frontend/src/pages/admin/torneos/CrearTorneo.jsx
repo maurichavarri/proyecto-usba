@@ -77,8 +77,8 @@ const CrearTorneo = () => {
 
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-md-8 mx-auto">
+        <div className="container mt-5 mb-5">
+            <div className="col-md-10 mx-auto">
                 {/* Título con icono de ayuda */}
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">Crear Torneo</h2>
@@ -117,7 +117,7 @@ const CrearTorneo = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Regresar a gestion de torneos
+                    ← Regresar a gestion de torneos
                 </button>
 
                 {/* Card con header y formulario */}

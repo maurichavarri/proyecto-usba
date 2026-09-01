@@ -221,6 +221,7 @@ const AdminTorneoCategorias = () => {
                 </div>
 
                 {/* Resumen */}
+                {/* 
                 <div className="row mb-4">
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
@@ -247,6 +248,7 @@ const AdminTorneoCategorias = () => {
                         </div>
                     </div>
                 </div>
+                */}
 
                 {/* Tabla */}
                 <div className="card shadow-sm">

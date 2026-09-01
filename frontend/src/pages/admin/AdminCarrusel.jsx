@@ -161,233 +161,208 @@ const AdminCarrusel = () => {
     };
 
     return (
-        <div className="container mt-4 mb-5">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
-            {/* Título */}
-            <h1 className="mb-2">Administración del Carrusel</h1>
+                {/* Título */}
+                <div className="d-flex align-items-center mb-2">
+                    <h2 className="me-2">Carrusel</h2>
+                    <span
+                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                        className="text-primary"
+                        onClick={() => setShowHelp(true)}
+                    >
+                        ❓
+                    </span>
+                </div>
 
-            {/* Breadcrumb */}
-            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
-                <span
-                    className="text-primary"
-                    style={{ cursor: "pointer" }}
+                {/* Breadcrumb */}
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel del Administrador
+                    </span>
+                    {" > "}
+                    <span className="text-muted">Carrusel</span>
+                </nav>
+
+                {/* Botón volver */}
+                <button
+                    className="btn btn-dark mb-4"
                     onClick={() => navigate("/panel/admin")}
                 >
-                    Panel del Administrador
-                </span>
-                {" > "}
-                <span className="text-muted">Carrusel</span>
-            </nav>
-
-            {/* Botón volver */}
-            <button
-                className="btn btn-dark mb-4"
-                onClick={() => navigate("/panel/admin")}
-            >
-                ← Regresar al panel
-            </button>
-
-            {/* Toast de feedback */}
-            {mensaje && (
-                <div className={`alert alert-${mensaje.tipo} alert-dismissible`} role="alert">
-                    {mensaje.texto}
-                </div>
-            )}
-
-            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
-                <span
-                    className="text-primary"
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                        navigate("/panel/admin")
-                    }
-                >
-                    Admin Dashboard
-                </span>
-
-                {" > "}
-
-                <span className="text-muted">
-                    Carrusel
-                </span>
-            </nav>
-
-            <div className="d-flex justify-content-between mb-3">
-                <button
-                    className="btn btn-dark"
-                    onClick={() =>
-                        navigate(-1)
-                    }
-                >
-                    Volver
+                    ← Regresar al panel
                 </button>
-            </div>
 
-            {/* Toast de feedback */}
-            {mensaje && (
-                <div className={`alert alert-${mensaje.tipo} alert-dismissible`} role="alert">
-                    {mensaje.texto}
-                </div>
-            )}
-
-            {/* Formulario subir imagen */}
-            <div className="card p-4 mb-5 shadow-sm">
-                <h3 className="card-title mb-3">Subir Nueva Imagen</h3>
-                <form onSubmit={handleSubmit}>
-                    <div className="row g-3 align-items-end">
-                        <div className="col-md-6">
-                            <label className="form-label">Archivo de Imagen</label>
-                            <input
-                                type="file"
-                                className="form-control"
-                                accept="image/*"
-                                onChange={handleArchivoChange}
-                                required
-                            />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Orden numérico</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                value={orden}
-                                onChange={(e) => setOrden(e.target.value)}
-                                min="0"
-                            />
-                        </div>
-                        <div className="col-md-3">
-                            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-                                {loading ? "Subiendo..." : "Subir Imagen"}
-                            </button>
-                        </div>
+                {/* Toast de feedback */}
+                {mensaje && (
+                    <div className={`alert alert-${mensaje.tipo} alert-dismissible`} role="alert">
+                        {mensaje.texto}
                     </div>
+                )}
 
-                    {/* Preview de la imagen seleccionada */}
-                    {preview && (
-                        <div className="mt-3">
-                            <label className="form-label">Vista previa:</label>
-                            <div>
-                                <img
-                                    src={preview}
-                                    alt="Vista previa"
-                                    style={{
-                                        maxHeight: "200px",
-                                        maxWidth: "100%",
-                                        objectFit: "cover",
-                                        borderRadius: "8px",
-                                        border: "1px solid #dee2e6"
-                                    }}
+                {/* Formulario subir imagen */}
+                <div className="card p-4 mb-5 shadow-sm">
+                    <h3 className="card-title mb-3">Subir Nueva Imagen</h3>
+                    <form onSubmit={handleSubmit}>
+                        <div className="row g-3 align-items-end">
+                            <div className="col-md-6">
+                                <label className="form-label">Archivo de Imagen</label>
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    accept="image/*"
+                                    onChange={handleArchivoChange}
+                                    required
                                 />
                             </div>
+                            <div className="col-md-3">
+                                <label className="form-label">Orden numérico</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={orden}
+                                    onChange={(e) => setOrden(e.target.value)}
+                                    min="0"
+                                />
+                            </div>
+                            <div className="col-md-3">
+                                <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                                    {loading ? "Subiendo..." : "Subir Imagen"}
+                                </button>
+                            </div>
                         </div>
-                    )}
-                </form>
-            </div>
 
-            {/* Listado de imágenes */}
-            <h3 className="mb-3">
-                Imágenes en el Carrusel
-                <span className="badge bg-secondary ms-2" style={{ fontSize: "14px" }}>
-                    {imagenes.filter(i => i.activo).length} visibles / {imagenes.length} totales
-                </span>
-            </h3>
-
-            {cargando && <p className="text-muted">Cargando imágenes...</p>}
-
-            {!cargando && (
-                <div className="row g-4">
-                    {imagenes.length === 0 ? (
-                        <div className="col-12">
-                            <p className="text-muted">No hay imágenes en el carrusel actualmente.</p>
-                        </div>
-                    ) : (
-                        imagenes.map((img) => (
-                            <div className="col-md-4" key={img.id}>
-                                <div className="card h-100 shadow-sm">
+                        {/* Preview de la imagen seleccionada */}
+                        {preview && (
+                            <div className="mt-3">
+                                <label className="form-label">Vista previa:</label>
+                                <div>
                                     <img
-                                        src={`http://localhost:3000${img.url}`}
-                                        className="card-img-top"
-                                        alt="Vista carrusel"
-                                        style={{ height: "200px", objectFit: "cover" }}
+                                        src={preview}
+                                        alt="Vista previa"
+                                        style={{
+                                            maxHeight: "200px",
+                                            maxWidth: "100%",
+                                            objectFit: "cover",
+                                            borderRadius: "8px",
+                                            border: "1px solid #dee2e6"
+                                        }}
                                     />
-                                    <div className="card-body d-flex flex-column justify-content-between">
-                                        <div className="d-flex justify-content-between align-items-center mb-2">
-                                            <span className={`badge ${img.activo ? "bg-success" : "bg-danger"}`}>
-                                                {img.activo ? "Visible" : "Oculto"}
-                                            </span>
-                                            <div className="d-flex align-items-center gap-2">
-                                                <label className="text-muted mb-0" style={{ fontSize: "13px" }}>Orden:</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm"
-                                                    style={{ width: "65px" }}
-                                                    defaultValue={img.orden}
-                                                    onBlur={(e) => handleActualizarOrden(img.id, parseInt(e.target.value))}
-                                                />
+                                </div>
+                            </div>
+                        )}
+                    </form>
+                </div>
+
+                {/* Listado de imágenes */}
+                <h3 className="mb-3">
+                    Imágenes en el Carrusel
+                    <span className="badge bg-secondary ms-2" style={{ fontSize: "14px" }}>
+                        {imagenes.filter(i => i.activo).length} visibles / {imagenes.length} totales
+                    </span>
+                </h3>
+
+                {cargando && <p className="text-muted">Cargando imágenes...</p>}
+
+                {!cargando && (
+                    <div className="row g-4">
+                        {imagenes.length === 0 ? (
+                            <div className="col-12">
+                                <p className="text-muted">No hay imágenes en el carrusel actualmente.</p>
+                            </div>
+                        ) : (
+                            imagenes.map((img) => (
+                                <div className="col-md-4" key={img.id}>
+                                    <div className="card h-100 shadow-sm">
+                                        <img
+                                            src={`http://localhost:3000${img.url}`}
+                                            className="card-img-top"
+                                            alt="Vista carrusel"
+                                            style={{ height: "200px", objectFit: "cover" }}
+                                        />
+                                        <div className="card-body d-flex flex-column justify-content-between">
+                                            <div className="d-flex justify-content-between align-items-center mb-2">
+                                                <span className={`badge ${img.activo ? "bg-success" : "bg-danger"}`}>
+                                                    {img.activo ? "Visible" : "Oculto"}
+                                                </span>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <label className="text-muted mb-0" style={{ fontSize: "13px" }}>Orden:</label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control form-control-sm"
+                                                        style={{ width: "65px" }}
+                                                        defaultValue={img.orden}
+                                                        onBlur={(e) => handleActualizarOrden(img.id, parseInt(e.target.value))}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="d-flex justify-content-between mt-2">
-                                            <button
-                                                type="button"
-                                                className={`btn btn-sm ${img.activo ? "btn-warning" : "btn-success"}`}
-                                                onClick={() => handleToggleEstado(img.id)}
-                                            >
-                                                {img.activo ? "Ocultar" : "Mostrar"}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-danger"
-                                                onClick={() => handleEliminarImagen(img.id)}
-                                            >
-                                                Eliminar
-                                            </button>
+                                            <div className="d-flex justify-content-between mt-2">
+                                                <button
+                                                    type="button"
+                                                    className={`btn btn-sm ${img.activo ? "btn-warning" : "btn-success"}`}
+                                                    onClick={() => handleToggleEstado(img.id)}
+                                                >
+                                                    {img.activo ? "Ocultar" : "Mostrar"}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-danger"
+                                                    onClick={() => handleEliminarImagen(img.id)}
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-            )}
+                            ))
+                        )}
+                    </div>
+                )}
 
-            {/* Modal Ayuda */}
-            {
-                showHelp && (
-                    <div
-                        className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                        style={{
-                            backgroundColor:
-                                "rgba(0,0,0,0.5)",
-                            zIndex: 1050
-                        }}
-                    >
+                {/* Modal Ayuda */}
+                {
+                    showHelp && (
                         <div
-                            className="bg-white p-4 rounded shadow"
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
                             style={{
-                                maxWidth: "550px"
+                                backgroundColor:
+                                    "rgba(0,0,0,0.5)",
+                                zIndex: 1050
                             }}
                         >
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h5>
-                                    ¿Cómo funciona este apartado?
-                                </h5>
-                                <button
-                                    className="btn-close"
-                                    onClick={() =>
-                                        setShowHelp(false)
-                                    }
-                                />
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    maxWidth: "550px"
+                                }}
+                            >
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>
+                                        ¿Cómo funciona este apartado?
+                                    </h5>
+                                    <button
+                                        className="btn-close"
+                                        onClick={() =>
+                                            setShowHelp(false)
+                                        }
+                                    />
+                                </div>
+                                <p>
+                                    Podés administrar la
+                                    sección de 'Carrusel' que se encuentra en 'Home'.
+                                    Implica subir, eliminar o cambiar la visibilidad
+                                    y el orden de las imágenes.
+                                </p>
                             </div>
-                            <p>
-                                Podés administrar la
-                                sección de 'Carrusel' que se encuentra en 'Home'.
-                                Implica subir, eliminar o cambiar la visibilidad
-                                y el orden de las imágenes.
-                            </p>
                         </div>
-                    </div>
-                )
-            }
+                    )
+                }
+            </div>
         </div>
     );
 };

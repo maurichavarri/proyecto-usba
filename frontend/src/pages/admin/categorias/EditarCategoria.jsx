@@ -85,9 +85,9 @@ const EditarCategoria = () => {
     };
 
     return (
-        <div className="container mt-4 mb-5">
+        <div className="container mt-5 mb-5">
 
-            <div className="col-md-8 mx-auto">
+            <div className="col-md-10 mx-auto">
 
                 <div className="d-flex align-items-center mb-2">
 
@@ -156,7 +156,7 @@ const EditarCategoria = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Regresar a gestion de categorias
+                    ← Regresar a gestion de categorias
                 </button>
 
                 <div className="card shadow-sm">

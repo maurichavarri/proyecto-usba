@@ -4,6 +4,10 @@ import { formatearFecha, obtenerFechaActual, inscripcionesAbiertas } from "../..
 
 const AdminTorneos = () => {
     const navigate = useNavigate();
+
+    const [paginaActual, setPaginaActual] = useState(1);
+    const torneosPorPagina = 10;
+
     const [torneos, setTorneos] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
     const [busqueda, setBusqueda] = useState("");
@@ -38,14 +42,10 @@ const AdminTorneos = () => {
         }
     };
 
-    const formatearFecha = (fecha) => {
-        if (!fecha) return "-";
-        return new Date(fecha).toLocaleDateString();
-    };
-
-    const torneosFiltrados = torneos.filter((torneo) =>
-        torneo.nombre?.toLowerCase().includes(busqueda.toLowerCase())
-    );
+    const torneosFiltrados = torneos.filter((torneo) => {
+        const texto = busqueda.toLowerCase();
+        return (torneo.nombre?.toLowerCase().includes(texto));
+    });
 
     const totalPaginas = Math.ceil(torneosFiltrados.length / torneosPorPagina);
     const indiceInicio = (paginaActual - 1) * torneosPorPagina;
@@ -90,14 +90,47 @@ const AdminTorneos = () => {
                         ← Regresar al panel
                     </button>
                     <Link to="/panel/admin/torneos/crear" className="btn btn-primary">
-                        Crear torneo
+                        + Crear torneo
                     </Link>
                 </div>
 
                 {/* Tabla */}
                 <div className="card shadow-sm">
                     <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <strong>Torneos registrados</strong>
+                        <strong>
+                            Torneos registrados
+                        </strong>
+
+                        {
+                            totalPaginas > 1 && (
+                                <div className="d-flex justify-content-center align-items-center gap-2">
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === 1}
+                                        onClick={() =>
+                                            setPaginaActual(paginaActual - 1)
+                                        }
+                                    >
+                                        Anterior
+                                    </button>
+
+                                    <span className="mx-2">
+                                        Página {paginaActual} de {totalPaginas}
+                                    </span>
+
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === totalPaginas}
+                                        onClick={() =>
+                                            setPaginaActual(paginaActual + 1)
+                                        }
+                                    >
+                                        Siguiente
+                                    </button>
+                                </div>
+                            )
+                        }
+
                         <input
                             type="text"
                             className="form-control w-auto"

@@ -118,8 +118,8 @@ const EditarTorneo = () => {
     };
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-md-8 mx-auto">
+        <div className="container mt-5 mb-5">
+            <div className="col-md-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">
                         Editar Torneo
@@ -188,7 +188,7 @@ const EditarTorneo = () => {
                         navigate(-1)
                     }
                 >
-                    Regresar a gestion de torneos
+                    ← Regresar a gestion de torneos
                 </button>
 
                 <div className="card shadow-sm">

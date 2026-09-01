@@ -15,7 +15,7 @@ const Categoria = () => {
                         Categorías
                         <span>en juego</span>
                     </h1>
-                    <p className="cat-hero-sub">
+                    <p className="cat-hero-sub text-light">
                         Elegí tu división. Cada categoría tiene su propio formato,
                         equipos y calendario dentro del torneo.
                     </p>

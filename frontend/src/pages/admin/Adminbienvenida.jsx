@@ -73,8 +73,10 @@ const AdminBienvenida = () => {
     return (
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
+
+                {/* Titulo */}
                 <div className="d-flex align-items-center mb-1">
-                    <h2>Sección Bienvenida</h2>
+                    <h2>Bienvenida</h2>
                     <span
                         style={{
                             cursor: "pointer",
@@ -87,11 +89,6 @@ const AdminBienvenida = () => {
                     >
                         ❓
                     </span>
-                </div>
-
-                {/* Título */}
-                <div className="d-flex align-items-center justify-content-between mb-2">
-                    <h2>Editar Sección Bienvenida</h2>
                 </div>
 
                 {/* Breadcrumb */}
@@ -187,88 +184,9 @@ const AdminBienvenida = () => {
                             </div>
                         )}
 
-                        <button className="btn btn-dark" disabled={loading}>
-                            {loading ? "Guardando..." : "Guardar cambios"}
-                        </button>
-                    </form>
-                </div>
-
-                {mensaje && (
-                    <div className={`alert alert-${mensaje.tipo}`}>{mensaje.texto}</div>
-                )}
-
-                <div className="card shadow-sm p-4">
-                    <form onSubmit={handleSubmit}>
-
-                        <div className="mb-3">
-                            <label className="form-label fw-bold">Título</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={titulo}
-                                onChange={e => setTitulo(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label fw-bold">Texto</label>
-                            <textarea
-                                className="form-control"
-                                rows="5"
-                                value={texto}
-                                onChange={e => setTexto(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label fw-bold">
-                                {imagenActual ? "Cambiar imagen" : "Agregar imagen"}
-                            </label>
-                            <input
-                                type="file"
-                                className="form-control"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={handleImagenChange}
-                            />
-                            <small className="text-muted">JPG, PNG, WEBP. Máximo 5MB.</small>
-                        </div>
-
-                        {imagenMostrada && (
-                            <div className="mb-3">
-                                <label className="form-label">
-                                    {preview ? "Vista previa nueva imagen:" : "Imagen actual:"}
-                                </label>
-                                <div>
-                                    <img
-                                        src={imagenMostrada}
-                                        alt="Bienvenida"
-                                        style={{
-                                            maxWidth: "100%",
-                                            maxHeight: "280px",
-                                            objectFit: "cover",
-                                            borderRadius: "8px",
-                                            border: "1px solid #dee2e6"
-                                        }}
-                                    />
-                                </div>
-                                {preview && (
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-outline-secondary mt-2"
-                                        onClick={() => { setNuevaImagen(null); setPreview(null); }}
-                                    >
-                                        Cancelar cambio
-                                    </button>
-                                )}
-                            </div>
-                        )}
-
                         <button className="btn btn-primary" disabled={loading}>
                             {loading ? "Guardando..." : "Guardar cambios"}
                         </button>
-
                     </form>
                 </div>
 
