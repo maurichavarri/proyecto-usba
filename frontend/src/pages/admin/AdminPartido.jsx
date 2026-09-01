@@ -9,6 +9,9 @@ const AdminPartido = () => {
     const [partido, setPartido] = useState(null);
     const [sedes, setSedes] = useState([]);
     const [arbitros, setArbitros] = useState([]);
+    const [mensaje, setMensaje] = useState("");
+    const [mostrarModalIncompleto, setMostrarModalIncompleto] = useState(false);
+    const [mostrarModalFinalizar, setMostrarModalFinalizar] = useState(false);
 
     const [formData, setFormData] = useState({
         fecha: "",
@@ -19,13 +22,22 @@ const AdminPartido = () => {
         puntaje_visitante: ""
     });
 
-    const [mensaje, setMensaje] = useState("");
-
     useEffect(() => {
         obtenerPartido();
         obtenerSedes();
         obtenerArbitros();
     }, []);
+
+    const formatearFechaHoraInput = (fecha) => {
+        if (!fecha) return "";
+        const date = new Date(fecha);
+        const anio = date.getFullYear();
+        const mes = String(date.getMonth() + 1).padStart(2, "0");
+        const dia = String(date.getDate()).padStart(2, "0");
+        const horas = String(date.getHours()).padStart(2, "0");
+        const minutos = String(date.getMinutes()).padStart(2, "0");
+        return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
+    };
 
     const obtenerPartido = async () => {
         try {
@@ -33,7 +45,7 @@ const AdminPartido = () => {
             const data = await response.json();
             setPartido(data);
             setFormData({
-                fecha: data.fecha ? new Date(data.fecha).toISOString().slice(0, 16) : "",
+                fecha: formatearFechaHoraInput(data.fecha),
                 sede_id: data.sede_id || "",
                 arbitro_id: data.arbitro_id || "",
                 estado: data.estado || "pendiente",
@@ -86,13 +98,29 @@ const AdminPartido = () => {
         if (error) { setMensaje(error); return; }
 
         try {
+
             const token = localStorage.getItem("token");
             const payload = {
                 ...formData,
-                sede_id: formData.sede_id === "" ? null : Number(formData.sede_id),
-                arbitro_id: formData.arbitro_id === "" ? null : Number(formData.arbitro_id),
-                puntaje_local: formData.puntaje_local === "" ? null : Number(formData.puntaje_local),
-                puntaje_visitante: formData.puntaje_visitante === "" ? null : Number(formData.puntaje_visitante)
+                sede_id:
+                    formData.sede_id === ""
+                        ? null
+                        : Number(formData.sede_id),
+
+                arbitro_id:
+                    formData.arbitro_id === ""
+                        ? null
+                        : Number(formData.arbitro_id),
+
+                puntaje_local:
+                    formData.puntaje_local === ""
+                        ? null
+                        : Number(formData.puntaje_local),
+
+                puntaje_visitante:
+                    formData.puntaje_visitante === ""
+                        ? null
+                        : Number(formData.puntaje_visitante)
             };
 
             if (payload.estado !== "jugado") {

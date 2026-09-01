@@ -1,6 +1,6 @@
 // arbitro.controller.js
 import bcrypt from 'bcryptjs';
-import { Usuario, Arbitro } from '../models/index.js';
+import { Usuario, Arbitro, Partido, Inscripcion, Equipo, Jugador, TorneoCategoria, Torneo, Categoria, Sede, Sancion } from '../models/index.js';
 import sequelize from '../config/db.js';
 import { Op } from 'sequelize';
 
@@ -135,6 +135,213 @@ export const deleteArbitro = async (req, res, next) => {
 
     } catch (error) {
         await t.rollback();
+        next(error);
+    }
+};
+
+export const getMisPartidos = async (req, res, next) => {
+    try {
+        const usuarioId = req.usuario.id;
+
+        // Buscar el perfil de árbitro asociado al usuario autenticado
+        const arbitro = await Arbitro.findOne({
+            where: {
+                usuario_id: usuarioId
+            }
+        });
+
+        if (!arbitro) {
+            return res.status(404).json({
+                message: 'Perfil de árbitro no encontrado'
+            });
+        }
+
+        // Buscar solamente los partidos asignados a ese árbitro
+        const partidos = await Partido.findAll({
+            where: {
+                arbitro_id: arbitro.id
+            },
+            include: [
+                {
+                    model: Inscripcion,
+                    as: 'local',
+                    include: [
+                        {
+                            model: Equipo,
+                            attributes: ['id', 'nombre']
+                        }
+                    ]
+                },
+                {
+                    model: Inscripcion,
+                    as: 'visitante',
+                    include: [
+                        {
+                            model: Equipo,
+                            attributes: ['id', 'nombre']
+                        }
+                    ]
+                },
+                {
+                    model: Sede,
+                    as: 'sede',
+                    attributes: ['id', 'nombre']
+                },
+                {
+                    model: TorneoCategoria,
+                    as: 'torneoCategoria',
+                    include: [
+                        {
+                            model: Torneo,
+                            as: 'torneo',
+                            attributes: ['id', 'nombre']
+                        },
+                        {
+                            model: Categoria,
+                            as: 'categoria',
+                            attributes: ['id', 'nombre']
+                        }
+                    ]
+                }
+            ],
+            order: [
+                ['fecha', 'ASC']
+            ]
+        });
+        res.json(partidos);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getMiPartidoById = async (req, res, next) => {
+    try {
+        const usuarioId = req.usuario.id;
+        const { id } = req.params;
+
+        // Perfil de árbitro autenticado
+        const arbitro = await Arbitro.findOne({
+            where: {
+                usuario_id: usuarioId
+            }
+        });
+
+        if (!arbitro) {
+            return res.status(404).json({
+                message: "Perfil de árbitro no encontrado"
+            });
+        }
+
+        const partido = await Partido.findByPk(id, {
+            include: [
+                {
+                    model: Inscripcion,
+                    as: "local",
+                    include: [
+                        {
+                            model: Equipo,
+                            attributes: ["id", "nombre"],
+                            include: [
+                                {
+                                    model: Jugador,
+                                    as: "jugadores",
+                                    attributes: [
+                                        "id",
+                                        "nombre",
+                                        "apellido",
+                                        "dni",
+                                        "dorsal",
+                                        "estado"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+
+                {
+                    model: Inscripcion,
+                    as: "visitante",
+                    include: [
+                        {
+                            model: Equipo,
+                            attributes: ["id", "nombre"],
+                            include: [
+                                {
+                                    model: Jugador,
+                                    as: "jugadores",
+                                    attributes: [
+                                        "id",
+                                        "nombre",
+                                        "apellido",
+                                        "dni",
+                                        "dorsal",
+                                        "estado"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+
+                {
+                    model: Sede,
+                    as: "sede",
+                    attributes: ["id", "nombre"]
+                },
+
+                {
+                    model: TorneoCategoria,
+                    as: "torneoCategoria",
+                    include: [
+                        {
+                            model: Torneo,
+                            as: "torneo",
+                            attributes: ["id", "nombre"]
+                        },
+                        {
+                            model: Categoria,
+                            as: "categoria",
+                            attributes: ["id", "nombre"]
+                        }
+                    ]
+                },
+
+                {
+                    model: Sancion,
+                    as: "sanciones",
+                    include: [
+                        {
+                            model: Jugador,
+                            as: "jugador",
+                            attributes: [
+                                "id",
+                                "nombre",
+                                "apellido",
+                                "dorsal"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+
+        if (!partido) {
+            return res.status(404).json({
+                message: "Partido no encontrado"
+            });
+        }
+
+        // Seguridad
+        if (partido.arbitro_id !== arbitro.id) {
+            return res.status(403).json({
+                message: "No está autorizado para consultar este partido"
+            });
+        }
+
+        res.json(partido);
+
+    } catch (error) {
         next(error);
     }
 };

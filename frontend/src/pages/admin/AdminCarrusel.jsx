@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminCarrusel = () => {
     const navigate = useNavigate();
@@ -10,6 +10,7 @@ const AdminCarrusel = () => {
     const [loading, setLoading] = useState(false);
     const [cargando, setCargando] = useState(true);
     const [mensaje, setMensaje] = useState(null); // { texto, tipo }
+    const [showHelp, setShowHelp] = useState(false);
 
     const API_URL = "http://localhost:3000/api/v1/carrusel";
     const token = localStorage.getItem("token");
@@ -193,6 +194,42 @@ const AdminCarrusel = () => {
                 </div>
             )}
 
+            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                <span
+                    className="text-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                        navigate("/panel/admin")
+                    }
+                >
+                    Admin Dashboard
+                </span>
+
+                {" > "}
+
+                <span className="text-muted">
+                    Carrusel
+                </span>
+            </nav>
+
+            <div className="d-flex justify-content-between mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() =>
+                        navigate(-1)
+                    }
+                >
+                    Volver
+                </button>
+            </div>
+
+            {/* Toast de feedback */}
+            {mensaje && (
+                <div className={`alert alert-${mensaje.tipo} alert-dismissible`} role="alert">
+                    {mensaje.texto}
+                </div>
+            )}
+
             {/* Formulario subir imagen */}
             <div className="card p-4 mb-5 shadow-sm">
                 <h3 className="card-title mb-3">Subir Nueva Imagen</h3>
@@ -219,7 +256,7 @@ const AdminCarrusel = () => {
                             />
                         </div>
                         <div className="col-md-3">
-                            <button type="submit" className="btn btn-dark w-100" disabled={loading}>
+                            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
                                 {loading ? "Subiendo..." : "Subir Imagen"}
                             </button>
                         </div>
@@ -292,14 +329,14 @@ const AdminCarrusel = () => {
                                         <div className="d-flex justify-content-between mt-2">
                                             <button
                                                 type="button"
-                                                className={`btn btn-sm ${img.activo ? "btn-outline-warning" : "btn-outline-success"}`}
+                                                className={`btn btn-sm ${img.activo ? "btn-warning" : "btn-success"}`}
                                                 onClick={() => handleToggleEstado(img.id)}
                                             >
                                                 {img.activo ? "Ocultar" : "Mostrar"}
                                             </button>
                                             <button
                                                 type="button"
-                                                className="btn btn-sm btn-outline-danger"
+                                                className="btn btn-sm btn-danger"
                                                 onClick={() => handleEliminarImagen(img.id)}
                                             >
                                                 Eliminar
@@ -312,6 +349,45 @@ const AdminCarrusel = () => {
                     )}
                 </div>
             )}
+
+            {/* Modal Ayuda */}
+            {
+                showHelp && (
+                    <div
+                        className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                        style={{
+                            backgroundColor:
+                                "rgba(0,0,0,0.5)",
+                            zIndex: 1050
+                        }}
+                    >
+                        <div
+                            className="bg-white p-4 rounded shadow"
+                            style={{
+                                maxWidth: "550px"
+                            }}
+                        >
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h5>
+                                    ¿Cómo funciona este apartado?
+                                </h5>
+                                <button
+                                    className="btn-close"
+                                    onClick={() =>
+                                        setShowHelp(false)
+                                    }
+                                />
+                            </div>
+                            <p>
+                                Podés administrar la
+                                sección de 'Carrusel' que se encuentra en 'Home'.
+                                Implica subir, eliminar o cambiar la visibilidad
+                                y el orden de las imágenes.
+                            </p>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     );
 };

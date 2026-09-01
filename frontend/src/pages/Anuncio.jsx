@@ -7,7 +7,11 @@ const truncate = (text, max) => {
 };
 
 const Anuncio = () => {
-    const { data = [] } = useFetch("http://localhost:3000/api/v1/anuncios");
+
+    const { data = [] } = useFetch(
+        "http://localhost:3000/api/v1/anuncios"
+    );
+
 
     return (
         <>
@@ -63,5 +67,6 @@ const Anuncio = () => {
         </>
     );
 };
+
 
 export default Anuncio;

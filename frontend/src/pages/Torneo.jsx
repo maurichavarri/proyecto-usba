@@ -16,11 +16,60 @@ const FORMATO_LABEL = {
 };
 
 const Torneo = () => {
-    const { data } = useFetch("http://localhost:3000/api/v1/torneos");
-    const [torneoExpandido, setTorneoExpandido] = useState(null);
+
+    const { data } = useFetch(
+        "http://localhost:3000/api/v1/torneos"
+    );
+
+    const [torneoExpandido, setTorneoExpandido] =
+        useState(null);
+
+
     const toggleTorneo = (id) => {
         setTorneoExpandido(torneoExpandido === id ? null : id);
     };
+
+
+    const obtenerFormato = (formato) => {
+
+        if (formato === "solo_liga") {
+            return "Liga";
+        }
+
+        if (formato === "playoff_4") {
+            return "Liga + Play-Off (4)";
+        }
+
+        if (formato === "playoff_8") {
+            return "Liga + Play-Off (8)";
+        }
+
+        return "-";
+    };
+
+
+    const obtenerEstado = (estado) => {
+
+        if (estado === "en_curso") {
+            return {
+                texto: "En curso",
+                color: "#69db7c"
+            };
+        }
+
+        if (estado === "finalizado") {
+            return {
+                texto: "Finalizado",
+                color: "#ffffff"
+            };
+        }
+
+        return {
+            texto: "Próximamente",
+            color: "rgba(255,255,255,0.4)"
+        };
+    };
+
 
     return (
         <>
@@ -141,5 +190,6 @@ const Torneo = () => {
         </>
     );
 };
+
 
 export default Torneo;

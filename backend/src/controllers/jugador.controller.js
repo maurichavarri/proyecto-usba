@@ -1,6 +1,8 @@
 import { Op } from "sequelize";
 import Jugador from '../models/jugador.model.js';
 import Equipo from '../models/equipo.model.js';
+import Sancion from "../models/sancion.model.js";
+import Inscripcion from "../models/inscripcion.model.js";
 import { plantelBloqueado } from "../services/plantelBloqueado.service.js";
 
 export const crearJugador = async (req, res, next) => {
@@ -41,6 +43,19 @@ export const crearJugador = async (req, res, next) => {
             });
         }
 
+        // Validar cantidad máxima de jugadores
+        const cantidadJugadores = await Jugador.count({
+            where: {
+                equipo_id
+            }
+        });
+
+        if (cantidadJugadores >= 12) {
+            return res.status(400).json({
+                message: "El equipo ya alcanzó el máximo permitido de 12 jugadores."
+            });
+        }
+
         // Validar DNI repetido EN EL EQUIPO
         const existeJugador = await Jugador.findOne({
             where: {
@@ -73,7 +88,8 @@ export const crearJugador = async (req, res, next) => {
 
         if (bloqueado) {
             return res.status(400).json({
-                message: "No es posible agregar jugadores porque el equipo ya posee una inscripción confirmada."
+                code: "PLANTEL_BLOQUEADO",
+                message: "No es posible agregar jugadores porque el equipo ya realizó una inscripción."
             });
         }
 
@@ -108,7 +124,30 @@ export const obtenerJugadoresPorEquipo = async (req, res, next) => {
         const jugadores = await Jugador.findAll({
             where: {
                 equipo_id: equipoId
-            }
+            },
+            include: [
+                {
+                    model: Sancion,
+                    as: 'sanciones',
+                    where: {
+                        estado: 'activa'
+                    },
+                    required: false,
+                    attributes: [
+                        'id',
+                        'falta',
+                        'tipo',
+                        'descripcion',
+                        'fecha',
+                        'fechas_suspension',
+                        'fechas_cumplidas',
+                        'estado'
+                    ]
+                }
+            ],
+            order: [
+                ['dorsal', 'ASC']
+            ]
         });
 
         res.json(jugadores);
@@ -142,6 +181,25 @@ export const editarJugador = async (req, res, next) => {
         if (!jugador) {
             return res.status(404).json({
                 message: "Jugador no encontrado"
+            });
+        }
+
+        const usuarioId = req.usuario.id;
+
+        const equipo = await Equipo.findByPk(jugador.equipo_id);
+
+        if (!equipo || equipo.id_usuario_creador !== usuarioId) {
+            return res.status(403).json({
+                message: "No autorizado"
+            });
+        }
+
+        const bloqueado = await plantelBloqueado(jugador.equipo_id);
+
+        if (bloqueado) {
+            return res.status(400).json({
+                code: "PLANTEL_BLOQUEADO",
+                message: "No es posible editar el jugador porque el equipo ya realizó una inscripción."
             });
         }
 
@@ -203,17 +261,11 @@ export const editarJugador = async (req, res, next) => {
             });
         }
 
-        const bloqueado = await plantelBloqueado(jugador.equipo_id);
-
-        if (bloqueado && dni !== jugador.dni) {
-            return res.status(400).json({
-                message: "No es posible modificar el DNI porque el equipo ya posee una inscripción confirmada."
-            });
-        }
-
         await jugador.update({ nombre, apellido, dni, dorsal });
 
-        res.json({ message: "Jugador actualizado correctamente", jugador });
+        res.json({
+            message: "Jugador actualizado correctamente", jugador
+        });
 
     } catch (error) {
         next(error);

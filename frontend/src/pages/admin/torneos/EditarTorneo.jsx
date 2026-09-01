@@ -7,6 +7,7 @@ const EditarTorneo = () => {
     const { id } = useParams();
 
     const [showHelp, setShowHelp] = useState(false);
+    const [mostrarModalBloqueado, setMostrarModalBloqueado] = useState(false);
     const [error, setError] = useState("");
 
     const [formData, setFormData] = useState({
@@ -69,7 +70,6 @@ const EditarTorneo = () => {
     const handleUpdate = async (e) => {
 
         e.preventDefault();
-
         const validationError = validateForm();
 
         if (validationError) {
@@ -81,7 +81,6 @@ const EditarTorneo = () => {
 
         try {
             const token = localStorage.getItem("token");
-
             const response = await fetch(`http://localhost:3000/api/v1/torneos/${id}`,
                 {
                     method: "PUT",
@@ -101,6 +100,11 @@ const EditarTorneo = () => {
             const data = await response.json();
 
             if (!response.ok) {
+                if (data.code === "TORNEO_CON_FIXTURE") {
+                    setMostrarModalBloqueado(true);
+                    return;
+                }
+
                 setError(data.message || "Error al actualizar torneo");
                 return;
             }
@@ -327,6 +331,55 @@ const EditarTorneo = () => {
                     )
                 }
 
+                {/* Modal Advertencia Fixture Generado */}
+                {
+                    mostrarModalBloqueado && (
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor: "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+
+                            <div
+                                className="bg-white p-4 rounded shadow text-center"
+                                style={{
+                                    width: "90%",
+                                    maxWidth: "450px"
+                                }}
+                            >
+
+                                <div
+                                    className="text-warning mb-3"
+                                    style={{ fontSize: "3rem" }}
+                                >
+                                    ⚠
+                                </div>
+
+                                <h4>
+                                    Edición no disponible
+                                </h4>
+
+                                <p className="text-muted">
+                                    No es posible editar este torneo porque
+                                    al menos una de sus competencias ya tiene
+                                    un fixture generado.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-dark"
+                                    onClick={() =>
+                                        setMostrarModalBloqueado(false)
+                                    }
+                                >
+                                    Aceptar
+                                </button>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
 
         </div>

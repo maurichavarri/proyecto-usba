@@ -1,11 +1,13 @@
-import { TorneoCategoria, Torneo, Categoria, Partido, Equipo, Inscripcion, Sede, Arbitro } from '../models/index.js';
+import { TorneoCategoria, Torneo, Categoria, Partido, Equipo, Inscripcion, Sede, Arbitro, Jugador, Sancion } from '../models/index.js';
 
 import { getDetalleTorneoCategoria } from '../services/torneoCategoria.service.js';
 import { generarFixture } from '../services/fixture.service.js';
 import { calcularTablaPosiciones } from '../services/tabla.service.js';
 import { generarPlayoffs } from '../services/playoff.service.js';
+import { obtenerFechaActualArgentina } from "../utils/fecha.utils.js";
 
 import { Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 
 export const crearTorneoCategoria = async (req, res, next) => {
     try {
@@ -79,6 +81,57 @@ export const getTorneoCategorias = async (req, res, next) => {
                                 SELECT COUNT(*)
                                 FROM inscripcion
                                 WHERE inscripcion.torneo_categoria_id = TorneoCategoria.id
+                                AND inscripcion.estado = 'confirmado'
+                            )
+                        `),
+                        'equipos_inscriptos'
+                    ]
+                ]
+            }
+        });
+
+        res.json(data);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getTorneoCategoriasDisponibles = async (req, res, next) => {
+    try {
+        const hoy = obtenerFechaActualArgentina();
+        const data = await TorneoCategoria.findAll({
+            include: [
+                {
+                    model: Torneo,
+                    as: 'torneo',
+                    attributes: [
+                        'id',
+                        'nombre',
+                        'fecha_cierre_inscripcion'
+                    ],
+                    where: {
+                        estado: 'activo',
+                        fecha_cierre_inscripcion: {
+                            [Op.gte]: hoy
+                        }
+                    }
+                },
+                {
+                    model: Categoria,
+                    as: 'categoria',
+                    attributes: ['id', 'nombre']
+                }
+            ],
+
+            attributes: {
+                include: [
+                    [
+                        Sequelize.literal(`
+                            (
+                                SELECT COUNT(*)
+                                FROM inscripcion
+                                WHERE inscripcion.torneo_categoria_id = TorneoCategoria.id
                             )
                         `),
                         'equipos_inscriptos'
@@ -97,9 +150,17 @@ export const getTorneoCategorias = async (req, res, next) => {
 export const getDetalle = async (req, res, next) => {
     try {
         const data = await getDetalleTorneoCategoria(req.params.id);
-
         res.json(data);
 
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getDetalleAdmin = async (req, res, next) => {
+    try {
+        const data = await getDetalleTorneoCategoria(req.params.id, true);
+        res.json(data);
     } catch (error) {
         next(error);
     }
@@ -292,6 +353,98 @@ export const finalizarCompetencia = async (req, res, next) => {
         res.json({
             message: 'Competencia finalizada correctamente'
         });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getEquipoCompetencia = async (req, res, next) => {
+    try {
+
+        const { id, equipoId } = req.params;
+
+        // Verificar que el equipo esté confirmado
+        // en esta competencia
+        const inscripcion = await Inscripcion.findOne({
+            where: {
+                torneo_categoria_id: id,
+                equipo_id: equipoId,
+                estado: "confirmado"
+            }
+        });
+
+        if (!inscripcion) {
+            return res.status(404).json({
+                message: "El equipo no pertenece a esta competencia"
+            });
+        }
+
+        const equipo = await Equipo.findByPk(equipoId, {
+            attributes: [
+                "id",
+                "nombre",
+                "descripcion",
+                "creado_en"
+            ],
+
+            include: [
+                {
+                    model: Jugador,
+                    as: "jugadores",
+
+                    attributes: [
+                        "id",
+                        "nombre",
+                        "apellido",
+                        "dorsal",
+                        "estado"
+                    ],
+
+                    include: [
+                        {
+                            model: Sancion,
+                            as: "sanciones",
+
+                            where: {
+                                estado: "activa"
+                            },
+
+                            required: false,
+
+                            attributes: [
+                                "id",
+                                "falta",
+                                "tipo",
+                                "descripcion",
+                                "fechas_suspension",
+                                "fechas_cumplidas",
+                                "estado"
+                            ]
+                        }
+                    ]
+                }
+            ],
+
+            order: [
+                [
+                    {
+                        model: Jugador,
+                        as: "jugadores"
+                    },
+                    "dorsal",
+                    "ASC"
+                ]
+            ]
+        });
+
+        if (!equipo) {
+            return res.status(404).json({
+                message: "Equipo no encontrado"
+            });
+        }
+
+        res.json(equipo);
 
     } catch (error) {
         next(error);

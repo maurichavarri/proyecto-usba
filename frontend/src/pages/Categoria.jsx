@@ -2,6 +2,7 @@ import { useFetch } from "../hooks/useFetch";
 import img from "../assets/img/pelota-basquet-2.jpeg";
 
 const Categoria = () => {
+
     const { data } = useFetch("http://localhost:3000/api/v1/categorias");
 
     return (
@@ -51,5 +52,6 @@ const Categoria = () => {
         </>
     );
 };
+
 
 export default Categoria;

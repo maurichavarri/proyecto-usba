@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-dark text-white mt-auto">
-      <div className="container py-4">
-        <div className="row">
+      <div className="container py-3">
+        <div className="row justify-content-center text-center">
 
           {/* Marca */}
           <div className="col-md-3 mb-3">
@@ -21,7 +21,6 @@ const Footer = () => {
               <li><Link className="text-white text-decoration-none" to="/torneos">Torneos</Link></li>
               <li><Link className="text-white text-decoration-none" to="/categorias">Categorías</Link></li>
               <li><Link className="text-white text-decoration-none" to="/anuncios">Anuncios</Link></li>
-              <li><Link className="text-white text-decoration-none" to="/contactos">Contactos</Link></li>
             </ul>
           </div>
 
@@ -30,9 +29,6 @@ const Footer = () => {
             <h6>Contacto</h6>
             <p className="mb-1">+54 9 385 XXX XXXX</p>
           </div>
-
-         
-
         </div>
       </div>
 

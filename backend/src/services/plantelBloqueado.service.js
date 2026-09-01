@@ -1,11 +1,9 @@
-import { Inscripcion } from "../models/index.js";
+import Inscripcion from "../models/inscripcion.model.js";
 
 export const plantelBloqueado = async (equipoId) => {
-
     const inscripcion = await Inscripcion.findOne({
         where: {
-            equipo_id: equipoId,
-            estado: "confirmado"
+            equipo_id: equipoId
         }
     });
 

@@ -2,13 +2,15 @@ import { Router } from 'express';
 import {
     crearTorneoCategoria,
     getTorneoCategorias,
+    getTorneoCategoriasDisponibles,
     getDetalle,
     generarFixtureController,
     getFixture,
     getTablaPosiciones,
     getResumenTorneoCategoria,
     generarPlayoffsController,
-    finalizarCompetencia
+    finalizarCompetencia,
+    getEquipoCompetencia
 } from '../controllers/torneoCategoria.controller.js';
 
 import verifyToken from '../middlewares/verifyToken.js';
@@ -21,6 +23,12 @@ router.post('/', verifyToken, verifyRole('admin'), crearTorneoCategoria);
 
 // Obtener todas
 router.get('/', getTorneoCategorias);
+
+// Obtener todas (disponibles)
+router.get('/disponibles', verifyToken, verifyRole('delegado'), getTorneoCategoriasDisponibles);
+
+// Obtener la información de un Equipo y sus Jugadores para la vista pública
+router.get("/:id/equipos/:equipoId", getEquipoCompetencia);
 
 // Obtener detalle
 router.get('/:id', getDetalle);

@@ -5,13 +5,23 @@ const AdminInscripciones = () => {
 
     const navigate = useNavigate();
 
-    const [showHelp, setShowHelp] = useState(false);
+    const [paginaActual, setPaginaActual] = useState(1);
+    const inscripcionesPorPagina = 10;
+
     const [inscripciones, setInscripciones] = useState([]);
+
+    const [showHelp, setShowHelp] = useState(false);
+    const [mostrarModal, setMostrarModal] = useState(false);
     const [mensaje, setMensaje] = useState("");
+    const [busqueda, setBusqueda] = useState("");
 
     useEffect(() => {
         obtenerInscripciones();
     }, []);
+
+    useEffect(() => {
+        setPaginaActual(1);
+    }, [busqueda]);
 
     const obtenerInscripciones = async () => {
         try {
@@ -55,9 +65,28 @@ const AdminInscripciones = () => {
         }
     };
 
+    const inscripcionesFiltradas = inscripciones.filter((inscripcion) => {
+        const texto = busqueda.toLowerCase();
+
+        const nombreEquipo = inscripcion.Equipo?.nombre?.toLowerCase() || "";
+        const nombreTorneo = inscripcion.torneoCategoria?.torneo?.nombre?.toLowerCase() || "";
+        const nombreCategoria = inscripcion.torneoCategoria?.categoria?.nombre?.toLowerCase() || "";
+
+        return (
+            nombreEquipo.includes(texto) ||
+            nombreTorneo.includes(texto) ||
+            nombreCategoria.includes(texto)
+        );
+    });
+
+    const totalPaginas = Math.ceil(inscripcionesFiltradas.length / inscripcionesPorPagina);
+    const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
+    const indiceFin = indiceInicio + inscripcionesPorPagina;
+    const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
+
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-12">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">

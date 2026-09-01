@@ -18,6 +18,7 @@ const AdminTorneoCategorias = () => {
 
     const [mensaje, setMensaje] = useState("");
     const [tipoMensaje, setTipoMensaje] = useState("success");
+    const [busqueda, setBusqueda] = useState("");
 
     const token = localStorage.getItem("token");
 
@@ -90,6 +91,18 @@ const AdminTorneoCategorias = () => {
             setMensaje("Error al crear la relación.");
         }
     };
+
+    const torneoCategoriasFiltradas = torneoCategorias.filter((tc) => {
+        const texto = busqueda.toLowerCase();
+
+        const nombreTorneo = tc.torneo?.nombre?.toLowerCase() || "";
+        const nombreCategoria = tc.categoria?.nombre?.toLowerCase() || "";
+
+        return (
+            nombreTorneo.includes(texto) ||
+            nombreCategoria.includes(texto)
+        );
+    });
 
     const totalEquipos = torneoCategorias.reduce((acc, tc) => acc + Number(tc.equipos_inscriptos || 0), 0);
     const listosParaFixture = torneoCategorias.filter(tc => Number(tc.equipos_inscriptos) >= 4).length;
@@ -291,6 +304,45 @@ const AdminTorneoCategorias = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Modal Ayuda */}
+                {
+                    showHelp && (
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor:
+                                    "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    maxWidth: "550px"
+                                }}
+                            >
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>¿Cómo funciona este apartado?</h5>
+                                    <button
+                                        className="btn-close"
+                                        onClick={() =>
+                                            setShowHelp(false)
+                                        }
+                                    />
+                                </div>
+                                <p>
+                                    Desde esta sección podés
+                                    crear competencias, o sea, asignar las relaciones
+                                    torneos-categorías. Al final tienes el listado de las mismas
+                                    con información variada.
+                                    <br /><br />
+                                    ACLARACIÓN: Una vez creada una competición no se podrá borrar.
+                                </p>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
 
             {/* Modal ayuda */}

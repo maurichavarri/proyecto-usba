@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { formatearFecha, obtenerFechaActual, inscripcionesAbiertas } from "../../../utils/fecha.utils";
 
 const AdminTorneos = () => {
     const navigate = useNavigate();
@@ -46,9 +47,14 @@ const AdminTorneos = () => {
         torneo.nombre?.toLowerCase().includes(busqueda.toLowerCase())
     );
 
+    const totalPaginas = Math.ceil(torneosFiltrados.length / torneosPorPagina);
+    const indiceInicio = (paginaActual - 1) * torneosPorPagina;
+    const indiceFin = indiceInicio + torneosPorPagina;
+    const torneosPaginados = torneosFiltrados.slice(indiceInicio, indiceFin);
+
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-12">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">
