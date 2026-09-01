@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 const AdminCategorias = () => {
 
     const navigate = useNavigate();
-
     const [categorias, setCategorias] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
     const [busqueda, setBusqueda] = useState("");
@@ -15,11 +14,8 @@ const AdminCategorias = () => {
 
     const obtenerCategorias = async () => {
         try {
-
             const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/categorias/admin/todas",
+            const response = await fetch("http://localhost:3000/api/v1/categorias/admin/todas",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -27,13 +23,12 @@ const AdminCategorias = () => {
                 }
             );
 
-           const data = await response.json();
-
-            if (Array.isArray(data)) {
-            setCategorias(data);
-        } else {
-        setCategorias([]);
-        }
+            const data = await response.json();
+            if (response.ok) {
+                setCategorias(data);
+            } else {
+                setCategorias([]);
+            }
 
         } catch (error) {
             console.error(error);
@@ -41,13 +36,9 @@ const AdminCategorias = () => {
     };
 
     const cambiarEstado = async (id) => {
-
         try {
-
             const token = localStorage.getItem("token");
-
-            await fetch(
-                `http://localhost:3000/api/v1/categorias/${id}/estado`,
+            await fetch(`http://localhost:3000/api/v1/categorias/${id}/estado`,
                 {
                     method: "PATCH",
                     headers: {
@@ -64,25 +55,15 @@ const AdminCategorias = () => {
     };
 
     const categoriasFiltradas = categorias.filter((categoria) => {
-
         const texto = busqueda.toLowerCase();
-
-        return (
-            categoria.nombre?.toLowerCase().includes(texto)
-        );
+        return (categoria.nombre?.toLowerCase().includes(texto));
     });
 
     return (
         <div className="container mt-4 mb-5">
-
             <div className="col-md-12 mx-auto">
-
                 <div className="d-flex align-items-center mb-2">
-
-                    <h2 className="me-2">
-                        Gestión de Categorías
-                    </h2>
-
+                    <h2 className="me-2">Gestión de Categorías</h2>
                     <span
                         style={{
                             cursor: "pointer",
@@ -93,7 +74,6 @@ const AdminCategorias = () => {
                     >
                         ❓
                     </span>
-
                 </div>
 
                 <nav
@@ -194,12 +174,12 @@ const AdminCategorias = () => {
                                                                     categoria.estado === "activo"
                                                                         ? (
                                                                             <span className="badge bg-success">
-                                                                                Activa
+                                                                                Visible
                                                                             </span>
                                                                         )
                                                                         : (
                                                                             <span className="badge bg-danger">
-                                                                                Archivada
+                                                                                Oculto
                                                                             </span>
                                                                         )
                                                                 }
@@ -228,8 +208,8 @@ const AdminCategorias = () => {
                                                                     >
                                                                         {
                                                                             categoria.estado === "activo"
-                                                                                ? "Archivar"
-                                                                                : "Activar"
+                                                                                ? "Ocultar"
+                                                                                : "Mostrar"
                                                                         }
                                                                     </button>
 
@@ -300,7 +280,7 @@ const AdminCategorias = () => {
 
                             <p>
                                 Desde aquí podés crear, editar,
-                                activar o archivar categorías
+                                mostrar u ocultar categorías
                                 utilizadas en los torneos.
                             </p>
 
@@ -313,5 +293,4 @@ const AdminCategorias = () => {
         </div>
     );
 };
-
 export default AdminCategorias;

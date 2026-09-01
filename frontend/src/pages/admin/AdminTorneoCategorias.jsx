@@ -18,6 +18,7 @@ const AdminTorneoCategorias = () => {
 
     const [mensaje, setMensaje] = useState("");
     const [tipoMensaje, setTipoMensaje] = useState("success");
+    const [busqueda, setBusqueda] = useState("");
 
     const token = localStorage.getItem("token");
 
@@ -100,6 +101,18 @@ const AdminTorneoCategorias = () => {
         }
     };
 
+    const torneoCategoriasFiltradas = torneoCategorias.filter((tc) => {
+        const texto = busqueda.toLowerCase();
+
+        const nombreTorneo = tc.torneo?.nombre?.toLowerCase() || "";
+        const nombreCategoria = tc.categoria?.nombre?.toLowerCase() || "";
+
+        return (
+            nombreTorneo.includes(texto) ||
+            nombreCategoria.includes(texto)
+        );
+    });
+
     const totalEquipos = torneoCategorias.reduce((acc, tc) => acc + Number(tc.equipos_inscriptos || 0), 0);
     const listosParaFixture = torneoCategorias.filter(tc => Number(tc.equipos_inscriptos) >= 4).length;
 
@@ -110,7 +123,6 @@ const AdminTorneoCategorias = () => {
                     <h2 className="me-2">
                         Torneos y Categorías
                     </h2>
-
                     <span
                         className="text-primary"
                         style={{
@@ -124,51 +136,27 @@ const AdminTorneoCategorias = () => {
                     >
                         ❓
                     </span>
-
                 </div>
 
-                <nav
-                    className="mb-3"
-                    style={{ fontSize: "0.9rem" }}
-                >
-
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer"
-                        }}
-                        onClick={() =>
-                            navigate("/panel/admin")
-                        }
-                    >
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
                         Admin Dashboard
                     </span>
-
                     {" > "}
-
                     <span className="text-muted">
                         Torneos - Categorías
                     </span>
-
                 </nav>
 
-                <button
-                    className="btn btn-dark mb-3"
-                    onClick={() =>
-                        navigate(-1)
-                    }
-                >
+                <button className="btn btn-dark mb-3" onClick={() => navigate(-1)}>
                     Volver
                 </button>
 
                 <div className="card shadow-sm mb-4">
-
                     <div className="card-header bg-dark text-white">
-
                         <strong>
                             Asignar categoría a torneo
                         </strong>
-
                     </div>
 
                     <div className="card-body">
@@ -318,191 +306,257 @@ const AdminTorneoCategorias = () => {
 
                 </div>
 
+                {/*
                 <div className="row mb-4">
-
                     <div className="col-md-4">
-
                         <div className="card shadow-sm border-0">
-
                             <div className="card-body">
-
                                 <h6 className="text-muted">
                                     Relaciones
                                 </h6>
-
                                 <h3>
                                     {torneoCategorias.length}
                                 </h3>
-
                             </div>
-
                         </div>
-
                     </div>
 
                     <div className="col-md-4">
-
                         <div className="card shadow-sm border-0">
-
                             <div className="card-body">
-
                                 <h6 className="text-muted">
                                     Equipos Inscriptos
                                 </h6>
-
                                 <h3>
                                     {totalEquipos}
                                 </h3>
-
                             </div>
-
                         </div>
-
                     </div>
 
                     <div className="col-md-4">
-
                         <div className="card shadow-sm border-0">
-
                             <div className="card-body">
-
                                 <h6 className="text-muted">
                                     Listos para Fixture
                                 </h6>
-
                                 <h3>
                                     {listosParaFixture}
                                 </h3>
-
                             </div>
-
                         </div>
-
                     </div>
-
-                </div>
+                </div> 
+                */}
 
                 <div className="card shadow-sm">
-
-                    <div className="card-header bg-dark text-white">
-
+                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                         <strong>
-                            Categorías asignadas
+                            Competencias
                         </strong>
 
+                        <input
+                            type="text"
+                            className="form-control w-auto"
+                            placeholder="Buscar..."
+                            value={busqueda}
+                            onChange={(e) =>
+                                setBusqueda(e.target.value)
+                            }
+                        />
                     </div>
 
                     <div className="card-body">
+                        {
+                            torneoCategorias.length === 0 ? (
+                                <div className="alert alert-info mb-0">
+                                    No existen competencias creadas.
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
 
-                        <div className="table-responsive">
+                                    <table className="table table-hover align-middle">
 
-                            <table className="table table-hover align-middle">
+                                        <thead>
 
-                                <thead>
+                                            <tr>
 
-                                    <tr>
+                                                <th>Torneo</th>
+                                                <th>Categoría</th>
+                                                <th>Equipos</th>
+                                                <th>Formato</th>
+                                                <th>Estado</th>
+                                                <th>Arancel</th>
+                                                <th>Fixture</th>
 
-                                        <th>Torneo</th>
-                                        <th>Categoría</th>
-                                        <th>Equipos</th>
-                                        <th>Formato</th>
-                                        <th>Estado</th>
-                                        <th>Arancel</th>
-                                        <th>Acciones</th>
+                                            </tr>
 
-                                    </tr>
+                                        </thead>
 
-                                </thead>
+                                        <tbody>
+                                            {
+                                                torneoCategoriasFiltradas.length > 0 ? (torneoCategoriasFiltradas.map((tc) => (
+                                                    <tr key={tc.id}>
 
-                                <tbody>
+                                                        <td>
+                                                            {tc.torneo?.nombre}
+                                                        </td>
 
-                                    {
-                                        torneoCategorias.map(
-                                            (tc) => (
+                                                        <td>
+                                                            {tc.categoria?.nombre}
+                                                        </td>
 
-                                                <tr key={tc.id}>
+                                                        <td>
+                                                            {
+                                                                tc.formato_competencia === "playoff_8"
+                                                                    ? Number(tc.equipos_inscriptos) >= 8
+                                                                        ? (
+                                                                            <span className="badge bg-success">
+                                                                                {tc.equipos_inscriptos} equipos
+                                                                            </span>
+                                                                        )
+                                                                        : (
+                                                                            <span className="badge bg-danger">
+                                                                                {tc.equipos_inscriptos || 0}/8 mínimos
+                                                                            </span>
+                                                                        )
+                                                                    : Number(tc.equipos_inscriptos) >= 4
+                                                                        ? (
+                                                                            <span className="badge bg-success">
+                                                                                {tc.equipos_inscriptos} equipos
+                                                                            </span>
+                                                                        )
+                                                                        : (
+                                                                            <span className="badge bg-danger">
+                                                                                {tc.equipos_inscriptos || 0}/4 mínimos
+                                                                            </span>
+                                                                        )
+                                                            }
+                                                        </td>
 
-                                                    <td>
-                                                        {tc.torneo?.nombre}
-                                                    </td>
+                                                        {/* 
+                                                        <td>
+                                                            {
+                                                                Number(tc.equipos_inscriptos) >= 4
+                                                                    ? (
+                                                                        <span className="badge bg-success">
+                                                                            {tc.equipos_inscriptos} equipos
+                                                                        </span>
+                                                                    )
+                                                                    : (
+                                                                        <span className="badge bg-danger">
+                                                                            {tc.equipos_inscriptos || 0}/4 mínimos
+                                                                        </span>
+                                                                    )
+                                                            }
+                                                        </td>
+                                                        */}
 
-                                                    <td>
-                                                        {tc.categoria?.nombre}
-                                                    </td>
+                                                        <td>
+                                                            {
+                                                                tc.formato_competencia === "solo_liga"
+                                                                    ? "Solo Liga"
+                                                                    : tc.formato_competencia === "playoff_4"
+                                                                        ? "Playoff Top 4"
+                                                                        : "Playoff Top 8"
+                                                            }
+                                                        </td>
 
-                                                    <td>
-                                                        {
-                                                            Number(tc.equipos_inscriptos) >= 4
-                                                                ? (
-                                                                    <span className="badge bg-success">
-                                                                        {tc.equipos_inscriptos} equipos
-                                                                    </span>
-                                                                )
-                                                                : (
-                                                                    <span className="badge bg-danger">
-                                                                        {tc.equipos_inscriptos || 0}/4 mínimos
-                                                                    </span>
-                                                                )
-                                                        }
-                                                    </td>
+                                                        <td>
+                                                            {
+                                                                tc.estado_competencia === "configuracion" &&
+                                                                <span className="badge bg-secondary">
+                                                                    En Configuración
+                                                                </span>
+                                                            }
+                                                            {
+                                                                tc.estado_competencia === "en_curso" &&
+                                                                <span className="badge bg-success">
+                                                                    En Curso
+                                                                </span>
+                                                            }
+                                                            {
+                                                                tc.estado_competencia === "finalizado" &&
+                                                                <span className="badge bg-dark">
+                                                                    Finalizado
+                                                                </span>
+                                                            }
+                                                        </td>
 
-                                                    <td>
-                                                        {
-                                                            tc.formato_competencia === "solo_liga"
-                                                                ? "Solo Liga"
-                                                                : tc.formato_competencia === "playoff_4"
-                                                                    ? "Playoff Top 4"
-                                                                    : "Playoff Top 8"
-                                                        }
-                                                    </td>
+                                                        <td>
 
-                                                    <td>
-                                                        {
-                                                            tc.estado_competencia === "configuracion" &&
-                                                            <span className="badge bg-secondary">
-                                                                En Configuración
+                                                            <span className="badge bg-primary">
+                                                                ${tc.arancel}
                                                             </span>
-                                                        }
-                                                        {
-                                                            tc.estado_competencia === "en_curso" &&
-                                                            <span className="badge bg-success">
-                                                                En Curso
-                                                            </span>
-                                                        }
-                                                        {
-                                                            tc.estado_competencia === "finalizado" &&
-                                                            <span className="badge bg-dark">
-                                                                Finalizado
-                                                            </span>
-                                                        }
-                                                    </td>
 
-                                                    <td>
+                                                        </td>
 
-                                                        <span className="badge bg-primary">
-                                                            ${tc.arancel}
-                                                        </span>
+                                                        <td>
 
-                                                    </td>
-
-                                                    <td>
-
-                                                        <Link
-                                                            to={`/panel/admin/fixture/${tc.id}`}
-                                                            className="btn btn-dark btn-sm"
-                                                        >
-                                                            Ver Fixture
-                                                        </Link>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                                            <Link
+                                                                to={`/panel/admin/fixture/${tc.id}`}
+                                                                className="btn btn-dark btn-sm"
+                                                            >
+                                                                Ver
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                                )
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="text-center text-muted">
+                                                            No se encontraron competencias.
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
+
+                {/* Modal Ayuda */}
+                {
+                    showHelp && (
+                        <div
+                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                            style={{
+                                backgroundColor:
+                                    "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+                            }}
+                        >
+                            <div
+                                className="bg-white p-4 rounded shadow"
+                                style={{
+                                    maxWidth: "550px"
+                                }}
+                            >
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>¿Cómo funciona este apartado?</h5>
+                                    <button
+                                        className="btn-close"
+                                        onClick={() =>
+                                            setShowHelp(false)
+                                        }
+                                    />
+                                </div>
+                                <p>
+                                    Desde esta sección podés
+                                    crear competencias, o sea, asignar las relaciones
+                                    torneos-categorías. Al final tienes el listado de las mismas
+                                    con información variada.
+                                    <br /><br />
+                                    ACLARACIÓN: Una vez creada una competición no se podrá borrar.
+                                </p>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
         </div>
     );

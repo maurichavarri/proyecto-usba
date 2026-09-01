@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminBienvenida = () => {
     const navigate = useNavigate();
+
     const [titulo, setTitulo] = useState("");
     const [texto, setTexto] = useState("");
     const [imagenActual, setImagenActual] = useState(null);
@@ -10,6 +11,7 @@ const AdminBienvenida = () => {
     const [preview, setPreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [mensaje, setMensaje] = useState(null);
+    const [showHelp, setShowHelp] = useState(false);
 
     const token = localStorage.getItem("token");
 
@@ -70,18 +72,40 @@ const AdminBienvenida = () => {
 
     return (
         <div className="container mt-4 mb-5 col-md-8">
-
-            <div className="d-flex align-items-center justify-content-between mb-2">
-                <h2>Editar Sección Bienvenida</h2>
+            <div className="d-flex align-items-center mb-1">
+                <h2>Sección Bienvenida</h2>
+                <span
+                    style={{
+                        cursor: "pointer",
+                        fontSize: "1.2rem"
+                    }}
+                    className="text-primary"
+                    onClick={() =>
+                        setShowHelp(true)
+                    }
+                >
+                    ❓
+                </span>
             </div>
 
-            <nav className="mb-4" style={{ fontSize: "0.9rem" }}>
+            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                 <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
                     Admin Dashboard
                 </span>
                 {" > "}
                 <span className="text-muted">Bienvenida</span>
             </nav>
+
+            <div className="d-flex justify-content-between mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() =>
+                        navigate(-1)
+                    }
+                >
+                    Volver
+                </button>
+            </div>
 
             {mensaje && (
                 <div className={`alert alert-${mensaje.tipo}`}>{mensaje.texto}</div>
@@ -155,12 +179,52 @@ const AdminBienvenida = () => {
                         </div>
                     )}
 
-                    <button className="btn btn-dark" disabled={loading}>
+                    <button className="btn btn-primary" disabled={loading}>
                         {loading ? "Guardando..." : "Guardar cambios"}
                     </button>
 
                 </form>
             </div>
+
+            {/* Modal Ayuda */}
+            {
+                showHelp && (
+                    <div
+                        className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                        style={{
+                            backgroundColor:
+                                "rgba(0,0,0,0.5)",
+                            zIndex: 1050
+                        }}
+                    >
+                        <div
+                            className="bg-white p-4 rounded shadow"
+                            style={{
+                                maxWidth: "550px"
+                            }}
+                        >
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h5>
+                                    ¿Cómo funciona este apartado?
+                                </h5>
+                                <button
+                                    className="btn-close"
+                                    onClick={() =>
+                                        setShowHelp(false)
+                                    }
+                                />
+                            </div>
+                            <p>Podés administrar la sección de 'Bienvenida' que se encuentra en 'Home'
+                            </p>
+                            <ul>
+                                <li>Editar título.</li>
+                                <li>Editar texto.</li>
+                                <li>Subir, cambiar o eliminar imagen de fachada.</li>
+                            </ul>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     );
 };
