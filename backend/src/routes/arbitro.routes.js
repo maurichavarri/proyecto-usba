@@ -1,11 +1,5 @@
 import { Router } from 'express';
-import {
-    getArbitros,
-    getArbitroById,
-    createArbitro,
-    updateArbitro,
-    deleteArbitro
-} from '../controllers/arbitro.controller.js';
+import { getArbitros, getArbitroById, createArbitro, updateArbitro, deleteArbitro, getMisPartidos, getMiPartidoById } from '../controllers/arbitro.controller.js';
 
 import verifyToken from '../middlewares/verifyToken.js';
 import verifyRole from '../middlewares/verifyRole.js';
@@ -13,6 +7,8 @@ import verifyRole from '../middlewares/verifyRole.js';
 const router = Router();
 
 router.get('/', getArbitros);
+router.get('/mis-partidos', verifyToken, verifyRole('arbitro'), getMisPartidos);
+router.get("/mis-partidos/:id", verifyToken, verifyRole("arbitro"), getMiPartidoById);
 router.get('/:id', getArbitroById);
 router.post('/', verifyToken, verifyRole('admin'), createArbitro);
 router.put('/:id', verifyToken, verifyRole('admin'), updateArbitro);

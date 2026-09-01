@@ -19,6 +19,7 @@ const Header = () => {
 
     return (
         <header style={{ position: "sticky", top: 0, zIndex: 1000 }}>
+
             {/* Top bar */}
             <div className="text-white text-center py-1 small" style={{ backgroundColor: "#f56f02" }}>
                 Santiago del Estero

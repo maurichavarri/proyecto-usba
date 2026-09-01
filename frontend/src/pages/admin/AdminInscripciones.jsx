@@ -100,8 +100,8 @@ const AdminInscripciones = () => {
     const inscripcionesPaginadas = inscripcionesFiltradas.slice(indiceInicio, indiceFin);
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-12">
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-1">
