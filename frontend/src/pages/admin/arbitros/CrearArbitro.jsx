@@ -4,20 +4,16 @@ import { useNavigate } from "react-router-dom";
 const CrearArbitro = () => {
 
     const navigate = useNavigate();
-
     const [showHelp, setShowHelp] = useState(false);
-
     const [formData, setFormData] = useState({
         nombre: "",
         apellido: "",
         correo: "",
         contraseña: ""
     });
-
     const [mensaje, setMensaje] = useState("");
 
     const handleChange = (e) => {
-
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -48,9 +44,7 @@ const CrearArbitro = () => {
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         const error = validarFormulario();
 
         if (error) {
@@ -59,11 +53,8 @@ const CrearArbitro = () => {
         }
 
         try {
-
             const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                "http://localhost:3000/api/v1/arbitros",
+            const response = await fetch("http://localhost:3000/api/v1/arbitros",
                 {
                     method: "POST",
                     headers: {
@@ -84,20 +75,14 @@ const CrearArbitro = () => {
             navigate("/panel/admin/arbitros");
 
         } catch (error) {
-
             console.error(error);
-
-            setMensaje(
-                "Error al crear el árbitro."
-            );
+            setMensaje("Error al crear el árbitro.");
         }
     };
 
     return (
-        <div className="container mt-4 mb-5">
-
-            <div className="col-md-8 mx-auto">
-
+        <div className="container mt-5 mb-5">
+            <div className="col-md-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">
                         Crear Árbitro
@@ -126,7 +111,7 @@ const CrearArbitro = () => {
                             navigate("/panel/admin")
                         }
                     >
-                        Admin Dashboard
+                        Panel del Admisnitrador
                     </span>
 
                     {" > "}
@@ -152,7 +137,7 @@ const CrearArbitro = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Regresar a gestion de arbitros
+                    ← Regresar a gestion de arbitros
                 </button>
 
                 <div className="card shadow-sm">

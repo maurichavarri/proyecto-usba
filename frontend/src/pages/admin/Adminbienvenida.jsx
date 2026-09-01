@@ -73,8 +73,10 @@ const AdminBienvenida = () => {
     return (
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
+
+                {/* Titulo */}
                 <div className="d-flex align-items-center mb-1">
-                    <h2>Sección Bienvenida</h2>
+                    <h2>Bienvenida</h2>
                     <span
                         style={{
                             cursor: "pointer",
@@ -90,6 +92,10 @@ const AdminBienvenida = () => {
                 </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                {/* Breadcrumb */}
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                 <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                     <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
                         Admin Dashboard
@@ -205,6 +211,7 @@ const AdminBienvenida = () => {
                         </div>
                     )}
 
+<<<<<<< HEAD
                     <button className="btn btn-dark" disabled={loading}>
                         {loading ? "Guardando..." : "Guardar cambios"}
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
@@ -283,10 +290,11 @@ const AdminBienvenida = () => {
                             </div>
                         )}
 
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                         <button className="btn btn-primary" disabled={loading}>
                             {loading ? "Guardando..." : "Guardar cambios"}
                         </button>
-
                     </form>
                 </div>
 

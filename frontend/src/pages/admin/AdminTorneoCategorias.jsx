@@ -252,7 +252,11 @@ const AdminTorneoCategorias = () => {
                 {/*
 =======
                 {/* Resumen */}
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                {/* 
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                 <div className="row mb-4">
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
@@ -310,7 +314,11 @@ const AdminTorneoCategorias = () => {
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                */}
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
                 {/* Tabla */}
                 <div className="card shadow-sm">

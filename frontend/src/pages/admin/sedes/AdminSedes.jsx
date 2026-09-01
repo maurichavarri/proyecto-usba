@@ -33,6 +33,7 @@ const AdminSedes = () => {
 
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
 
@@ -45,6 +46,10 @@ const AdminSedes = () => {
 =======
         <div className="container mt-4 mb-5">
             <div className="col-12">
+=======
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">
@@ -89,7 +94,7 @@ const AdminSedes = () => {
                         ← Regresar al panel
                     </button>
                     <Link to="/panel/admin/sedes/crear" className="btn btn-primary">
-                        Crear sede
+                        + Crear sede
                     </Link>
                 </div>
 

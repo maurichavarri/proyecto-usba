@@ -5,11 +5,17 @@ const MisEquipos = () => {
 
     const navigate = useNavigate();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     const [showHelp, setShowHelp] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 =======
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+
+    const [showHelp, setShowHelp] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
     const [equipos, setEquipos] = useState([]);
 
     const [nombre, setNombre] = useState("");
@@ -103,10 +109,14 @@ const MisEquipos = () => {
     return (
         <div className="container mt-5 mb-5">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
             <div className="col-lg-10 mx-auto">
                 {/* Titulo */}
                 <div className="d-flex align-items-center mb-1">
                     <h2 className="me-2">
+<<<<<<< HEAD
                         Mis Equipos
                     </h2>
                     <span style={{ cursor: "pointer", fontSize: "1.2rem" }} className="text-primary" onClick={() => setShowHelp(true)}>
@@ -171,6 +181,33 @@ const MisEquipos = () => {
                     </button>
                 </div>
 
+=======
+                        Mis Equipos
+                    </h2>
+                    <span style={{ cursor: "pointer", fontSize: "1.2rem" }} className="text-primary" onClick={() => setShowHelp(true)}>
+                        ❓
+                    </span>
+                </div>
+
+                {/* Breadcrumb */}
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/delegado")}>
+                        Delegado Dashboard
+                    </span>
+                    {" > "}
+                    <span className="text-muted">
+                        Mis Equipos
+                    </span>
+                </nav>
+
+                {/* Botones */}
+                <div className="d-flex justify-content-between mb-3">
+                    <button className="btn btn-dark" onClick={() => navigate(-1)}>
+                        Volver
+                    </button>
+                </div>
+
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                 {/* Crear Equipo */}
                 <div className="card shadow-sm mb-4">
                     <div className="card-header bg-dark text-white">
@@ -269,7 +306,11 @@ const MisEquipos = () => {
                                                 equiposFiltrados.length > 0 ? (equiposFiltrados.map((equipo) => (
                                                     <tr key={equipo.id}>
                                                         <td><strong>{equipo.nombre}</strong></td>
+<<<<<<< HEAD
                                                         <td>{equipo.creado_en ? new Date(equipo.creado_en).toLocaleDateString('es-AR') : 'Sin fecha'} · #{numeroPlantel(equipo)}</td>
+=======
+                                                        <td>{equipo.creado_en} · #{numeroPlantel(equipo)}</td>
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                                                         {/* <td>{equipo.descripcion || "-"}</td> */}
                                                         <td>{equipo.cantidad_jugadores}</td>
                                                         <td>{equipo.cantidad_competencias}</td>

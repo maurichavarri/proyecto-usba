@@ -166,6 +166,7 @@ const AdminCarrusel = () => {
 
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
@@ -182,17 +183,42 @@ const AdminCarrusel = () => {
                     </span>
 =======
         <div className="container mt-4 mb-5">
+=======
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
-            {/* Título */}
-            <h1 className="mb-2">Administración del Carrusel</h1>
+                {/* Título */}
+                <div className="d-flex align-items-center mb-2">
+                    <h2 className="me-2">Carrusel</h2>
+                    <span
+                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                        className="text-primary"
+                        onClick={() => setShowHelp(true)}
+                    >
+                        ❓
+                    </span>
+                </div>
 
-            {/* Breadcrumb */}
-            <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
-                <span
-                    className="text-primary"
-                    style={{ cursor: "pointer" }}
+                {/* Breadcrumb */}
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel del Administrador
+                    </span>
+                    {" > "}
+                    <span className="text-muted">Carrusel</span>
+                </nav>
+
+                {/* Botón volver */}
+                <button
+                    className="btn btn-dark mb-4"
                     onClick={() => navigate("/panel/admin")}
                 >
+<<<<<<< HEAD
                     Panel del Administrador
                 </span>
                 {" > "}
@@ -242,6 +268,10 @@ const AdminCarrusel = () => {
                         Volver
                     </button>
                 </div>
+=======
+                    ← Regresar al panel
+                </button>
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
                 {/* Toast de feedback */}
                 {mensaje && (

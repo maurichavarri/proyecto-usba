@@ -32,14 +32,8 @@ const FORMATO_LABEL = {
 
 const Torneo = () => {
 
-    const { data } = useFetch(
-        "http://localhost:3000/api/v1/torneos"
-    );
-
-    const [torneoExpandido, setTorneoExpandido] =
-        useState(null);
-
-
+    const { data } = useFetch("http://localhost:3000/api/v1/torneos");
+    const [torneoExpandido, setTorneoExpandido] = useState(null);
     const toggleTorneo = (id) => {
 <<<<<<< HEAD
 
@@ -53,9 +47,7 @@ const Torneo = () => {
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
     };
 
-
     const obtenerFormato = (formato) => {
-
         if (formato === "solo_liga") {
             return "Liga";
         }
@@ -73,7 +65,6 @@ const Torneo = () => {
 
 
     const obtenerEstado = (estado) => {
-
         if (estado === "en_curso") {
             return {
                 texto: "En curso",
@@ -731,9 +722,9 @@ const Torneo = () => {
             {/* HERO DEPORTIVO */}
             <section className="tor-hero">
                 <div className="container tor-hero-inner">
-                    <span className="tor-hero-eyebrow">USBA · Básquet Amateur</span>
+                    <span className="tor-hero-eyebrow text-light">USBA · Básquet Amateur</span>
                     <h1 className="tor-hero-title">Torneos en competencia</h1>
-                    <p className="tor-hero-sub">
+                    <p className="tor-hero-sub text-light">
                         Temporada regular, categorías y play-offs. Tocá un torneo
                         para ver sus divisiones y el estado de cada una.
                     </p>

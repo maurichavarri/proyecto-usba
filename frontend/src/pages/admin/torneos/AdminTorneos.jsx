@@ -5,12 +5,18 @@ import { formatearFecha, obtenerFechaActual, inscripcionesAbiertas } from "../..
 const AdminTorneos = () => {
     const navigate = useNavigate();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
     const [paginaActual, setPaginaActual] = useState(1);
     const torneosPorPagina = 10;
 
+<<<<<<< HEAD
 =======
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
     const [torneos, setTorneos] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
     const [busqueda, setBusqueda] = useState("");
@@ -58,10 +64,14 @@ const AdminTorneos = () => {
     };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
     const torneosFiltrados = torneos.filter((torneo) => {
         const texto = busqueda.toLowerCase();
         return (torneo.nombre?.toLowerCase().includes(texto));
     });
+<<<<<<< HEAD
 =======
     const formatearFecha = (fecha) => {
         if (!fecha) return "-";
@@ -72,6 +82,8 @@ const AdminTorneos = () => {
         torneo.nombre?.toLowerCase().includes(busqueda.toLowerCase())
     );
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
     const totalPaginas = Math.ceil(torneosFiltrados.length / torneosPorPagina);
     const indiceInicio = (paginaActual - 1) * torneosPorPagina;
@@ -139,7 +151,7 @@ const AdminTorneos = () => {
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
                     </button>
                     <Link to="/panel/admin/torneos/crear" className="btn btn-primary">
-                        Crear torneo
+                        + Crear torneo
                     </Link>
                 </div>
 
@@ -147,6 +159,9 @@ const AdminTorneos = () => {
                 <div className="card shadow-sm">
                     <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                         <strong>
                             Torneos registrados
                         </strong>
@@ -181,9 +196,12 @@ const AdminTorneos = () => {
                             )
                         }
 
+<<<<<<< HEAD
 =======
                         <strong>Torneos registrados</strong>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                         <input
                             type="text"
                             className="form-control w-auto"

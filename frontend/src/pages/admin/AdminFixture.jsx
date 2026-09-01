@@ -315,7 +315,7 @@ const AdminFixture = () => {
                         to="/panel/admin"
                         className="text-primary"
                     >
-                        Admin Dashboard
+                        Panel del Administrador
                     </Link>
 
                     {" > "}
@@ -325,7 +325,11 @@ const AdminFixture = () => {
                         to="/panel/admin/torneo-categorias"
                         className="text-primary"
                     >
+<<<<<<< HEAD
                         Torneos - Categorías
+=======
+                        Torneo - Categorías
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
                     </Link>
 =======
                 <Link
@@ -349,13 +353,14 @@ const AdminFixture = () => {
 
                     <button
                         className="btn btn-dark"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate("/panel/admin/torneo-categorias")}
                     >
-                        Volver
+                        ← Regresar a Torneos y Categorias
                     </button>
 
                     <div className="d-flex gap-2">
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                         {
                             fixture.length === 0 &&
@@ -375,6 +380,14 @@ const AdminFixture = () => {
                                 Generar Fixture
                             </button>
                         }
+=======
+                        <button
+                            onClick={() => setMostrarModalFixture(true)}
+                            className="btn btn-primary"
+                        >
+                            Generar Fixture
+                        </button>
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
                         {
                             detalle &&

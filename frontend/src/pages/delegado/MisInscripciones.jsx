@@ -6,11 +6,17 @@ const MisInscripciones = () => {
     const navigate = useNavigate();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     const [paginaActual, setPaginaActual] = useState(1);
     const inscripcionesPorPagina = 10;
 
 =======
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+    const [paginaActual, setPaginaActual] = useState(1);
+    const inscripcionesPorPagina = 10;
+
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
     const [inscripciones, setInscripciones] = useState([]);
     const [equipos, setEquipos] = useState([]);
     const [torneoCategorias, setTorneoCategorias] = useState([]);
@@ -164,6 +170,7 @@ const MisInscripciones = () => {
 
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
 =======
@@ -182,6 +189,10 @@ const MisInscripciones = () => {
                 Mis Inscripciones
             </h2>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-1">

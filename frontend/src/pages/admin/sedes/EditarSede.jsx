@@ -4,16 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 const EditarSede = () => {
 
     const { id } = useParams();
-
     const navigate = useNavigate();
-
     const [showHelp, setShowHelp] = useState(false);
-
     const [formData, setFormData] = useState({
         nombre: "",
         direccion: ""
     });
-
     const [mensaje, setMensaje] = useState("");
 
     useEffect(() => {
@@ -21,53 +17,38 @@ const EditarSede = () => {
     }, []);
 
     const obtenerSede = async () => {
-
         try {
-
-            const response = await fetch(
-                `http://localhost:3000/api/v1/sedes/${id}`
-            );
-
+            const response = await fetch(`http://localhost:3000/api/v1/sedes/${id}`);
             const data = await response.json();
-
             setFormData({
                 nombre: data.nombre || "",
                 direccion: data.direccion || ""
             });
-
         } catch (error) {
-
             console.error(error);
         }
     };
 
     const handleChange = (e) => {
-
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
-
         setMensaje("");
     };
 
     const validarFormulario = () => {
-
         if (!formData.nombre.trim()) {
             return "El nombre es obligatorio.";
         }
-
         if (!formData.direccion.trim()) {
             return "La dirección es obligatoria.";
         }
-
         return "";
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         const error = validarFormulario();
 
         if (error) {
@@ -76,19 +57,14 @@ const EditarSede = () => {
         }
 
         try {
-
             const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                `http://localhost:3000/api/v1/sedes/${id}`,
+            const response = await fetch(`http://localhost:3000/api/v1/sedes/${id}`,
                 {
                     method: "PUT",
-
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`
                     },
-
                     body: JSON.stringify(formData)
                 }
             );
@@ -99,30 +75,21 @@ const EditarSede = () => {
                 setMensaje(data.message);
                 return;
             }
-
             navigate("/panel/admin/sedes");
 
         } catch (error) {
-
             console.error(error);
-
-            setMensaje(
-                "Error al actualizar la sede."
-            );
+            setMensaje("Error al actualizar la sede.");
         }
     };
 
     return (
-        <div className="container mt-4 mb-5">
-
-            <div className="col-md-8 mx-auto">
-
+        <div className="container mt-5 mb-5">
+            <div className="col-md-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
-
                     <h2 className="me-2">
                         Editar Sede
                     </h2>
-
                     <span
                         className="text-primary"
                         style={{
@@ -142,7 +109,6 @@ const EditarSede = () => {
                     className="mb-3"
                     style={{ fontSize: "0.9rem" }}
                 >
-
                     <span
                         className="text-primary"
                         style={{ cursor: "pointer" }}
@@ -177,7 +143,7 @@ const EditarSede = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Regresar a gestion de sedes
+                    ← Regresar a gestion de sedes
                 </button>
 
                 <div className="card shadow-sm">

@@ -4,17 +4,13 @@ import { useNavigate, useParams } from "react-router-dom";
 const EditarArbitro = () => {
 
     const { id } = useParams();
-
     const navigate = useNavigate();
-
     const [showHelp, setShowHelp] = useState(false);
-
     const [formData, setFormData] = useState({
         nombre: "",
         apellido: "",
         correo: ""
     });
-
     const [mensaje, setMensaje] = useState("");
 
     useEffect(() => {
@@ -22,13 +18,8 @@ const EditarArbitro = () => {
     }, []);
 
     const obtenerArbitro = async () => {
-
         try {
-
-            const response = await fetch(
-                `http://localhost:3000/api/v1/arbitros/${id}`
-            );
-
+            const response = await fetch(`http://localhost:3000/api/v1/arbitros/${id}`);
             const data = await response.json();
 
             setFormData({
@@ -38,13 +29,11 @@ const EditarArbitro = () => {
             });
 
         } catch (error) {
-
             console.error(error);
         }
     };
 
     const handleChange = (e) => {
-
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -71,9 +60,7 @@ const EditarArbitro = () => {
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         const error = validarFormulario();
 
         if (error) {
@@ -82,11 +69,8 @@ const EditarArbitro = () => {
         }
 
         try {
-
             const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                `http://localhost:3000/api/v1/arbitros/${id}`,
+            const response = await fetch(`http://localhost:3000/api/v1/arbitros/${id}`,
                 {
                     method: "PUT",
                     headers: {
@@ -100,35 +84,26 @@ const EditarArbitro = () => {
             const data = await response.json();
 
             if (!response.ok) {
-
                 setMensaje(data.message);
-
                 return;
             }
 
             navigate("/panel/admin/arbitros");
 
         } catch (error) {
-
             console.error(error);
-
-            setMensaje(
-                "Error al actualizar el árbitro."
+            setMensaje("Error al actualizar el árbitro."
             );
         }
     };
 
     return (
-        <div className="container mt-4 mb-5">
-
-            <div className="col-md-8 mx-auto">
-
+        <div className="container mt-5 mb-5">
+            <div className="col-md-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
-
                     <h2 className="me-2">
                         Editar Árbitro
                     </h2>
-
                     <span
                         className="text-primary"
                         style={{
@@ -180,7 +155,7 @@ const EditarArbitro = () => {
                     className="btn btn-dark mb-3"
                     onClick={() => navigate(-1)}
                 >
-                    Regresar a gestion de arbitros
+                    ← Regresar a gestion de arbitros
                 </button>
 
                 <div className="card shadow-sm">
