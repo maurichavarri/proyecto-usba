@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CrearInscripcion = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    equipoId: '',
-    torneoId: ''
+    equipoId: "",
+    torneoId: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Guardando inscripción:', formData);
+    console.log("Guardando inscripción:", formData);
     // Redirige al listado de inscripciones al guardar
-    navigate('/panel/delegado/inscripciones');
+    navigate("/panel/delegado/inscripciones");
   };
 
   const handleVolver = () => {
@@ -32,7 +32,11 @@ const CrearInscripcion = () => {
     <div className="container mt-4">
       {/* Migas de pan / Breadcrumbs */}
       <div className="mb-3">
-        <small className="text-muted" style={{ cursor: 'pointer' }} onClick={() => navigate('/panel/delegado/inscripciones')}>
+        <small
+          className="text-muted"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/panel/delegado/inscripciones")}
+        >
           Delegado Dashboard &gt; Mis Inscripciones &gt; Crear Inscripción
         </small>
         <h3 className="fw-bold mt-1">Gestión de Inscripciones</h3>
@@ -53,7 +57,9 @@ const CrearInscripcion = () => {
         <div className="card-body p-4">
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label htmlFor="equipoId" className="form-label fw-bold">Equipo</label>
+              <label htmlFor="equipoId" className="form-label fw-bold">
+                Equipo
+              </label>
               <select
                 className="form-select"
                 id="equipoId"
@@ -69,7 +75,9 @@ const CrearInscripcion = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="torneoId" className="form-label fw-bold">Torneo / Categoría</label>
+              <label htmlFor="torneoId" className="form-label fw-bold">
+                Torneo / Categoría
+              </label>
               <select
                 className="form-select"
                 id="torneoId"

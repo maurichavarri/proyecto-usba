@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
-const alias = "Jugador"
+const alias = "Jugador";
 
 const cols = {
     id: {
@@ -19,11 +19,21 @@ const cols = {
     },
     dni: {
         type: DataTypes.STRING(8),
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     dorsal: {
         type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    fecha_nacimiento: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    sexo: {
+        type: DataTypes.ENUM(
+            "masculino",
+            "femenino"
+        ),
         allowNull: false
     },
     estado: {
@@ -39,7 +49,7 @@ const cols = {
 const config = {
     tableName: 'jugador',
     timestamps: false
-}
+};
 
 const Jugador = sequelize.define(alias, cols, config);
 

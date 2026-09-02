@@ -1,28 +1,39 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
-const alias = "Categoria" 
+const alias = "Categoria"
 
 const cols = {
-    id: { 
-        type: DataTypes.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true 
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
+
     nombre: {
-        type: DataTypes.STRING(50),
-        unique: true,
+        type: DataTypes.STRING(100),
         allowNull: false
     },
+
     descripcion: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT
+    },
+
+    edad_minima: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
-    estado: {
-        type: DataTypes.ENUM('activo', 'inactivo'),
-        defaultValue: 'activo'
+
+    edad_maxima: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
+    sexo: {
+        type: DataTypes.ENUM("masculino", "femenino"),
+        allowNull: false
     }
-}
+};
 
 const config = {
     tableName: 'categoria',

@@ -12,12 +12,6 @@ const DashboardDelegado = () => {
       btnText: "Ver Equipos",
     },
     {
-      titulo: "Crear Equipo",
-      desc: "Registra un nuevo equipo para inscribirlo en torneos activos.",
-      link: "/panel/delegado/equipos/crear",
-      btnText: "Nuevo Equipo",
-    },
-    {
       titulo: "Mis Inscripciones",
       desc: "Consulta el estado de aprobación e inscripciones de tus planteles.",
       link: "/panel/delegado/inscripciones",

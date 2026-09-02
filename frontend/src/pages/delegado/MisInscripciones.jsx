@@ -65,7 +65,7 @@ const MisInscripciones = () => {
                         Volver
                     </button>
                     <button
-                        className="btn btn-dark"
+                        className="btn btn-primary"
                         onClick={() => navigate("/panel/delegado/inscripciones/crear")}
                     >
                         + Nueva Inscripción
