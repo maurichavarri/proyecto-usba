@@ -97,9 +97,7 @@ const AdminTorneos = () => {
                 {/* Tabla */}
                 <div className="card shadow-sm">
                     <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <strong>
-                            Torneos registrados
-                        </strong>
+                        <strong>Torneos registrados</strong>
 
                         {
                             totalPaginas > 1 && (

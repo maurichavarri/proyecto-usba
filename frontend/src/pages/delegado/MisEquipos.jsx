@@ -6,6 +6,7 @@ const MisEquipos = () => {
 
     const [equipos, setEquipos] = useState([]);
     const [paginaActual, setPaginaActual] = useState(1);
+    const [busqueda, setBusqueda] = useState("");
     const equiposPorPagina = 10;
 
     useEffect(() => {
@@ -30,20 +31,35 @@ const MisEquipos = () => {
         }
     };
 
+    const equiposFiltrados = equipos.filter((equipo) => {
+        const texto = busqueda.toLowerCase();
+        return (equipo.nombre?.toLowerCase().includes(texto));
+    });
+
     const totalPaginas = Math.ceil(equipos.length / equiposPorPagina);
     const indiceInicio = (paginaActual - 1) * equiposPorPagina;
     const indiceFin = indiceInicio + equiposPorPagina;
     const equiposPaginados = equipos.slice(indiceInicio, indiceFin);
 
     return (
-        <div className="container mt-4 mb-5">
+        <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
 
                 {/* Breadcrumb */}
                 <div className="mb-3">
-                    <small className="text-muted" style={{ cursor: 'pointer' }} onClick={() => navigate("/panel/delegado")}>
-                        Delegado Dashboard &gt; Mis Equipos
-                    </small>
+                    {/* Breadcrumb */}
+                    <nav className="mb-1" style={{ fontSize: "0.9rem" }}>
+                        <span
+                            className="text-muted"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => navigate("/panel/delegado")}
+                        >
+                            Panel de Delegado
+                        </span>
+                        {" > "}
+                        <span className="text-muted">
+                            Mis Equipos</span>
+                    </nav>
                     <div className="d-flex align-items-center mt-1">
                         <h3 className="fw-bold me-2 mb-0">Mis Equipos</h3>
                     </div>
@@ -55,7 +71,7 @@ const MisEquipos = () => {
                         className="btn btn-dark"
                         onClick={() => navigate("/panel/delegado")}
                     >
-                        Volver
+                        ← Volver
                     </button>
                 </div>
 
@@ -89,6 +105,14 @@ const MisEquipos = () => {
                                 </div>
                             )
                         }
+
+                        <input
+                            type="text"
+                            className="form-control w-auto"
+                            placeholder="Buscar..."
+                            value={busqueda}
+                            onChange={(e) => setBusqueda(e.target.value)}
+                        />
                     </div>
 
                     <div className="card-body p-0">
@@ -110,8 +134,8 @@ const MisEquipos = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
-                                                equiposPaginados.map((equipo) => (
+                                            {equiposFiltrados.length > 0 ? (
+                                                equiposFiltrados.map((equipo) => (
                                                     <tr key={equipo.id}>
                                                         <td className="ps-3 fw-bold">
                                                             {equipo.nombre}
@@ -129,7 +153,13 @@ const MisEquipos = () => {
                                                         </td>
                                                     </tr>
                                                 ))
-                                            }
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="7" className="text-center text-muted">
+                                                        No se encontraron equipos.
+                                                    </td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
