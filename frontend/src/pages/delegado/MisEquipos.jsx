@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
 const MisEquipos = () => {
+    const navigate = useNavigate();
 
     const navigate = useNavigate();
 <<<<<<< HEAD
@@ -17,6 +22,8 @@ const MisEquipos = () => {
     const [showSuccess, setShowSuccess] = useState(false);
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
     const [equipos, setEquipos] = useState([]);
+    const [paginaActual, setPaginaActual] = useState(1);
+    const equiposPorPagina = 10;
 
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
@@ -33,6 +40,7 @@ const MisEquipos = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem("token");
+<<<<<<< HEAD
             const response = await fetch("http://localhost:3000/api/v1/delegado/equipos",
                 {
                     method: "POST",
@@ -44,14 +52,18 @@ const MisEquipos = () => {
                         nombre,
                         descripcion
                     })
+=======
+            const response = await fetch("http://localhost:3000/api/v1/delegado/equipos", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 }
-            );
-
+            });
             const data = await response.json();
-
             if (!response.ok) {
                 throw new Error(data.message);
             }
+<<<<<<< HEAD
 
             // Limpiar formulario
             setNombre("");
@@ -83,12 +95,15 @@ const MisEquipos = () => {
             if (!response.ok) {
                 throw new Error(data.message);
             }
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
             setEquipos(data);
         } catch (error) {
             console.error(error);
         }
     };
 
+<<<<<<< HEAD
     const equiposFiltrados = equipos.filter((equipo) => {
         const texto = busqueda.toLowerCase();
 
@@ -409,6 +424,116 @@ const MisEquipos = () => {
                         </div>
                     )
                 }
+=======
+    const totalPaginas = Math.ceil(equipos.length / equiposPorPagina);
+    const indiceInicio = (paginaActual - 1) * equiposPorPagina;
+    const indiceFin = indiceInicio + equiposPorPagina;
+    const equiposPaginados = equipos.slice(indiceInicio, indiceFin);
+
+    return (
+        <div className="container mt-4 mb-5">
+            <div className="col-lg-10 mx-auto">
+
+                {/* Breadcrumb */}
+                <div className="mb-3">
+                    <small className="text-muted" style={{ cursor: 'pointer' }} onClick={() => navigate("/panel/delegado")}>
+                        Delegado Dashboard &gt; Mis Equipos
+                    </small>
+                    <div className="d-flex align-items-center mt-1">
+                        <h3 className="fw-bold me-2 mb-0">Mis Equipos</h3>
+                    </div>
+                </div>
+
+                {/* Botón Volver */}
+                <div className="mb-4">
+                    <button
+                        className="btn btn-dark"
+                        onClick={() => navigate("/panel/delegado")}
+                    >
+                        Volver
+                    </button>
+                </div>
+
+                {/* Tarjeta de la Tabla */}
+                <div className="card shadow-sm border-0">
+                    <div className="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 className="mb-0">Equipos</h5>
+
+                        {
+                            totalPaginas > 1 && (
+                                <div className="d-flex justify-content-center align-items-center gap-2">
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === 1}
+                                        onClick={() => setPaginaActual(paginaActual - 1)}
+                                    >
+                                        Anterior
+                                    </button>
+
+                                    <span className="mx-2 small text-light">
+                                        Página {paginaActual} de {totalPaginas}
+                                    </span>
+
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        disabled={paginaActual === totalPaginas}
+                                        onClick={() => setPaginaActual(paginaActual + 1)}
+                                    >
+                                        Siguiente
+                                    </button>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <div className="card-body p-0">
+                        {
+                            equipos.length === 0 ? (
+                                <div className="p-4">
+                                    <div className="alert alert-info mb-0 border-0" style={{ backgroundColor: '#cff4fc', color: '#055160' }}>
+                                        No hay equipos registrados.
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-striped table-hover align-middle mb-0">
+                                        <thead className="table-light">
+                                            <tr>
+                                                <th className="py-3 ps-3">Nombre</th>
+                                                <th className="py-3">Descripción</th>
+                                                <th className="py-3 text-end pe-3">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                equiposPaginados.map((equipo) => (
+                                                    <tr key={equipo.id}>
+                                                        <td className="ps-3 fw-bold">
+                                                            {equipo.nombre}
+                                                        </td>
+                                                        <td>
+                                                            {equipo.descripcion || "Sin descripción"}
+                                                        </td>
+                                                        <td className="text-end pe-3">
+                                                            <button
+                                                                className="btn btn-sm btn-outline-dark"
+                                                                onClick={() => navigate(`/panel/delegado/equipos/${equipo.id}/jugadores`)}
+                                                            >
+                                                                Ver Jugadores
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
             </div>
         </div>
     );

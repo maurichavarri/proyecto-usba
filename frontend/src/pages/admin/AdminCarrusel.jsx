@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
 =======
 import { useNavigate } from "react-router-dom";
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+import { Link, useNavigate } from "react-router-dom";
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
 const AdminCarrusel = () => {
     const navigate = useNavigate();
@@ -167,6 +171,7 @@ const AdminCarrusel = () => {
     return (
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
                 <div className="d-flex align-items-center mb-2">
@@ -240,10 +245,29 @@ const AdminCarrusel = () => {
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
                 </div>
 
+=======
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
+
+                {/* Título */}
+                <div className="d-flex align-items-center mb-2">
+                    <h2 className="me-2">Carrusel</h2>
+                    <span
+                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                        className="text-primary"
+                        onClick={() => setShowHelp(true)}
+                    >
+                        ❓
+                    </span>
+                </div>
+
+                {/* Breadcrumb */}
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                     <span
                         className="text-primary"
                         style={{ cursor: "pointer" }}
+<<<<<<< HEAD
                         onClick={() =>
                             navigate("/panel/admin")
                         }
@@ -272,6 +296,23 @@ const AdminCarrusel = () => {
                     ← Regresar al panel
                 </button>
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel del Administrador
+                    </span>
+                    {" > "}
+                    <span className="text-muted">Carrusel</span>
+                </nav>
+
+                {/* Botón volver */}
+                <button
+                    className="btn btn-dark mb-4"
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    ← Regresar al panel
+                </button>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
                 {/* Toast de feedback */}
                 {mensaje && (

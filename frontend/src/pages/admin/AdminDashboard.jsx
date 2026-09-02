@@ -16,6 +16,7 @@ const DashboardAdmin = () => {
   ];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     return (
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
@@ -186,6 +187,8 @@ const DashboardAdmin = () => {
         </div>
     );
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
   return (
     <div className="main-content">
       {/* Banner / Hero */}
@@ -222,7 +225,10 @@ const DashboardAdmin = () => {
       </section>
     </div>
   );
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 };
 
 export default DashboardAdmin;

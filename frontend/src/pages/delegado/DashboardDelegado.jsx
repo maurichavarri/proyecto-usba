@@ -3,12 +3,35 @@ import { Link } from "react-router-dom";
 
 const DashboardDelegado = () => {
   const usuario = JSON.parse(localStorage.getItem("usuario"));
+<<<<<<< HEAD
 
 <<<<<<< HEAD
     const [showHelp, setShowHelp] = useState(false);
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const opciones = [
+    {
+      titulo: "Mis Equipos",
+      desc: "Administra la lista de tus equipos registrados y gestiona tus jugadores.",
+      link: "/panel/delegado/equipos",
+      btnText: "Ver Equipos",
+    },
+    {
+      titulo: "Crear Equipo",
+      desc: "Registra un nuevo equipo para inscribirlo en torneos activos.",
+      link: "/panel/delegado/equipos/crear",
+      btnText: "Nuevo Equipo",
+    },
+    {
+      titulo: "Mis Inscripciones",
+      desc: "Consulta el estado de aprobación e inscripciones de tus planteles.",
+      link: "/panel/delegado/inscripciones",
+      btnText: "Ver Estado",
+    },
+  ];
 
+<<<<<<< HEAD
     return (
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
@@ -116,6 +139,8 @@ const DashboardDelegado = () => {
     },
   ];
 
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
   return (
     <div className="main-content">
       {/* Banner / Hero */}
@@ -126,7 +151,10 @@ const DashboardDelegado = () => {
           <p className="dash-subtitle">
             Bienvenido, <strong>{usuario?.correo || "Delegado"}</strong>
           </p>
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         </div>
       </section>
 

@@ -79,6 +79,7 @@ const AdminPartido = () => {
 
     const handleChange = (e) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -86,10 +87,14 @@ const AdminPartido = () => {
 =======
         setFormData({ ...formData, [e.target.name]: e.target.value });
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         setMensaje("");
     };
 
     const validarFormulario = () => {
+<<<<<<< HEAD
 <<<<<<< HEAD
         // Mientras no esté jugado, permitimos guardar incompleto.
         if (formData.estado !== "jugado") {
@@ -107,6 +112,8 @@ const AdminPartido = () => {
         ) {
             return "PARTIDO_INCOMPLETO";
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         if (!formData.fecha) return "Debe indicar fecha y hora.";
         if (formData.estado === "jugado") {
             if (formData.puntaje_local === "" || formData.puntaje_visitante === "") {
@@ -124,7 +131,10 @@ const AdminPartido = () => {
         e.preventDefault();
         const error = validarFormulario();
         if (error) { setMensaje(error); return; }
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
         try {
 
@@ -158,6 +168,7 @@ const AdminPartido = () => {
             }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             const response = await fetch(
                 `http://localhost:3000/api/v1/partidos/${id}`,
                 {
@@ -170,6 +181,8 @@ const AdminPartido = () => {
                 }
             );
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
             const response = await fetch(`http://localhost:3000/api/v1/partidos/${id}`, {
                 method: "PUT",
                 headers: {
@@ -178,7 +191,10 @@ const AdminPartido = () => {
                 },
                 body: JSON.stringify(payload)
             });
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
             const data = await response.json();
             if (!response.ok) { setMensaje(data.message); return; }
@@ -192,6 +208,7 @@ const AdminPartido = () => {
         }
     };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     const handleSubmit = async (e) => {
 
@@ -223,6 +240,10 @@ const AdminPartido = () => {
     if (!partido) {
         return <div className="container mt-5">Cargando...</div>;
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+    if (!partido) {
+        return <div className="container mt-5">Cargando...</div>;
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
     }
 
     return (
@@ -379,6 +400,7 @@ const AdminPartido = () => {
                                         value={formData.puntaje_visitante}
                                         onChange={handleChange}
                                     />
+<<<<<<< HEAD
                                 </div>
                             </div>
                         </div>
@@ -524,15 +546,22 @@ const AdminPartido = () => {
                                         Aceptar y finalizar
                                     </button>
 
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                                 </div>
-
                             </div>
-
                         </div>
+<<<<<<< HEAD
                     )
                 }
 
 =======
+=======
+                    </div>
+
+                    {mensaje && <div className="alert alert-info">{mensaje}</div>}
+
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <button type="submit" className="btn btn-primary">
                         Guardar cambios
                     </button>
@@ -553,7 +582,10 @@ const AdminPartido = () => {
                         </div>
                     </div>
                 )}
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
             </div>
         </div>
     );

@@ -53,6 +53,7 @@ const AdminAnuncios = () => {
     return (
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
                 {/* Encabezado */}
@@ -114,6 +115,14 @@ const AdminAnuncios = () => {
                 <div className="d-flex align-items-center justify-content-between mb-2">
                     <h2>Gestión de Anuncios</h2>
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+        <div className="container mt-5 mb-5">
+            <div className="col-lg-10 mx-auto">
+
+                {/* Titulo */}
+                <div className="d-flex align-items-center justify-content-between mb-2">
+                    <h2>Gestión de Anuncios</h2>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 </div>
 
                 {/* Breadcrumb */}

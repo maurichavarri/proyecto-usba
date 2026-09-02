@@ -13,10 +13,13 @@ const AdminTorneos = () => {
     const torneosPorPagina = 10;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
 =======
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
     const [torneos, setTorneos] = useState([]);
     const [showHelp, setShowHelp] = useState(false);
     const [busqueda, setBusqueda] = useState("");
@@ -33,6 +36,7 @@ const AdminTorneos = () => {
             });
             const data = await response.json();
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (!response.ok) {
                 console.error("Error backned:", data);
             setTorneos([]);
@@ -44,6 +48,9 @@ const AdminTorneos = () => {
 =======
             setTorneos(data);
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+            setTorneos(data);
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         } catch (error) {
             console.error(error);
             setTorneos([]);
@@ -65,12 +72,16 @@ const AdminTorneos = () => {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
     const torneosFiltrados = torneos.filter((torneo) => {
         const texto = busqueda.toLowerCase();
         return (torneo.nombre?.toLowerCase().includes(texto));
     });
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     const formatearFecha = (fecha) => {
@@ -89,6 +100,13 @@ const AdminTorneos = () => {
     const indiceInicio = (paginaActual - 1) * torneosPorPagina;
     const indiceFin = indiceInicio + torneosPorPagina;
     const torneosPaginados = torneosFiltrados.slice(indiceInicio, indiceFin);
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
+
+    const totalPaginas = Math.ceil(torneosFiltrados.length / torneosPorPagina);
+    const indiceInicio = (paginaActual - 1) * torneosPorPagina;
+    const indiceFin = indiceInicio + torneosPorPagina;
+    const torneosPaginados = torneosFiltrados.slice(indiceInicio, indiceFin);
 
     return (
         <div className="container mt-5 mb-5">
@@ -96,12 +114,15 @@ const AdminTorneos = () => {
 
                 {/* Título */}
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <div className="d-flex align-items-center mb-1">
                     <h2 className="me-2">
                         Gestión de Torneos
                     </h2>
                     <span style={{ cursor: "pointer", fontSize: "1.2rem" }} className="text-primary" onClick={() => setShowHelp(true)}>
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">Gestión de Torneos</h2>
                     <span
@@ -116,6 +137,7 @@ const AdminTorneos = () => {
 
                 {/* Breadcrumb */}
                 <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+<<<<<<< HEAD
 <<<<<<< HEAD
                     <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
                         Admin Dashboard
@@ -135,20 +157,37 @@ const AdminTorneos = () => {
                     {" > "}
                     <span className="text-muted">Torneos</span>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel de Administrador
+                    </span>
+                    {" > "}
+                    <span className="text-muted">Torneos</span>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 </nav>
 
                 {/* Botones */}
                 <div className="d-flex justify-content-between mb-3">
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <button className="btn btn-dark" onClick={() => navigate(-1)}>
                         Volver
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <button
                         className="btn btn-dark"
                         onClick={() => navigate("/panel/admin")}
                     >
                         ← Regresar al panel
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     </button>
                     <Link to="/panel/admin/torneos/crear" className="btn btn-primary">
                         + Crear torneo
@@ -197,11 +236,14 @@ const AdminTorneos = () => {
                         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                         <strong>Torneos registrados</strong>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
 =======
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                         <input
                             type="text"
                             className="form-control w-auto"
@@ -276,6 +318,7 @@ const AdminTorneos = () => {
                                                     No se encontraron torneos.
                                                 </td>
                                             </tr>
+<<<<<<< HEAD
 <<<<<<< HEAD
                                         </thead>
 
@@ -429,6 +472,38 @@ const AdminTorneos = () => {
                     </div>
                 )}
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Modal ayuda */}
+                {showHelp && (
+                    <div
+                        className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                        style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+                    >
+                        <div className="bg-white p-4 rounded shadow" style={{ maxWidth: "550px" }}>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h5>¿Cómo funciona este apartado?</h5>
+                                <button className="btn-close" onClick={() => setShowHelp(false)} />
+                            </div>
+                            <p>Desde esta sección podés administrar todos los torneos del sistema.</p>
+                            <ul>
+                                <li>Crear nuevos torneos.</li>
+                                <li>Modificar torneos existentes.</li>
+                                <li>Definir la fecha límite de inscripción.</li>
+                                <li>Activar o archivar torneos.</li>
+                                <li>Ver rápidamente si las inscripciones están abiertas o cerradas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                )}
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
             </div>
         </div>
     );

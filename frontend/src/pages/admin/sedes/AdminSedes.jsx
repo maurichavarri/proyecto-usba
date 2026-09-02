@@ -34,11 +34,15 @@ const AdminSedes = () => {
     return (
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">
+<<<<<<< HEAD
                     <h2 className="me-2">
                         Gestión de Sedes
                     </h2>
@@ -55,6 +59,9 @@ const AdminSedes = () => {
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">Gestión de Sedes</h2>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                    <h2 className="me-2">Gestión de Sedes</h2>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <span
                         className="text-primary"
                         style={{ cursor: "pointer", fontSize: "1.2rem" }}
@@ -76,6 +83,7 @@ const AdminSedes = () => {
                     </span>
                     {" > "}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                     <span className="text-muted">
                         Sedes
@@ -83,6 +91,9 @@ const AdminSedes = () => {
 =======
                     <span className="text-muted">Sedes</span>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                    <span className="text-muted">Sedes</span>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 </nav>
 
                 {/* Botones */}

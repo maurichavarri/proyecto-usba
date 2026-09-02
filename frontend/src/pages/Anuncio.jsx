@@ -2,6 +2,7 @@ import { useFetch } from "../hooks/useFetch";
 import { Link } from "react-router-dom";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 const colores = {
     fondo: "#0a0a0a",
@@ -16,12 +17,17 @@ const colores = {
 
 
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 const truncate = (text, max) => {
     if (!text) return "";
     return text.length > max ? text.substring(0, max) + "..." : text;
 };
 
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 const Anuncio = () => {
 
     const { data = [] } = useFetch(
@@ -30,6 +36,7 @@ const Anuncio = () => {
 
 
     return (
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         <div
@@ -513,6 +520,19 @@ const Anuncio = () => {
                         oficiales de la liga.
                     </p>
                 </div>
+=======
+        <>
+            {/* HERO DEPORTIVO */}
+            <section className="anu-hero">
+                <div className="container anu-hero-inner">
+                    <span className="anu-hero-eyebrow">USBA · Básquet Amateur</span>
+                    <h1 className="anu-hero-title">Anuncios</h1>
+                    <p className="anu-hero-sub">
+                        Novedades del torneo, fixtures, resultados y comunicados
+                        oficiales de la liga.
+                    </p>
+                </div>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
             </section>
 
             {/* GRID */}
@@ -553,7 +573,10 @@ const Anuncio = () => {
                 </div>
             </section>
         </>
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
     );
 };
 

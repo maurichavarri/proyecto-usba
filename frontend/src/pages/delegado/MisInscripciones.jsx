@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MisInscripciones = () => {
+    const navigate = useNavigate();
+
+    const [paginaActual, setPaginaActual] = useState(1);
+    const inscripcionesPorPagina = 10;
 
     const navigate = useNavigate();
 
@@ -18,6 +22,7 @@ const MisInscripciones = () => {
 
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
     const [inscripciones, setInscripciones] = useState([]);
+<<<<<<< HEAD
     const [equipos, setEquipos] = useState([]);
     const [torneoCategorias, setTorneoCategorias] = useState([]);
     const [equipoId, setEquipoId] = useState("");
@@ -26,17 +31,21 @@ const MisInscripciones = () => {
     const [showHelp, setShowHelp] = useState(false);
     const [mensaje, setMensaje] = useState("");
     const [busqueda, setBusqueda] = useState("");
+=======
+    const [showHelp, setShowHelp] = useState(false);
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
     useEffect(() => {
         obtenerInscripciones();
-        obtenerEquipos();
-        obtenerTorneoCategorias();
     }, []);
 
+<<<<<<< HEAD
     useEffect(() => {
         setPaginaActual(1);
     }, [busqueda]);
 
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
     const obtenerInscripciones = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -57,6 +66,7 @@ const MisInscripciones = () => {
         }
     };
 
+<<<<<<< HEAD
     const obtenerEquipos = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -143,6 +153,12 @@ const MisInscripciones = () => {
             setMensaje(error.message);
         }
     };
+=======
+    const totalPaginas = Math.ceil(inscripciones.length / inscripcionesPorPagina);
+    const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
+    const indiceFin = indiceInicio + inscripcionesPorPagina;
+    const inscripcionesPaginadas = inscripciones.slice(indiceInicio, indiceFin);
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
     const inscripcionesFiltradas = inscripciones.filter((inscripcion) => {
         const texto = busqueda.toLowerCase();
@@ -175,6 +191,7 @@ const MisInscripciones = () => {
             <div className="col-lg-10 mx-auto">
 =======
         <div className="container mt-4 mb-5">
+<<<<<<< HEAD
             {/* Botón ir al dashboard */}
             <div className="mb-3">
                 <button
@@ -298,6 +315,43 @@ const MisInscripciones = () => {
                         <strong>
                             Inscripciones
                         </strong>
+=======
+            <div className="col-lg-10 mx-auto">
+
+                {/* Breadcrumb */}
+                <div className="mb-3">
+                    <small className="text-muted" style={{ cursor: 'pointer' }} onClick={() => navigate("/panel/delegado")}>
+                        Delegado Dashboard &gt; Mis Inscripciones
+                    </small>
+                    <div className="d-flex align-items-center mt-1">
+                        <h3 className="fw-bold me-2 mb-0">Mis Inscripciones</h3>
+                        <span className="text-dark" style={{ cursor: "pointer", fontSize: "1.1rem" }} onClick={() => setShowHelp(true)}>
+                            ❓
+                        </span>
+                    </div>
+                </div>
+
+                {/* Botón Volver y Botón Nueva Inscripción arriba */}
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <button
+                        className="btn btn-dark"
+                        onClick={() => navigate("/panel/delegado")}
+                    >
+                        Volver
+                    </button>
+                    <button
+                        className="btn btn-dark"
+                        onClick={() => navigate("/panel/delegado/inscripciones/crear")}
+                    >
+                        + Nueva Inscripción
+                    </button>
+                </div>
+
+                {/* TABLA / Tarjeta con header oscuro */}
+                <div className="card shadow-sm border-0">
+                    <div className="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 className="mb-0">Inscripciones</h5>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
                         {
                             totalPaginas > 1 && (
@@ -312,7 +366,11 @@ const MisInscripciones = () => {
                                         Anterior
                                     </button>
 
+<<<<<<< HEAD
                                     <span className="mx-2">
+=======
+                                    <span className="mx-2 small text-light">
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                                         Página {paginaActual} de {totalPaginas}
                                     </span>
 
@@ -328,6 +386,7 @@ const MisInscripciones = () => {
                                 </div>
                             )
                         }
+<<<<<<< HEAD
 
                         <input
                             type="text"
@@ -355,13 +414,40 @@ const MisInscripciones = () => {
                                                 <th>Torneo</th>
                                                 <th>Categoría</th>
                                                 <th>Estado</th>
+=======
+                    </div>
+
+                    <div className="card-body p-0">
+                        {
+                            inscripciones.length === 0 ? (
+                                <div className="p-4">
+                                    <div className="alert alert-info mb-0 border-0" style={{ backgroundColor: '#cff4fc', color: '#055160' }}>
+                                        No hay inscripciones registradas.
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-striped table-hover align-middle mb-0">
+                                        <thead className="table-light">
+                                            <tr>
+                                                <th className="py-3 ps-3">Equipo</th>
+                                                <th className="py-3">Torneo</th>
+                                                <th className="py-3">Categoría</th>
+                                                <th className="py-3">Estado</th>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
+<<<<<<< HEAD
                                                 inscripcionesFiltradas.length > 0 ? (inscripcionesPaginadas.map((inscripcion) => (
                                                     <tr key={inscripcion.id}>
                                                         <td>
+=======
+                                                inscripcionesPaginadas.map((inscripcion) => (
+                                                    <tr key={inscripcion.id}>
+                                                        <td className="ps-3">
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                                                             {inscripcion.Equipo?.nombre}
                                                         </td>
                                                         <td>
@@ -389,6 +475,7 @@ const MisInscripciones = () => {
                                                         </td>
                                                     </tr>
                                                 ))
+<<<<<<< HEAD
                                                 ) : (
                                                     <tr>
                                                         <td colSpan="4" className="text-center text-muted">
@@ -396,6 +483,8 @@ const MisInscripciones = () => {
                                                         </td>
                                                     </tr>
                                                 )
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                                             }
                                         </tbody>
                                     </table>
@@ -414,7 +503,12 @@ const MisInscripciones = () => {
                             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
                             style={{
                                 backgroundColor:
+<<<<<<< HEAD
                                     "rgba(0,0,0,0.5)"
+=======
+                                    "rgba(0,0,0,0.5)",
+                                zIndex: 1050
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                             }}
                         >
 
@@ -426,7 +520,11 @@ const MisInscripciones = () => {
                             >
 
                                 <div className="d-flex justify-content-between align-items-center mb-3">
+<<<<<<< HEAD
                                     <h5>
+=======
+                                    <h5 className="mb-0">
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                                         ¿Cómo funciona?
                                     </h5>
                                     <button
@@ -440,8 +538,13 @@ const MisInscripciones = () => {
                                     Desde esta sección el delegado puede inscribir
                                     sus equipos a las competencias.
                                 </p>
+<<<<<<< HEAD
                                 <p>
                                     Más abajo tendrás el listado de las mismas, con toda
+=======
+                                <p className="mb-0">
+                                    Más abajo tendrás el listado de las mesmas, con toda
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                                     la información correspondiente y su estado.
                                 </p>
                             </div>

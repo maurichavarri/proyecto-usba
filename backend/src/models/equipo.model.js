@@ -14,6 +14,7 @@ const cols = {
         allowNull: false
     },
     descripcion: DataTypes.TEXT,
+<<<<<<< HEAD
     id_usuario_creador: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -24,6 +25,13 @@ const cols = {
         defaultValue: DataTypes.NOW // Esto insertará la fecha y hora actual automáticamente
     }
 };
+=======
+    creado_en: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
+}
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
 const config = {
     tableName: 'equipo',

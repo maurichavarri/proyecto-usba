@@ -33,6 +33,7 @@ const AdminArbitros = () => {
     return (
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
                 <div className="d-flex align-items-center mb-1">
@@ -230,6 +231,8 @@ const AdminArbitros = () => {
                         onChange={(e) => setBusqueda(e.target.value)}
                     />
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         <div className="container mt-5 mb-5">
             <div className="col-lg-10 mx-auto">
                 {/* Título */}
@@ -242,7 +245,10 @@ const AdminArbitros = () => {
                     >
                         ❓
                     </span>
+<<<<<<< HEAD
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 </div>
 
                 {/* Breadcrumb */}
@@ -346,7 +352,10 @@ const AdminArbitros = () => {
                     </div>
                 )}
             </div>
+<<<<<<< HEAD
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         </div>
     );
 };

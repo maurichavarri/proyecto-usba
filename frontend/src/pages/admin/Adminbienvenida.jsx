@@ -90,6 +90,7 @@ const AdminBienvenida = () => {
                         ❓
                     </span>
                 </div>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -142,75 +143,49 @@ const AdminBienvenida = () => {
             {mensaje && (
                 <div className={`alert alert-${mensaje.tipo}`}>{mensaje.texto}</div>
             )}
+=======
 
-            <div className="card shadow-sm p-4">
-                <form onSubmit={handleSubmit}>
+                {/* Breadcrumb */}
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel del Administrador
+                    </span>
+                    {" > "}
+                    <span className="text-muted">Bienvenida</span>
+                </nav>
 
-                    <div className="mb-3">
-                        <label className="form-label fw-bold">Título</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={titulo}
-                            onChange={e => setTitulo(e.target.value)}
-                            required
-                        />
-                    </div>
+                {/* Botón */}
+                <button
+                    className="btn btn-dark mb-3"
+                    onClick={() => navigate("/panel/admin")}
+                >
+                    ← Regresar al panel
+                </button>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
-                    <div className="mb-3">
-                        <label className="form-label fw-bold">Texto</label>
-                        <textarea
-                            className="form-control"
-                            rows="5"
-                            value={texto}
-                            onChange={e => setTexto(e.target.value)}
-                            required
-                        />
-                    </div>
+                {mensaje && (
+                    <div className={`alert alert-${mensaje.tipo}`}>{mensaje.texto}</div>
+                )}
 
-                    <div className="mb-3">
-                        <label className="form-label fw-bold">
-                            {imagenActual ? "Cambiar imagen" : "Agregar imagen"}
-                        </label>
-                        <input
-                            type="file"
-                            className="form-control"
-                            accept="image/jpeg,image/png,image/webp"
-                            onChange={handleImagenChange}
-                        />
-                        <small className="text-muted">JPG, PNG, WEBP. Máximo 5MB.</small>
-                    </div>
+                <div className="card shadow-sm p-4">
+                    <form onSubmit={handleSubmit}>
 
-                    {imagenMostrada && (
                         <div className="mb-3">
-                            <label className="form-label">
-                                {preview ? "Vista previa nueva imagen:" : "Imagen actual:"}
-                            </label>
-                            <div>
-                                <img
-                                    src={imagenMostrada}
-                                    alt="Bienvenida"
-                                    style={{
-                                        maxWidth: "100%",
-                                        maxHeight: "280px",
-                                        objectFit: "cover",
-                                        borderRadius: "8px",
-                                        border: "1px solid #dee2e6"
-                                    }}
-                                />
-                            </div>
-                            {preview && (
-                                <button
-                                    type="button"
-                                    className="btn btn-sm btn-outline-secondary mt-2"
-                                    onClick={() => { setNuevaImagen(null); setPreview(null); }}
-                                >
-                                    Cancelar cambio
-                                </button>
-                            )}
+                            <label className="form-label fw-bold">Título</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={titulo}
+                                onChange={e => setTitulo(e.target.value)}
+                                required
+                            />
                         </div>
-                    )}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                     <button className="btn btn-dark" disabled={loading}>
                         {loading ? "Guardando..." : "Guardar cambios"}
@@ -247,6 +222,19 @@ const AdminBienvenida = () => {
                             />
                         </div>
 
+=======
+                        <div className="mb-3">
+                            <label className="form-label fw-bold">Texto</label>
+                            <textarea
+                                className="form-control"
+                                rows="5"
+                                value={texto}
+                                onChange={e => setTexto(e.target.value)}
+                                required
+                            />
+                        </div>
+
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                         <div className="mb-3">
                             <label className="form-label fw-bold">
                                 {imagenActual ? "Cambiar imagen" : "Agregar imagen"}
@@ -290,8 +278,11 @@ const AdminBienvenida = () => {
                             </div>
                         )}
 
+<<<<<<< HEAD
 =======
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                         <button className="btn btn-primary" disabled={loading}>
                             {loading ? "Guardando..." : "Guardar cambios"}
                         </button>

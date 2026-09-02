@@ -17,6 +17,7 @@ const FORMATO_LABEL = {
 
 const Torneo = () => {
 
+<<<<<<< HEAD
     const { data } = useFetch(
         "http://localhost:3000/api/v1/torneos"
     );
@@ -25,13 +26,21 @@ const Torneo = () => {
         useState(null);
 
 
+=======
+    const { data } = useFetch("http://localhost:3000/api/v1/torneos");
+    const [torneoExpandido, setTorneoExpandido] = useState(null);
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
     const toggleTorneo = (id) => {
         setTorneoExpandido(torneoExpandido === id ? null : id);
     };
 
+<<<<<<< HEAD
 
     const obtenerFormato = (formato) => {
 
+=======
+    const obtenerFormato = (formato) => {
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         if (formato === "solo_liga") {
             return "Liga";
         }
@@ -49,7 +58,10 @@ const Torneo = () => {
 
 
     const obtenerEstado = (estado) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         if (estado === "en_curso") {
             return {
                 texto: "En curso",
@@ -76,9 +88,15 @@ const Torneo = () => {
             {/* HERO DEPORTIVO */}
             <section className="tor-hero">
                 <div className="container tor-hero-inner">
+<<<<<<< HEAD
                     <span className="tor-hero-eyebrow">USBA · Básquet Amateur</span>
                     <h1 className="tor-hero-title">Torneos en competencia</h1>
                     <p className="tor-hero-sub">
+=======
+                    <span className="tor-hero-eyebrow text-light">USBA · Básquet Amateur</span>
+                    <h1 className="tor-hero-title">Torneos en competencia</h1>
+                    <p className="tor-hero-sub text-light">
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                         Temporada regular, categorías y play-offs. Tocá un torneo
                         para ver sus divisiones y el estado de cada una.
                     </p>
@@ -379,5 +397,6 @@ const Torneo = () => {
       `}</style>
     </div>
   );
+
 
 export default Torneo;

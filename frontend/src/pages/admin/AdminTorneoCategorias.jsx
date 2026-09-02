@@ -111,16 +111,22 @@ const AdminTorneoCategorias = () => {
         <div className="container mt-4 mb-5">
             <div className="col-lg-10 mx-auto">
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">
                         Torneos y Categorías
                     </h2>
 =======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">Torneos y Categorías</h2>
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <span
                         className="text-primary"
                         style={{ cursor: "pointer", fontSize: "1.2rem" }}
@@ -131,6 +137,7 @@ const AdminTorneoCategorias = () => {
                     </span>
                 </div>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                     <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
@@ -155,6 +162,18 @@ const AdminTorneoCategorias = () => {
                         Panel del Administrador
                     </span>
                     {" > "}
+=======
+                {/* Breadcrumb */}
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel del Administrador
+                    </span>
+                    {" > "}
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <span className="text-muted">Torneos - Categorías</span>
                 </nav>
 
@@ -163,12 +182,16 @@ const AdminTorneoCategorias = () => {
                     onClick={() => navigate("/panel/admin")}
                 >
                     ← Regresar al panel
+<<<<<<< HEAD
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 </button>
 
                 {/* Formulario */}
                 <div className="card shadow-sm mb-4">
                     <div className="card-header bg-dark text-white">
+<<<<<<< HEAD
 <<<<<<< HEAD
                         <strong>
                             Asignar categoría a torneo
@@ -176,6 +199,9 @@ const AdminTorneoCategorias = () => {
 =======
                         <strong>Asignar categoría a torneo</strong>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                        <strong>Asignar categoría a torneo</strong>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     </div>
                     <div className="card-body">
                         {mensaje && (
@@ -249,6 +275,7 @@ const AdminTorneoCategorias = () => {
                 </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 {/*
 =======
                 {/* Resumen */}
@@ -257,10 +284,15 @@ const AdminTorneoCategorias = () => {
 =======
                 {/* 
 >>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
+                {/* Resumen */}
+                {/* 
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 <div className="row mb-4">
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
 <<<<<<< HEAD
                                 <h6 className="text-muted">
                                     Relaciones
@@ -272,12 +304,17 @@ const AdminTorneoCategorias = () => {
                                 <h6 className="text-muted">Relaciones</h6>
                                 <h3>{torneoCategorias.length}</h3>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                                <h6 className="text-muted">Relaciones</h6>
+                                <h3>{torneoCategorias.length}</h3>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
 <<<<<<< HEAD
                                 <h6 className="text-muted">
                                     Equipos Inscriptos
@@ -289,12 +326,17 @@ const AdminTorneoCategorias = () => {
                                 <h6 className="text-muted">Equipos Inscriptos</h6>
                                 <h3>{totalEquipos}</h3>
 >>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                                <h6 className="text-muted">Equipos Inscriptos</h6>
+                                <h3>{totalEquipos}</h3>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
 <<<<<<< HEAD
                                 <h6 className="text-muted">
                                     Listos para Fixture
@@ -494,6 +536,22 @@ const AdminTorneoCategorias = () => {
                             )
                         }
 =======
+=======
+                                <h6 className="text-muted">Listos para Fixture</h6>
+                                <h3>{listosParaFixture}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                */}
+
+                {/* Tabla */}
+                <div className="card shadow-sm">
+                    <div className="card-header bg-dark text-white">
+                        <strong>Categorías asignadas</strong>
+                    </div>
+                    <div className="card-body">
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                         <div className="table-responsive">
                             <table className="table table-hover align-middle">
                                 <thead>
