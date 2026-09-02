@@ -27,8 +27,33 @@ const Footer = () => {
           {/* Contacto */}
           <div className="col-md-3 mb-3">
             <h6>Contacto</h6>
+<<<<<<< HEAD
+<<<<<<< HEAD
+            <p className="mb-1">contacto@usba.com</p>
+            <p className="mb-1">+54 9 3856 11-6571</p>
+          </div>
+
+          {/* Redes 
+          <div className="col-md-3 mb-3">
+            <h6>Redes</h6>
+            <div className="d-flex flex-column">
+              <a href="#" className="text-white text-decoration-none mb-1">Instagram</a>
+              <a href="#" className="text-white text-decoration-none mb-1">Facebook</a>
+              <a href="#" className="text-white text-decoration-none">Twitter</a>
+            </div>
+          </div>
+          */}
+=======
             <p className="mb-1">+54 9 385 XXX XXXX</p>
           </div>
+
+         
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+
+=======
+            <p className="mb-1">+54 9 385 XXX XXXX</p>
+          </div>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
         </div>
       </div>
 

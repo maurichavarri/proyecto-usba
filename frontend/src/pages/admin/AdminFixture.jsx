@@ -320,6 +320,24 @@ const AdminFixture = () => {
 
                     {" > "}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+                    <Link
+                        to="/panel/admin/torneo-categorias"
+                        className="text-primary"
+                    >
+                        Torneos - Categorías
+                    </Link>
+=======
+                <Link
+                    to="/panel/admin"
+                    className="text-primary"
+                >
+                    Panel del Administrador
+                </Link>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <Link
                         to="/panel/admin/torneo-categorias"
                         className="text-primary"
@@ -346,6 +364,61 @@ const AdminFixture = () => {
                     </button>
 
                     <div className="d-flex gap-2">
+<<<<<<< HEAD
+
+<<<<<<< HEAD
+                        {
+                            fixture.length === 0 &&
+=======
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/admin/torneo-categorias")}
+                >
+                    ← Regresar a Torneos y Categorias
+                </button> 
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+
+                            <button
+                                onClick={() => setMostrarModalFixture(true)}
+                                className="btn btn-primary"
+                            >
+                                Generar Fixture
+                            </button>
+                        }
+
+                        {
+                            detalle &&
+                            detalle.formato_competencia !== "solo_liga" &&
+                            faseRegularFinalizada &&
+                            !fixture.some(
+                                partido =>
+                                    partido.fase === "cuartos" ||
+                                    partido.fase === "semifinal" ||
+                                    partido.fase === "final"
+                            ) &&
+
+                            <button
+                                onClick={() => setMostrarModalPlayoff(true)}
+                                className="btn btn-success"
+                            >
+                                Generar Playoffs
+                            </button>
+                        }
+
+                        {
+                            puedeFinalizarCompetencia &&
+                            detalle?.estado_competencia !== "finalizado" &&
+
+                            <button
+                                className="btn btn-danger"
+                                onClick={() => setMostrarModalFinalizar(true)}
+                            >
+                                Finalizar Competencia
+                            </button>
+                        }
+                    </div>
+
+=======
 
                         <button
                             onClick={() => setMostrarModalFixture(true)}
@@ -386,6 +459,7 @@ const AdminFixture = () => {
                         }
                     </div>
 
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 </div>
 
                 {/* Mensajes */}

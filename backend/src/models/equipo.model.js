@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
-const alias = "Equipo"
+const alias = "Equipo";
 
 const cols = {
     id: {
@@ -22,8 +22,8 @@ const cols = {
 
 const config = {
     tableName: 'equipo',
-    timestamps: false
-}
+    timestamps: false // Mantenemos esto en false para que no cree createdAt/updatedAt
+};
 
 const Equipo = sequelize.define(alias, cols, config);
 

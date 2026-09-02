@@ -5,11 +5,8 @@ import Jugador from '../models/jugador.model.js';
 export const crearEquipo = async (req, res, next) => {
     try {
         const { nombre, descripcion } = req.body;
-
-        // Usuario viene del token
         const usuarioId = req.usuario.id;
 
-        // Crear equipo
         const equipo = await Equipo.create({
             nombre,
             descripcion,
@@ -18,6 +15,7 @@ export const crearEquipo = async (req, res, next) => {
         });
         res.status(201).json(equipo);
     } catch (error) {
+        console.error('Error al crear equipo:', error);
         next(error);
     }
 };
@@ -57,6 +55,7 @@ export const obtenerMisEquipos = async (req, res, next) => {
         });
         res.json(equipos);
     } catch (error) {
+        console.error('Error al obtener equipos:', error);
         next(error);
     }
 };

@@ -5,15 +5,15 @@ const EditarAnuncio = () => {
 
     const { id } = useParams();
     const navigate = useNavigate();
-
     const [formData, setFormData] = useState({
         titulo: "",
         contenido: ""
     });
+
+    const [mensaje, setMensaje] = useState("");
     const [imagenActual, setImagenActual] = useState(null); // URL de imagen guardada en BD
     const [nuevaImagen, setNuevaImagen] = useState(null);   // Archivo nuevo seleccionado
     const [preview, setPreview] = useState(null);
-    const [mensaje, setMensaje] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -153,7 +153,9 @@ const EditarAnuncio = () => {
                         accept="image/jpeg,image/png,image/webp,image/gif"
                         onChange={handleImagenChange}
                     />
-                    <small className="text-muted">Formatos permitidos: JPG, PNG, WEBP, GIF. Máximo 5MB.</small>
+                    <small className="text-muted">
+                        Formatos permitidos: JPG, PNG, WEBP, GIF. Máximo 5MB.
+                    </small>
                 </div>
 
                 {/* Imagen actual o previsualización de la nueva */}

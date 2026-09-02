@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 const CrearEquipo = () => {
     const navigate = useNavigate();
 
+    const navigate = useNavigate();
+
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [mensajeExito, setMensajeExito] = useState(""); // Estado para el cartel en pantalla
@@ -47,11 +49,39 @@ const CrearEquipo = () => {
     };
 
     return (
+<<<<<<< HEAD
+        <div className="container mt-5 mb-5">
+            <h2>Crear Equipo</h2>
+             {/* Botón ir al dashboard */}
+            <div className="mb-3">
+                <button
+                    className="btn btn-dark"
+                    onClick={() => navigate("/panel/delegado")}
+                >
+                    ← Regresar al panel
+                </button>
+            </div>
+            <form onSubmit={handleSubmit}>
+                {/* Nombre */}
+                <div className="mb-3">
+                    <label className="form-label">
+                        Nombre
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        required
+                    />
+                </div>
+=======
         <div className="container mt-4 mb-5" style={{ maxWidth: "800px" }}>
             {/* Migas de pan / Navegación superior */}
             <div className="text-muted small mb-2">
                 Delegado Dashboard &gt; Mis Equipos &gt; Crear Equipo
             </div>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
             {/* Título Principal */}
             <h2 className="fw-bold mb-4">Creación de Equipos</h2>

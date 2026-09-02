@@ -110,10 +110,23 @@ const AdminTorneoCategorias = () => {
     return (
         <div className="container mt-4 mb-5">
             <div className="col-lg-10 mx-auto">
+<<<<<<< HEAD
+<<<<<<< HEAD
+                <div className="d-flex align-items-center mb-2">
+                    <h2 className="me-2">
+                        Torneos y Categorías
+                    </h2>
+=======
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
 
                 {/* Título */}
                 <div className="d-flex align-items-center mb-2">
                     <h2 className="me-2">Torneos y Categorías</h2>
+<<<<<<< HEAD
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <span
                         className="text-primary"
                         style={{ cursor: "pointer", fontSize: "1.2rem" }}
@@ -124,6 +137,21 @@ const AdminTorneoCategorias = () => {
                     </span>
                 </div>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span className="text-primary" style={{ cursor: "pointer" }} onClick={() => navigate("/panel/admin")}>
+                        Admin Dashboard
+                    </span>
+                    {" > "}
+                    <span className="text-muted">
+                        Torneos - Categorías
+                    </span>
+                </nav>
+
+                <button className="btn btn-dark mb-3" onClick={() => navigate(-1)}>
+                    Volver
+=======
                 {/* Breadcrumb */}
                 <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
                     <span
@@ -134,6 +162,18 @@ const AdminTorneoCategorias = () => {
                         Panel del Administrador
                     </span>
                     {" > "}
+=======
+                {/* Breadcrumb */}
+                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+                    <span
+                        className="text-primary"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/panel/admin")}
+                    >
+                        Panel del Administrador
+                    </span>
+                    {" > "}
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     <span className="text-muted">Torneos - Categorías</span>
                 </nav>
 
@@ -142,12 +182,26 @@ const AdminTorneoCategorias = () => {
                     onClick={() => navigate("/panel/admin")}
                 >
                     ← Regresar al panel
+<<<<<<< HEAD
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 </button>
 
                 {/* Formulario */}
                 <div className="card shadow-sm mb-4">
                     <div className="card-header bg-dark text-white">
+<<<<<<< HEAD
+<<<<<<< HEAD
+                        <strong>
+                            Asignar categoría a torneo
+                        </strong>
+=======
                         <strong>Asignar categoría a torneo</strong>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                        <strong>Asignar categoría a torneo</strong>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                     </div>
                     <div className="card-body">
                         {mensaje && (
@@ -220,28 +274,269 @@ const AdminTorneoCategorias = () => {
                     </div>
                 </div>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+                {/*
+=======
+                {/* Resumen */}
+<<<<<<< HEAD
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                {/* 
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
+=======
                 {/* Resumen */}
                 {/* 
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                 <div className="row mb-4">
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
+<<<<<<< HEAD
+                                <h6 className="text-muted">
+                                    Relaciones
+                                </h6>
+                                <h3>
+                                    {torneoCategorias.length}
+                                </h3>
+=======
                                 <h6 className="text-muted">Relaciones</h6>
                                 <h3>{torneoCategorias.length}</h3>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                                <h6 className="text-muted">Relaciones</h6>
+                                <h3>{torneoCategorias.length}</h3>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
+<<<<<<< HEAD
+                                <h6 className="text-muted">
+                                    Equipos Inscriptos
+                                </h6>
+                                <h3>
+                                    {totalEquipos}
+                                </h3>
+=======
                                 <h6 className="text-muted">Equipos Inscriptos</h6>
                                 <h3>{totalEquipos}</h3>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                                <h6 className="text-muted">Equipos Inscriptos</h6>
+                                <h3>{totalEquipos}</h3>
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card shadow-sm border-0">
                             <div className="card-body">
+<<<<<<< HEAD
+<<<<<<< HEAD
+                                <h6 className="text-muted">
+                                    Listos para Fixture
+                                </h6>
+                                <h3>
+                                    {listosParaFixture}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                */}
+=======
+                                <h6 className="text-muted">Listos para Fixture</h6>
+                                <h3>{listosParaFixture}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<<<<<<< HEAD
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+=======
+                */}
+>>>>>>> a738da2 (Puliendo detalles del Front-end)
+
+                {/* Tabla */}
+                <div className="card shadow-sm">
+<<<<<<< HEAD
+                    <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <strong>
+                            Competencias
+                        </strong>
+
+                        <input
+                            type="text"
+                            className="form-control w-auto"
+                            placeholder="Buscar..."
+                            value={busqueda}
+                            onChange={(e) =>
+                                setBusqueda(e.target.value)
+                            }
+                        />
+=======
+                    <div className="card-header bg-dark text-white">
+                        <strong>Categorías asignadas</strong>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
+                    </div>
+                    <div className="card-body">
+<<<<<<< HEAD
+                        {
+                            torneoCategorias.length === 0 ? (
+                                <div className="alert alert-info mb-0">
+                                    No existen competencias creadas.
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+
+                                    <table className="table table-hover align-middle">
+
+                                        <thead>
+
+                                            <tr>
+
+                                                <th>Torneo</th>
+                                                <th>Categoría</th>
+                                                <th>Equipos</th>
+                                                <th>Formato</th>
+                                                <th>Estado</th>
+                                                <th>Arancel</th>
+                                                <th>Fixture</th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody>
+                                            {
+                                                torneoCategoriasFiltradas.length > 0 ? (torneoCategoriasFiltradas.map((tc) => (
+                                                    <tr key={tc.id}>
+
+                                                        <td>
+                                                            {tc.torneo?.nombre}
+                                                        </td>
+
+                                                        <td>
+                                                            {tc.categoria?.nombre}
+                                                        </td>
+
+                                                        <td>
+                                                            {
+                                                                tc.formato_competencia === "playoff_8"
+                                                                    ? Number(tc.equipos_inscriptos) >= 8
+                                                                        ? (
+                                                                            <span className="badge bg-success">
+                                                                                {tc.equipos_inscriptos} equipos
+                                                                            </span>
+                                                                        )
+                                                                        : (
+                                                                            <span className="badge bg-danger">
+                                                                                {tc.equipos_inscriptos || 0}/8 mínimos
+                                                                            </span>
+                                                                        )
+                                                                    : Number(tc.equipos_inscriptos) >= 4
+                                                                        ? (
+                                                                            <span className="badge bg-success">
+                                                                                {tc.equipos_inscriptos} equipos
+                                                                            </span>
+                                                                        )
+                                                                        : (
+                                                                            <span className="badge bg-danger">
+                                                                                {tc.equipos_inscriptos || 0}/4 mínimos
+                                                                            </span>
+                                                                        )
+                                                            }
+                                                        </td>
+
+                                                        {/* 
+                                                        <td>
+                                                            {
+                                                                Number(tc.equipos_inscriptos) >= 4
+                                                                    ? (
+                                                                        <span className="badge bg-success">
+                                                                            {tc.equipos_inscriptos} equipos
+                                                                        </span>
+                                                                    )
+                                                                    : (
+                                                                        <span className="badge bg-danger">
+                                                                            {tc.equipos_inscriptos || 0}/4 mínimos
+                                                                        </span>
+                                                                    )
+                                                            }
+                                                        </td>
+                                                        */}
+
+                                                        <td>
+                                                            {
+                                                                tc.formato_competencia === "solo_liga"
+                                                                    ? "Solo Liga"
+                                                                    : tc.formato_competencia === "playoff_4"
+                                                                        ? "Playoff Top 4"
+                                                                        : "Playoff Top 8"
+                                                            }
+                                                        </td>
+
+                                                        <td>
+                                                            {
+                                                                tc.estado_competencia === "configuracion" &&
+                                                                <span className="badge bg-secondary">
+                                                                    En Configuración
+                                                                </span>
+                                                            }
+                                                            {
+                                                                tc.estado_competencia === "en_curso" &&
+                                                                <span className="badge bg-success">
+                                                                    En Curso
+                                                                </span>
+                                                            }
+                                                            {
+                                                                tc.estado_competencia === "finalizado" &&
+                                                                <span className="badge bg-dark">
+                                                                    Finalizado
+                                                                </span>
+                                                            }
+                                                        </td>
+
+                                                        <td>
+
+                                                            <span className="badge bg-primary">
+                                                                ${tc.arancel}
+                                                            </span>
+
+                                                        </td>
+
+                                                        <td>
+
+                                                            <Link
+                                                                to={`/panel/admin/fixture/${tc.id}`}
+                                                                className="btn btn-dark btn-sm"
+                                                            >
+                                                                Ver
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                                )
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="text-center text-muted">
+                                                            No se encontraron competencias.
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )
+                        }
+=======
+=======
                                 <h6 className="text-muted">Listos para Fixture</h6>
                                 <h3>{listosParaFixture}</h3>
                             </div>
@@ -256,6 +551,7 @@ const AdminTorneoCategorias = () => {
                         <strong>Categorías asignadas</strong>
                     </div>
                     <div className="card-body">
+>>>>>>> f9795a5b6e129b64176c2a4300c271c304d9b0f0
                         <div className="table-responsive">
                             <table className="table table-hover align-middle">
                                 <thead>
@@ -304,6 +600,7 @@ const AdminTorneoCategorias = () => {
                                 </tbody>
                             </table>
                         </div>
+>>>>>>> 63c6e1b (cambios de administrador y delegados)
                     </div>
                 </div>
 
