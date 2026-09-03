@@ -6,6 +6,8 @@ const JugadoresEquipo = () => {
   const { id } = useParams();
 
   const [jugadores, setJugadores] = useState([]);
+  const [jugadorAQuitar, setJugadorAQuitar] = useState(null);
+  const [quitandoJugador, setQuitandoJugador] = useState(false);
   const [historialJugador, setHistorialJugador] = useState(null);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [cargandoHistorial, setCargandoHistorial] = useState(false);
@@ -71,6 +73,46 @@ const JugadoresEquipo = () => {
       setMensaje(error.message);
     } finally {
       setCargandoHistorial(false);
+    }
+  };
+
+  const quitarJugador = async () => {
+    if (!jugadorAQuitar) {
+      return;
+    }
+
+    try {
+      setQuitandoJugador(true);
+      setMensaje("");
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:3000/api/v1/delegado/jugadores/${jugadorAQuitar.id}/quitar`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setJugadorAQuitar(null);
+        setMensaje(data.message || "No fue posible quitar al jugador.");
+        return;
+      }
+
+      // Cerrar modal
+      setJugadorAQuitar(null);
+
+      // Volver a consultar plantel
+      await obtenerJugadores();
+    } catch (error) {
+      console.error(error);
+      setMensaje("Ocurrió un error al quitar al jugador.");
+    } finally {
+      setQuitandoJugador(false);
     }
   };
 
@@ -202,7 +244,16 @@ const JugadoresEquipo = () => {
                               <strong>#{jugador.dorsal}</strong>
                             </td>
                             <td>
-                              {jugador.nombre} {jugador.apellido}
+                              <div className="d-flex align-items-center gap-2 flex-wrap">
+                                <span>
+                                  {jugador.nombre} {jugador.apellido}
+                                </span>
+                                {jugador.es_delegado && (
+                                  <span className="badge bg-primary">
+                                    Delegado
+                                  </span>
+                                )}
+                              </div>
                             </td>
                             <td>{jugador.dni}</td>
                             <td>
@@ -277,6 +328,16 @@ const JugadoresEquipo = () => {
                                 >
                                   Historial
                                 </button>
+
+                                {!jugador.es_delegado && (
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => setJugadorAQuitar(jugador)}
+                                  >
+                                    Quitar
+                                  </button>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -290,7 +351,6 @@ const JugadoresEquipo = () => {
         </div>
 
         {/* MODAL AYUDA */}
-
         {showHelp && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -319,35 +379,37 @@ const JugadoresEquipo = () => {
 
               <p>
                 Desde esta sección podés consultar todos los jugadores que
-                pertenecen al plantel.
+                pertenecen al plantel y realizar diferentes acciones:
               </p>
 
               <ul>
                 <li>Crear nuevos jugadores.</li>
-
                 <li>Modificar los datos de los jugadores.</li>
-
                 <li>Consultar disponibilidad y sanciones.</li>
-
                 <li>Ver el historial disciplinario.</li>
               </ul>
 
               <b>IMPORTANTE</b>
 
               <p className="mb-0">
-                - <b>NO</b> se pueden eliminar jugadores.
+                - Los jugadores pueden agregarse, editarse o quitarse mientras
+                el equipo no posea una inscripción pendiente ni se encuentre
+                participando en una competencia.
                 <br />
-                - Los datos pueden editarse únicamente mientras el equipo no
-                haya realizado ninguna inscripción.
-                <br />- Una vez registrada una inscripción, el plantel queda
-                bloqueado por cuestiones de seguridad.
+                - Al registrar correctamente una inscripción, el plantel quedará
+                bloqueado mientras la misma se encuentre pendiente de
+                aprobación.
+                <br />
+                - Si la inscripción es rechazada, el plantel volverá a
+                habilitarse.
+                <br />- Si la inscripción es confirmada, el plantel permanecerá
+                bloqueado hasta que finalice la competencia.
               </p>
             </div>
           </div>
         )}
 
         {/* MODAL HISTORIAL */}
-
         {mostrarHistorial && historialJugador && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -367,7 +429,6 @@ const JugadoresEquipo = () => {
               }}
             >
               {/* CABECERA */}
-
               <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
                 <div>
                   <h5 className="mb-0">Historial disciplinario</h5>
@@ -391,7 +452,6 @@ const JugadoresEquipo = () => {
               </div>
 
               {/* CUERPO */}
-
               <div className="p-3">
                 {historialJugador.sanciones.length === 0 ? (
                   <div className="alert alert-info mb-0">
@@ -491,6 +551,97 @@ const JugadoresEquipo = () => {
                   }}
                 >
                   Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL QUITAR JUGADOR */}
+        {jugadorAQuitar && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.65)",
+              zIndex: 1050,
+              padding: "20px",
+            }}
+          >
+            <div
+              className="bg-white rounded shadow"
+              style={{
+                width: "100%",
+                maxWidth: "500px",
+                overflow: "hidden",
+              }}
+            >
+              {/* CABECERA */}
+              <div
+                className="text-center"
+                style={{
+                  padding: "30px 30px 15px",
+                }}
+              >
+                <div
+                  className="text-warning mb-3"
+                  style={{
+                    fontSize: "3rem",
+                  }}
+                >
+                  ⚠
+                </div>
+
+                <h4 className="mb-3">Quitar jugador del plantel</h4>
+
+                <p className="text-muted mb-0">
+                  Estás por quitar a
+                  <strong>
+                    {" "}
+                    {jugadorAQuitar.nombre} {jugadorAQuitar.apellido}
+                  </strong>{" "}
+                  del plantel actual.
+                </p>
+              </div>
+
+              {/* CUERPO */}
+              <div className="px-4 pb-3">
+                <div className="alert alert-light border">
+                  <strong>Importante</strong>
+                  <br />
+                  El jugador dejará de formar parte del plantel actual, pero
+                  <strong> no será eliminado del sistema</strong>.
+                  <br />
+                  <br />
+                  Su historial disciplinario, participaciones y sanciones se
+                  conservarán.
+                </div>
+
+                <p className="mb-0 text-center">¿Deseás continuar?</p>
+              </div>
+
+              {/* PIE */}
+              <div
+                className="border-top d-flex justify-content-end gap-2"
+                style={{
+                  padding: "16px 24px",
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={quitandoJugador}
+                  onClick={() => setJugadorAQuitar(null)}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  disabled={quitandoJugador}
+                  onClick={quitarJugador}
+                >
+                  {quitandoJugador ? "Quitando..." : "Quitar jugador"}
                 </button>
               </div>
             </div>

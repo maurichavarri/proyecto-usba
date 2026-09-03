@@ -58,7 +58,7 @@ const Login = () => {
                     inset: 0,
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
+                    //justifyContent: "center",
                     padding: "60px",
                     color: "#fff",
                 }}>

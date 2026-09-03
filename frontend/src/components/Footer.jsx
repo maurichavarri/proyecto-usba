@@ -27,7 +27,7 @@ const Footer = () => {
           {/* Contacto */}
           <div className="col-md-3 mb-3">
             <h6>Contacto</h6>
-            <p className="mb-1">+54 9 385 XXX XXXX</p>
+            <p className="mb-1">+54 9 3856 11-6571</p>
           </div>
         </div>
       </div>

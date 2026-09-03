@@ -20,6 +20,7 @@ import CrearJugador from "./pages/delegado/CrearJugador";
 import MisInscripciones from "./pages/delegado/MisInscripciones";
 import CrearInscripcion from "./pages/delegado/CrearInscripcion";
 import DashboardDelegado from "./pages/delegado/DashboardDelegado";
+import HistorialEquipo from "./pages/delegado/HistorialEquipo";
 
 import ArbitroDashboard from "./pages/arbitro/ArbitroDashboard";
 import ArbitroPartido from "./pages/arbitro/ArbitroPartido";
@@ -67,13 +68,14 @@ function App() {
 
           {/* Delegado */}
           <Route path="/panel/delegado/equipos" element={<ProtectedRoute roles={["delegado"]}><MisEquipos /></ProtectedRoute>} />
-          <Route path="/panel/delegado/equipos/crear" element={<CrearEquipo />}/>
+          <Route path="/panel/delegado/equipos/crear" element={<ProtectedRoute roles={["delegado"]}><CrearEquipo /></ProtectedRoute>}/>
           <Route path="/panel/delegado/equipos/:id/jugadores" element={<ProtectedRoute roles={["delegado"]}><JugadoresEquipo /></ProtectedRoute>} />
           <Route path="/panel/delegado/equipos/:id/jugadores/crear" element={<ProtectedRoute roles={["delegado"]}><CrearJugador /></ProtectedRoute>} />
           <Route path="/panel/delegado/equipos/:equipoId/jugadores/:jugadorId/editar" element={<ProtectedRoute roles={["delegado"]}><EditarJugador /></ProtectedRoute>} />
           <Route path="/panel/delegado/inscripciones" element={<ProtectedRoute roles={["delegado"]}><MisInscripciones /></ProtectedRoute>} />
           <Route path="/panel/delegado/inscripciones/crear"element={<ProtectedRoute roles={["delegado"]}> <CrearInscripcion /></ProtectedRoute>}/>
           <Route path="/panel/delegado" element={<ProtectedRoute roles={["delegado"]}><DashboardDelegado /></ProtectedRoute>} />
+          <Route path="/panel/delegado/equipos/:id/historial" element={<ProtectedRoute roles={["delegado"]}><HistorialEquipo /></ProtectedRoute>} />
 
           {/* Arbitro */}
           <Route path="/panel/arbitro" element={<ProtectedRoute roles={["arbitro"]}><ArbitroDashboard /></ProtectedRoute>} />

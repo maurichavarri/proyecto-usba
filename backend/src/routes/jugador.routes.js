@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { crearJugador, obtenerJugadoresPorEquipo, obtenerJugador, editarJugador, cambiarEstadoJugador } from "../controllers/jugador.controller.js";
+import { crearJugador, obtenerJugadoresPorEquipo, obtenerJugador, editarJugador, quitarJugador, cambiarEstadoJugador } from "../controllers/jugador.controller.js";
 import { obtenerHistorialJugador } from '../controllers/sancion.controller.js';
 
 import verifyToken from '../middlewares/verifyToken.js';
@@ -24,5 +24,8 @@ router.put("/:id", verifyToken, verifyRole("delegado"), editarJugador);
 
 // Obtener las sanciones de un jugador
 router.get('/:jugadorId/sanciones', verifyToken, verifyRole('delegado'), obtenerHistorialJugador);
+
+// Quitar jugador del plantel
+router.patch("/:id/quitar", verifyToken, verifyRole("delegado"), quitarJugador);
 
 export default router;

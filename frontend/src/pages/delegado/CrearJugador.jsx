@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const CrearJugador = () => {
-
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -12,26 +11,27 @@ const CrearJugador = () => {
     dni: "",
     dorsal: "",
     fecha_nacimiento: "",
-    sexo: ""
+    sexo: "",
   });
 
   const [mensaje, setMensaje] = useState("");
+  const [showHelp, setShowHelp] = useState(false);
   const [mostrarLimiteJugadores, setMostrarLimiteJugadores] = useState(false);
   const [mostrarPlantelBloqueado, setMostrarPlantelBloqueado] = useState(false);
-
+  const [mostrarJugadorReincorporado, setMostrarJugadorReincorporado] =
+    useState(false);
+  const [jugadorReincorporado, setJugadorReincorporado] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setFormData({
       ...formData,
-      [name]: name === "dni" ? value.replace(/\D/g, "") : value
+      [name]: name === "dni" ? value.replace(/\D/g, "") : value,
     });
   };
 
-
   const validarFormulario = () => {
-
     if (!formData.nombre.trim()) {
       return "El nombre es obligatorio.";
     }
@@ -65,7 +65,6 @@ const CrearJugador = () => {
     return "";
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const error = validarFormulario();
@@ -79,12 +78,13 @@ const CrearJugador = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/v1/delegado/jugadores",
+      const response = await fetch(
+        "http://localhost:3000/api/v1/delegado/jugadores",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
 
           body: JSON.stringify({
@@ -94,15 +94,18 @@ const CrearJugador = () => {
             dorsal: Number(formData.dorsal),
             fecha_nacimiento: formData.fecha_nacimiento,
             sexo: formData.sexo,
-            equipo_id: Number(id)
-          })
-        }
+            equipo_id: Number(id),
+          }),
+        },
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        if (data.message === "El equipo ya alcanzó el máximo permitido de 12 jugadores.") {
+        if (
+          data.message ===
+          "El equipo ya alcanzó el máximo permitido de 12 jugadores."
+        ) {
           setMostrarLimiteJugadores(true);
           return;
         }
@@ -116,134 +119,116 @@ const CrearJugador = () => {
         return;
       }
 
-      navigate(`/panel/delegado/equipos/${id}/jugadores`);
+      if (data.code === "JUGADOR_REINCORPORADO") {
+        setJugadorReincorporado(data.jugador);
+        setMostrarJugadorReincorporado(true);
+        return;
+      }
 
+      navigate(`/panel/delegado/equipos/${id}/jugadores`);
     } catch (error) {
       console.error(error);
       setMensaje("Ocurrió un error al crear el jugador.");
     }
   };
 
-
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-
         {/* BREADCRUMB */}
-        <nav
-          className="mb-2"
-          style={{
-            fontSize: "0.9rem"
-          }}
-        >
-          <span
-            className="text-muted"
+        <div className="mb-3">
+          <nav
+            className="mb-1"
             style={{
-              cursor: "pointer"
+              fontSize: "0.9rem",
             }}
-            onClick={() =>
-              navigate(
-                "/panel/delegado"
-              )
-            }
           >
-            Panel de Delegado
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/delegado")}
+            >
+              Panel de Delegado
+            </span>
 
-          {" > "}
+            {" > "}
 
-          <span
-            className="text-muted"
-            style={{
-              cursor: "pointer"
-            }}
-            onClick={() =>
-              navigate(
-                "/panel/delegado/equipos"
-              )
-            }
-          >
-            Mis Equipos
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/delegado/equipos")}
+            >
+              Mis Equipos
+            </span>
 
-          {" > "}
+            {" > "}
 
-          <span
-            className="text-muted"
-            style={{
-              cursor: "pointer"
-            }}
-            onClick={() =>
-              navigate(
-                `/panel/delegado/equipos/${id}/jugadores`
-              )
-            }
-          >
-            Mis Jugadores
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                navigate(`/panel/delegado/equipos/${id}/jugadores`)
+              }
+            >
+              Mis Jugadores
+            </span>
 
-          {" > "}
+            {" > "}
 
-          <span className="text-muted">
-            Crear jugador
-          </span>
+            <span className="text-muted">Crear Jugador</span>
+          </nav>
 
-        </nav>
-
-
-        <h3 className="fw-bold mb-3">
-          Crear Jugador
-        </h3>
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Crear Jugador</h3>
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d", // gris Bootstrap
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
+        </div>
 
         <button
           type="button"
           className="btn btn-dark mb-3"
-          onClick={() =>
-            navigate(
-              `/panel/delegado/equipos/${id}/jugadores`
-            )
-          }
+          onClick={() => navigate(`/panel/delegado/equipos/${id}/jugadores`)}
         >
-          ← Regresar al plantel
+          ← Volver
         </button>
 
-
         <div className="card shadow-sm">
-
           <div className="card-header bg-dark text-white">
-
-            <strong>
-              Datos del jugador
-            </strong>
-
+            <strong>Datos del jugador</strong>
           </div>
 
-
           <div className="card-body p-4">
-
-            {
-              mensaje && (
-
-                <div className="alert alert-danger">
-                  {mensaje}
-                </div>
-
-              )
-            }
-
+            {mensaje && <div className="alert alert-danger">{mensaje}</div>}
 
             <form onSubmit={handleSubmit}>
-
-
               {/* NOMBRE Y APELLIDO */}
 
               <div className="row">
-
                 <div className="col-md-6 mb-3">
-
-                  <label className="form-label">
-                    Nombre
-                  </label>
+                  <label className="form-label">Nombre</label>
 
                   <input
                     type="text"
@@ -253,15 +238,10 @@ const CrearJugador = () => {
                     onChange={handleChange}
                     required
                   />
-
                 </div>
 
-
                 <div className="col-md-6 mb-3">
-
-                  <label className="form-label">
-                    Apellido
-                  </label>
+                  <label className="form-label">Apellido</label>
 
                   <input
                     type="text"
@@ -271,21 +251,14 @@ const CrearJugador = () => {
                     onChange={handleChange}
                     required
                   />
-
                 </div>
-
               </div>
-
 
               {/* DNI Y DORSAL */}
 
               <div className="row">
-
                 <div className="col-md-6 mb-3">
-
-                  <label className="form-label">
-                    DNI
-                  </label>
+                  <label className="form-label">DNI</label>
 
                   <input
                     type="text"
@@ -298,15 +271,10 @@ const CrearJugador = () => {
                     placeholder="Ej: 40123456"
                     required
                   />
-
                 </div>
 
-
                 <div className="col-md-6 mb-3">
-
-                  <label className="form-label">
-                    Dorsal
-                  </label>
+                  <label className="form-label">Dorsal</label>
 
                   <input
                     type="number"
@@ -318,47 +286,32 @@ const CrearJugador = () => {
                     onChange={handleChange}
                     required
                   />
-
                 </div>
-
               </div>
-
 
               {/* NACIMIENTO Y SEXO */}
 
               <div className="row">
-
                 <div className="col-md-6 mb-3">
-
-                  <label className="form-label">
-                    Fecha de nacimiento
-                  </label>
+                  <label className="form-label">Fecha de nacimiento</label>
 
                   <input
                     type="date"
                     name="fecha_nacimiento"
                     className="form-control"
-                    value={
-                      formData.fecha_nacimiento
-                    }
+                    value={formData.fecha_nacimiento}
                     onChange={handleChange}
                     required
                   />
 
                   <small className="text-muted">
-                    Se utilizará para validar
-                    la edad correspondiente a
-                    la categoría.
+                    Se utilizará para validar la edad correspondiente a la
+                    categoría.
                   </small>
-
                 </div>
 
-
                 <div className="col-md-6 mb-3">
-
-                  <label className="form-label">
-                    Sexo
-                  </label>
+                  <label className="form-label">Sexo</label>
 
                   <select
                     name="sexo"
@@ -367,191 +320,214 @@ const CrearJugador = () => {
                     onChange={handleChange}
                     required
                   >
+                    <option value="">Seleccionar</option>
 
-                    <option value="">
-                      Seleccionar
-                    </option>
+                    <option value="masculino">Masculino</option>
 
-                    <option value="masculino">
-                      Masculino
-                    </option>
-
-                    <option value="femenino">
-                      Femenino
-                    </option>
-
+                    <option value="femenino">Femenino</option>
                   </select>
-
                 </div>
-
               </div>
 
-
               <div className="d-flex gap-2 mt-2">
-
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                >
+                <button type="submit" className="btn btn-primary">
                   Crear jugador
                 </button>
-
 
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={() =>
-                    navigate(
-                      `/panel/delegado/equipos/${id}/jugadores`
-                    )
+                    navigate(`/panel/delegado/equipos/${id}/jugadores`)
                   }
                 >
                   Cancelar
                 </button>
-
               </div>
-
             </form>
-
           </div>
-
         </div>
 
-
         {/* MODAL MAXIMO */}
-
-        {
-          mostrarLimiteJugadores && (
-
+        {mostrarLimiteJugadores && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 1050,
+            }}
+          >
             <div
-              className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+              className="bg-white p-4 rounded shadow text-center"
               style={{
-                backgroundColor:
-                  "rgba(0,0,0,0.5)",
-                zIndex: 1050
+                width: "90%",
+                maxWidth: "450px",
               }}
             >
-
               <div
-                className="bg-white p-4 rounded shadow text-center"
+                className="text-warning mb-3"
                 style={{
-                  width: "90%",
-                  maxWidth: "450px"
+                  fontSize: "3rem",
                 }}
               >
-
-                <div
-                  className="text-warning mb-3"
-                  style={{
-                    fontSize: "3rem"
-                  }}
-                >
-                  ⚠
-                </div>
-
-                <h4>
-                  Plantel completo
-                </h4>
-
-                <p className="text-muted">
-
-                  El equipo ya alcanzó el
-                  máximo permitido de
-
-                  <strong>
-                    {" "}12 jugadores
-                  </strong>.
-
-                </p>
-
-                <button
-                  type="button"
-                  className="btn btn-dark"
-                  onClick={() =>
-                    setMostrarLimiteJugadores(false)
-                  }
-                >
-                  Aceptar
-                </button>
-
+                ⚠
               </div>
 
+              <h4>Plantel completo</h4>
+
+              <p className="text-muted">
+                El equipo ya alcanzó el máximo permitido de
+                <strong> 12 jugadores</strong>.
+              </p>
+
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={() => setMostrarLimiteJugadores(false)}
+              >
+                Aceptar
+              </button>
             </div>
-
-          )
-        }
-
+          </div>
+        )}
 
         {/* MODAL PLANTEL BLOQUEADO */}
 
-        {
-          mostrarPlantelBloqueado && (
-
+        {mostrarPlantelBloqueado && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 1050,
+            }}
+          >
             <div
-              className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+              className="bg-white p-4 rounded shadow text-center"
               style={{
-                backgroundColor:
-                  "rgba(0,0,0,0.5)",
-                zIndex: 1050
+                width: "90%",
+                maxWidth: "480px",
               }}
             >
-
               <div
-                className="bg-white p-4 rounded shadow text-center"
+                className="text-warning mb-3"
                 style={{
-                  width: "90%",
-                  maxWidth: "480px"
+                  fontSize: "3rem",
                 }}
               >
+                ⚠
+              </div>
 
+              <h4>Plantel bloqueado</h4>
+
+              <p className="text-muted">
+                No es posible agregar jugadores porque este equipo ya realizó
+                una inscripción.
+              </p>
+
+              <p>
+                El plantel debe conservarse sin modificaciones por cuestiones de
+                seguridad.
+              </p>
+
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={() =>
+                  navigate(`/panel/delegado/equipos/${id}/jugadores`)
+                }
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal ayuda */}
+        {showHelp && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow"
+              style={{ maxWidth: "550px" }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5>¿Cómo funciona este apartado?</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowHelp(false)}
+                />
+              </div>
+              <p>
+                Desde esta sección podés registrar un nuevo jugador para tu
+                equipo.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de Jugador Reincorporado */}
+        {mostrarJugadorReincorporado && jugadorReincorporado && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.65)",
+              zIndex: 1050,
+              padding: "20px",
+            }}
+          >
+            <div
+              className="bg-white rounded shadow"
+              style={{
+                width: "100%",
+                maxWidth: "500px",
+              }}
+            >
+              <div className="text-center p-4">
                 <div
-                  className="text-warning mb-3"
+                  className="text-success mb-3"
                   style={{
-                    fontSize: "3rem"
+                    fontSize: "3rem",
                   }}
                 >
-                  ⚠
+                  ✓
                 </div>
 
-                <h4>
-                  Plantel bloqueado
-                </h4>
+                <h4>Jugador reincorporado</h4>
 
                 <p className="text-muted">
-
-                  No es posible agregar jugadores
-                  porque este equipo ya realizó una
-                  inscripción.
-
+                  <strong>
+                    {jugadorReincorporado.nombre}{" "}
+                    {jugadorReincorporado.apellido}
+                  </strong>{" "}
+                  ya había formado parte anteriormente de este equipo.
                 </p>
 
-                <p>
-                  El plantel debe conservarse sin
-                  modificaciones por cuestiones de
-                  seguridad.
-                </p>
+                <div className="alert alert-light border text-start mb-0">
+                  El jugador fue reincorporado al plantel utilizando su registro
+                  histórico existente.
+                  <br />
+                  <br />
+                  Su historial y antecedentes disciplinarios se conservaron.
+                </div>
+              </div>
 
+              <div className="border-top text-end p-3">
                 <button
                   type="button"
                   className="btn btn-dark"
                   onClick={() =>
-                    navigate(
-                      `/panel/delegado/equipos/${id}/jugadores`
-                    )
+                    navigate(`/panel/delegado/equipos/${id}/jugadores`)
                   }
                 >
                   Aceptar
                 </button>
-
               </div>
-
             </div>
-
-          )
-        }
-
+          </div>
+        )}
       </div>
-
     </div>
   );
 };

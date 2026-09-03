@@ -1,60 +1,42 @@
+import { Op } from "sequelize";
+import sequelize from "../config/db.js";
+
 import {
   Equipo,
-  Jugador,
   Inscripcion,
   TorneoCategoria,
   Torneo,
   Categoria,
 } from "../models/index.js";
-import { validarJugadoresDuplicados } from "../services/validarJugadoresDuplicados.service.js";
+
 import { plantelBloqueado } from "../services/plantelBloqueado.service.js";
+import { validarPlantelInscripcion } from "../services/validarPlantelInscripcion.service.js";
+import { crearSnapshotPlantel } from "../services/inscripcionJugador.service.js";
 import { obtenerFechaActualArgentina } from "../utils/fecha.utils.js";
 
-const calcularEdadEnFecha = (fechaNacimiento, fechaReferencia) => {
-  if (!fechaNacimiento || !fechaReferencia) {
-    return null;
-  }
-
-  const [anioNacimiento, mesNacimiento, diaNacimiento] = String(fechaNacimiento)
-    .split("T")[0]
-    .split("-")
-    .map(Number);
-  const [anioReferencia, mesReferencia, diaReferencia] = String(fechaReferencia)
-    .split("T")[0]
-    .split("-")
-    .map(Number);
-
-  if (
-    [
-      anioNacimiento,
-      mesNacimiento,
-      diaNacimiento,
-      anioReferencia,
-      mesReferencia,
-      diaReferencia,
-    ].some((valor) => Number.isNaN(valor))
-  ) {
-    return null;
-  }
-
-  let edad = anioReferencia - anioNacimiento;
-
-  if (
-    mesReferencia < mesNacimiento ||
-    (mesReferencia === mesNacimiento && diaReferencia < diaNacimiento)
-  ) {
-    edad--;
-  }
-
-  return edad;
-};
-
+// ========================================================
 // DELEGADO
+// ========================================================
+
+// ========================================================
+// CREAR INSCRIPCIÓN
+// ========================================================
+
 export const crearInscripcion = async (req, res, next) => {
   try {
     const { equipo_id, torneo_categoria_id } = req.body;
 
     const usuarioId = req.usuario.id;
+
+    // =========================
+    // CAMPOS OBLIGATORIOS
+    // =========================
+
+    if (!equipo_id || !torneo_categoria_id) {
+      return res.status(400).json({
+        message: "Debe seleccionar un equipo y una competencia.",
+      });
+    }
 
     // =========================
     // BUSCAR EQUIPO
@@ -64,17 +46,17 @@ export const crearInscripcion = async (req, res, next) => {
 
     if (!equipo) {
       return res.status(404).json({
-        message: "Equipo no encontrado",
+        message: "Equipo no encontrado.",
       });
     }
 
     // =========================
-    // OWNERSHIP
+    // VERIFICAR PROPIEDAD
     // =========================
 
-    if (equipo.id_usuario_creador !== usuarioId) {
+    if (equipo.id_usuario_creador !== req.usuario.id) {
       return res.status(403).json({
-        message: "No autorizado",
+        message: "No autorizado.",
       });
     }
 
@@ -90,17 +72,13 @@ export const crearInscripcion = async (req, res, next) => {
             model: Torneo,
             as: "torneo",
           },
-          {
-            model: Categoria,
-            as: "categoria",
-          },
         ],
       },
     );
 
     if (!torneoCategoria) {
       return res.status(404).json({
-        message: "Torneo categoría no encontrado",
+        message: "Torneo-categoría no encontrado.",
       });
     }
 
@@ -110,8 +88,10 @@ export const crearInscripcion = async (req, res, next) => {
 
     if (torneoCategoria.fixture_generado) {
       return res.status(400).json({
+        code: "FIXTURE_GENERADO",
+
         message:
-          "Las inscripciones están cerradas porque el fixture ya fue generado",
+          "Las inscripciones están cerradas porque el fixture ya fue generado.",
       });
     }
 
@@ -121,8 +101,6 @@ export const crearInscripcion = async (req, res, next) => {
 
     const torneo = torneoCategoria.torneo;
 
-    const categoria = torneoCategoria.categoria;
-
     const hoy = obtenerFechaActualArgentina();
 
     const fechaInicio = torneo.fecha_inicio;
@@ -131,219 +109,86 @@ export const crearInscripcion = async (req, res, next) => {
 
     if (hoy >= fechaInicio) {
       return res.status(400).json({
-        message: "El torneo ya comenzó y/o finalizó",
+        code: "TORNEO_INICIADO",
+
+        message: "No es posible inscribirse porque el torneo ya comenzó.",
       });
     }
 
     if (hoy > fechaCierre) {
       return res.status(400).json({
-        message: "El período de inscripción finalizó",
+        code: "INSCRIPCION_CERRADA",
+
+        message: "El período de inscripción finalizó.",
       });
     }
 
     // =========================
-    // BUSCAR JUGADORES
+    // VERIFICAR SI YA EXISTE
+    // UNA INSCRIPCIÓN VIGENTE
+    // PARA ESTA COMPETENCIA
     // =========================
 
-    const jugadores = await Jugador.findAll({
+    const inscripcionExistente = await Inscripcion.findOne({
       where: {
         equipo_id,
-      },
-    });
 
-    // =========================
-    // CANTIDAD DE JUGADORES
-    // =========================
-
-    const cantidadJugadores = jugadores.length;
-
-    if (cantidadJugadores === 0) {
-      return res.status(400).json({
-        message: "El equipo no posee jugadores.",
-      });
-    }
-
-    if (cantidadJugadores < 5) {
-      return res.status(400).json({
-        message: "El equipo debe tener al menos 5 jugadores.",
-      });
-    }
-
-    if (cantidadJugadores > 12) {
-      return res.status(400).json({
-        message: "El equipo no puede tener más de 12 jugadores.",
-      });
-    }
-
-    // =========================
-    // INSCRIPCIÓN PREVIA
-    // =========================
-
-    const existeInscripcion = await Inscripcion.findOne({
-      where: {
-        equipo_id,
         torneo_categoria_id,
+
+        estado: {
+          [Op.in]: ["pendiente", "confirmado"],
+        },
       },
     });
 
-    if (existeInscripcion) {
+    if (inscripcionExistente) {
       return res.status(400).json({
-        message: "El equipo ya está inscripto",
+        code: "INSCRIPCION_EXISTENTE",
+
+        message:
+          inscripcionExistente.estado === "pendiente"
+            ? "El equipo ya posee una inscripción pendiente en esta competencia."
+            : "El equipo ya se encuentra confirmado en esta competencia.",
       });
     }
 
     // =========================
-    // JUGADORES REPETIDOS
+    // VERIFICAR SI EL EQUIPO
+    // YA ESTÁ COMPROMETIDO
+    // EN OTRA COMPETENCIA
     // =========================
 
-    const resultado = await validarJugadoresDuplicados(
+    const equipoComprometido = await plantelBloqueado(equipo_id);
+
+    if (equipoComprometido) {
+      return res.status(400).json({
+        code: "EQUIPO_COMPROMETIDO",
+
+        message:
+          "El equipo ya posee una inscripción pendiente o participa actualmente en otra competencia.",
+      });
+    }
+
+    // =========================
+    // VALIDAR PLANTEL COMPLETO
+    // =========================
+
+    const validacion = await validarPlantelInscripcion(
       equipo_id,
       torneo_categoria_id,
     );
 
-    if (!resultado.valido) {
+    if (!validacion.valido) {
       return res.status(400).json({
-        code: "JUGADORES_DUPLICADOS",
+        code: validacion.code,
 
-        message:
-          "No es posible registrar la inscripción porque existen jugadores que ya participan en esta competencia.",
+        message: validacion.message,
 
-        jugadores: resultado.jugadores,
-      });
-    }
+        requisitos: validacion.requisitos,
 
-    // =========================
-    // VALIDAR CONFIGURACIÓN
-    // DE LA CATEGORÍA
-    // =========================
+        jugadores: validacion.jugadores,
 
-    if (
-      !categoria ||
-      categoria.edad_minima === null ||
-      categoria.edad_minima === undefined ||
-      categoria.edad_maxima === null ||
-      categoria.edad_maxima === undefined ||
-      !categoria.sexo
-    ) {
-      return res.status(400).json({
-        code: "CATEGORIA_INCOMPLETA",
-
-        message:
-          "La categoría no posee configurados correctamente los requisitos de edad y sexo.",
-      });
-    }
-
-    // =========================
-    // VALIDAR JUGADORES
-    // CONTRA LA CATEGORÍA
-    // =========================
-
-    const jugadoresNoAptos = [];
-
-    for (const jugador of jugadores) {
-      const motivos = [];
-
-      let edad = null;
-
-      // -------------------------
-      // FECHA DE NACIMIENTO
-      // -------------------------
-
-      if (!jugador.fecha_nacimiento) {
-        motivos.push("No tiene cargada la fecha de nacimiento.");
-      } else {
-        edad = calcularEdadEnFecha(
-          jugador.fecha_nacimiento,
-          torneo.fecha_inicio,
-        );
-
-        if (edad === null) {
-          motivos.push("La fecha de nacimiento no es válida.");
-        } else if (
-          edad < categoria.edad_minima ||
-          edad > categoria.edad_maxima
-        ) {
-          motivos.push(
-            `Tiene ${edad} años al inicio del torneo. La categoría permite jugadores de ${categoria.edad_minima} a ${categoria.edad_maxima} años.`,
-          );
-        }
-      }
-
-      // -------------------------
-      // SEXO
-      // -------------------------
-
-      if (!jugador.sexo) {
-        motivos.push("No tiene cargado el sexo.");
-      } else if (jugador.sexo !== categoria.sexo) {
-        motivos.push(
-          `El jugador figura como ${jugador.sexo}, pero la categoría es ${categoria.sexo}.`,
-        );
-      }
-
-      // -------------------------
-      // AGREGAR JUGADOR OBSERVADO
-      // -------------------------
-
-      if (motivos.length > 0) {
-        jugadoresNoAptos.push({
-          id: jugador.id,
-
-          nombre: jugador.nombre,
-
-          apellido: jugador.apellido,
-
-          dorsal: jugador.dorsal,
-
-          edad,
-
-          sexo: jugador.sexo,
-
-          motivos,
-        });
-      }
-    }
-
-    // =========================
-    // RECHAZAR INSCRIPCIÓN
-    // =========================
-
-    if (jugadoresNoAptos.length > 0) {
-      const bloqueado = await plantelBloqueado(equipo_id);
-
-      return res.status(400).json({
-        code: "JUGADORES_NO_APTOS",
-
-        message:
-          "El plantel posee jugadores que no cumplen los requisitos de la categoría.",
-
-        requisitos: {
-          edad_minima: categoria.edad_minima,
-
-          edad_maxima: categoria.edad_maxima,
-
-          sexo: categoria.sexo,
-        },
-
-        puede_editar_plantel: !bloqueado,
-
-        jugadores: jugadoresNoAptos,
-      });
-    }
-
-    // =========================
-    // VALIDAR DORSALES
-    // =========================
-
-    const dorsales = jugadores.map((jugador) => jugador.dorsal);
-
-    const repetidos = dorsales.filter(
-      (dorsal, index) => dorsales.indexOf(dorsal) !== index,
-    );
-
-    if (repetidos.length > 0) {
-      return res.status(400).json({
-        message: "Existen dorsales duplicados dentro del equipo.",
+        puede_editar_plantel: true,
       });
     }
 
@@ -359,118 +204,480 @@ export const crearInscripcion = async (req, res, next) => {
       fecha: new Date(),
 
       estado: "pendiente",
+
+      motivo_rechazo: null,
     });
 
-    res.status(201).json(inscripcion);
+    // =========================
+    // RESPUESTA
+    // =========================
+
+    return res.status(201).json({
+      code: "INSCRIPCION_CREADA",
+
+      message:
+        "Inscripción registrada correctamente y pendiente de aprobación.",
+
+      inscripcion,
+    });
   } catch (error) {
     next(error);
   }
 };
+
+// ========================================================
+// OBTENER MIS INSCRIPCIONES
+// ========================================================
 
 export const obtenerMisInscripciones = async (req, res, next) => {
   try {
     const usuarioId = req.usuario.id;
+
     const inscripciones = await Inscripcion.findAll({
       include: [
+        // =========================
+        // EQUIPO
+        // =========================
+
         {
           model: Equipo,
+
           where: {
             id_usuario_creador: usuarioId,
           },
         },
+
+        // =========================
+        // TORNEO - CATEGORÍA
+        // =========================
+
         {
           model: TorneoCategoria,
+
           as: "torneoCategoria",
+
           include: [
             {
               model: Torneo,
+
               as: "torneo",
             },
+
             {
               model: Categoria,
+
               as: "categoria",
             },
           ],
         },
       ],
+
+      order: [
+        ["fecha", "DESC"],
+        ["id", "DESC"],
+      ],
     });
 
-    res.json(inscripciones);
+    return res.json(inscripciones);
   } catch (error) {
     next(error);
   }
 };
 
+// ========================================================
 // ADMIN
+// ========================================================
+
+// ========================================================
+// OBTENER TODAS LAS INSCRIPCIONES
+// ========================================================
+
 export const getInscripciones = async (req, res, next) => {
   try {
     const inscripciones = await Inscripcion.findAll({
       include: [
+        // =========================
+        // EQUIPO
+        // =========================
+
         {
           model: Equipo,
+
           attributes: ["id", "nombre"],
         },
+
+        // =========================
+        // TORNEO - CATEGORÍA
+        // =========================
+
         {
           model: TorneoCategoria,
+
           as: "torneoCategoria",
+
           include: [
             {
               model: Torneo,
+
               as: "torneo",
-              attributes: ["id", "nombre"],
+
+              attributes: [
+                "id",
+                "nombre",
+                "fecha_inicio",
+                "fecha_cierre_inscripcion",
+              ],
             },
+
             {
               model: Categoria,
+
               as: "categoria",
-              attributes: ["id", "nombre"],
+
+              attributes: [
+                "id",
+                "nombre",
+                "edad_minima",
+                "edad_maxima",
+                "sexo",
+              ],
             },
           ],
         },
       ],
-      order: [["fecha", "DESC"]],
+
+      order: [
+        ["fecha", "DESC"],
+        ["id", "DESC"],
+      ],
     });
 
-    res.json(inscripciones);
+    return res.json(inscripciones);
   } catch (error) {
     next(error);
   }
 };
 
+// ========================================================
+// ADMIN - CONFIRMAR / RECHAZAR INSCRIPCIÓN
+// ========================================================
+
 export const cambiarEstadoInscripcion = async (req, res, next) => {
+  // La transacción se declara afuera
+  // para poder hacer rollback ante errores.
+  let transaction;
+
   try {
     const { id } = req.params;
-    const { estado } = req.body;
-    const inscripcion = await Inscripcion.findByPk(id);
 
-    // Si el administrador quiere CONFIRMAR la inscripción
-    if (estado === "confirmado") {
-      const resultado = await validarJugadoresDuplicados(
-        inscripcion.equipo_id,
-        inscripcion.torneo_categoria_id,
-        inscripcion.id,
-      );
+    const { estado, motivo_rechazo } = req.body;
 
-      if (!resultado.valido) {
-        return res.status(400).json({
-          message:
-            "No es posible confirmar la inscripción porque existen jugadores que ya participan en esta competencia.",
-          jugadores: resultado.jugadores,
-        });
-      }
-    }
+    // =========================
+    // VALIDAR ESTADO
+    // =========================
 
-    if (!inscripcion) {
-      return res.status(404).json({
-        message: "Inscripción no encontrada",
+    if (estado !== "confirmado" && estado !== "rechazado") {
+      return res.status(400).json({
+        code: "ESTADO_INVALIDO",
+
+        message: "Estado de inscripción inválido.",
       });
     }
 
-    await inscripcion.update({ estado });
+    // =========================
+    // INICIAR TRANSACCIÓN
+    // =========================
 
-    res.json({
-      message: "Estado actualizado",
+    transaction = await sequelize.transaction();
+
+    // =========================
+    // BUSCAR Y BLOQUEAR
+    // LA INSCRIPCIÓN
+    // =========================
+
+    const inscripcion = await Inscripcion.findByPk(id, {
+      transaction,
+
+      lock: transaction.LOCK.UPDATE,
+    });
+
+    // =========================
+    // EXISTENCIA
+    // =========================
+
+    if (!inscripcion) {
+      await transaction.rollback();
+
+      transaction = null;
+
+      return res.status(404).json({
+        message: "Inscripción no encontrada.",
+      });
+    }
+
+    // =========================
+    // SOLO SE PUEDE RESOLVER
+    // UNA INSCRIPCIÓN PENDIENTE
+    // =========================
+
+    if (inscripcion.estado !== "pendiente") {
+      await transaction.rollback();
+
+      transaction = null;
+
+      return res.status(400).json({
+        code: "INSCRIPCION_YA_RESUELTA",
+
+        message: `La inscripción ya fue ${inscripcion.estado}.`,
+      });
+    }
+
+    // =====================================================
+    // RECHAZAR INSCRIPCIÓN
+    // =====================================================
+
+    if (estado === "rechazado") {
+      // =========================
+      // MOTIVO OBLIGATORIO
+      // =========================
+
+      if (!motivo_rechazo || !motivo_rechazo.trim()) {
+        await transaction.rollback();
+
+        transaction = null;
+
+        return res.status(400).json({
+          code: "MOTIVO_REQUERIDO",
+
+          message: "Debe indicar el motivo del rechazo.",
+        });
+      }
+
+      const motivo = motivo_rechazo.trim();
+
+      // =========================
+      // LONGITUD MÍNIMA
+      // =========================
+
+      if (motivo.length < 5) {
+        await transaction.rollback();
+
+        transaction = null;
+
+        return res.status(400).json({
+          code: "MOTIVO_INVALIDO",
+
+          message: "El motivo del rechazo debe ser más descriptivo.",
+        });
+      }
+
+      // =========================
+      // LONGITUD MÁXIMA
+      // =========================
+
+      if (motivo.length > 500) {
+        await transaction.rollback();
+
+        transaction = null;
+
+        return res.status(400).json({
+          code: "MOTIVO_DEMASIADO_LARGO",
+
+          message: "El motivo del rechazo no puede superar los 500 caracteres.",
+        });
+      }
+
+      // =========================
+      // RECHAZAR
+      // =========================
+
+      await inscripcion.update(
+        {
+          estado: "rechazado",
+
+          motivo_rechazo: motivo,
+        },
+        {
+          transaction,
+        },
+      );
+
+      // =========================
+      // CONFIRMAR TRANSACCIÓN
+      // =========================
+
+      await transaction.commit();
+
+      transaction = null;
+
+      return res.json({
+        code: "INSCRIPCION_RECHAZADA",
+
+        message: "Inscripción rechazada correctamente.",
+
+        inscripcion: {
+          id: inscripcion.id,
+
+          estado: "rechazado",
+
+          motivo_rechazo: motivo,
+        },
+      });
+    }
+
+    // =====================================================
+    // CONFIRMAR INSCRIPCIÓN
+    // =====================================================
+
+    // =========================
+    // TORNEO - CATEGORÍA
+    // =========================
+
+    const torneoCategoria = await TorneoCategoria.findByPk(
+      inscripcion.torneo_categoria_id,
+
+      {
+        transaction,
+
+        include: [
+          {
+            model: Torneo,
+
+            as: "torneo",
+
+            attributes: ["fecha_inicio", "fecha_cierre_inscripcion"],
+          },
+        ],
+      },
+    );
+
+    if (!torneoCategoria) {
+      await transaction.rollback();
+
+      transaction = null;
+
+      return res.status(404).json({
+        message: "Torneo-categoría no encontrado.",
+      });
+    }
+
+    // =========================
+    // FIXTURE GENERADO
+    // =========================
+
+    if (torneoCategoria.fixture_generado) {
+      await transaction.rollback();
+
+      transaction = null;
+
+      return res.status(400).json({
+        code: "FIXTURE_GENERADO",
+
+        message:
+          "No es posible aceptar la inscripción porque el fixture ya fue generado.",
+      });
+    }
+
+    // =========================
+    // VALIDAR FECHA CIERRE
+    // =========================
+
+    const hoy = obtenerFechaActualArgentina();
+
+    const fechaCierre = torneoCategoria.torneo.fecha_cierre_inscripcion;
+
+    if (hoy > fechaCierre) {
+      await transaction.rollback();
+
+      transaction = null;
+
+      return res.status(400).json({
+        code: "INSCRIPCION_CERRADA",
+
+        message: "No es posible aceptar. El período de inscripción finalizó.",
+      });
+    }
+
+    // =========================
+    // REVALIDAR TODO EL PLANTEL
+    // =========================
+
+    const validacion = await validarPlantelInscripcion(
+      inscripcion.equipo_id,
+
+      inscripcion.torneo_categoria_id,
+
+      inscripcion.id,
+    );
+
+    if (!validacion.valido) {
+      await transaction.rollback();
+
+      transaction = null;
+
+      return res.status(400).json({
+        code: validacion.code,
+
+        message: `No es posible confirmar la inscripción. ${validacion.message}`,
+
+        requisitos: validacion.requisitos,
+
+        jugadores: validacion.jugadores,
+      });
+    }
+
+    // =========================
+    // CREAR SNAPSHOT HISTÓRICO
+    // =========================
+
+    await crearSnapshotPlantel(
+      inscripcion.id,
+      inscripcion.equipo_id,
+      transaction,
+    );
+
+    // =========================
+    // CONFIRMAR INSCRIPCIÓN
+    // =========================
+
+    await inscripcion.update(
+      {
+        estado: "confirmado",
+        motivo_rechazo: null,
+      },
+      {
+        transaction,
+      },
+    );
+
+    // =========================
+    // COMMIT
+    // =========================
+
+    await transaction.commit();
+    transaction = null;
+
+    // =========================
+    // RESPUESTA
+    // =========================
+
+    return res.json({
+      code: "INSCRIPCION_CONFIRMADA",
+      message: "Inscripción confirmada correctamente.",
     });
   } catch (error) {
+    // =========================
+    // ROLLBACK
+    // =========================
+
+    if (transaction) {
+      try {
+        await transaction.rollback();
+      } catch (rollbackError) {
+        console.error("Error realizando rollback:", rollbackError);
+      }
+    }
+
     next(error);
   }
 };

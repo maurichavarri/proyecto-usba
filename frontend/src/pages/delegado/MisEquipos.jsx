@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MisEquipos = () => {
   const navigate = useNavigate();
 
-  const [equipos, setEquipos] = useState([]);
-  const [paginaActual, setPaginaActual] = useState(1);
-  const [busqueda, setBusqueda] = useState("");
   const [showHelp, setShowHelp] = useState(false);
-  const equiposPorPagina = 10;
+  const [equipos, setEquipos] = useState([]);
+  const [mensaje, setMensaje] = useState("");
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     obtenerEquipos();
@@ -17,6 +16,7 @@ const MisEquipos = () => {
   const obtenerEquipos = async () => {
     try {
       const token = localStorage.getItem("token");
+
       const response = await fetch(
         "http://localhost:3000/api/v1/delegado/equipos",
         {
@@ -25,36 +25,44 @@ const MisEquipos = () => {
           },
         },
       );
+
       const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(data.message);
+        throw new Error(data.message || "Error al obtener los equipos.");
       }
+
       setEquipos(data);
     } catch (error) {
       console.error(error);
+
+      setMensaje(error.message);
     }
   };
 
   const equiposFiltrados = equipos.filter((equipo) => {
     const texto = busqueda.toLowerCase();
-    return equipo.nombre?.toLowerCase().includes(texto);
+    const nombre = equipo?.nombre?.toLowerCase() || "";
+    const descripcion = equipo?.descripcion?.toLowerCase() || "";
+    return nombre.includes(texto) || descripcion.includes(texto);
   });
-
-  const totalPaginas = Math.ceil(equipos.length / equiposPorPagina);
-  const indiceInicio = (paginaActual - 1) * equiposPorPagina;
-  const indiceFin = indiceInicio + equiposPorPagina;
-  const equiposPaginados = equipos.slice(indiceInicio, indiceFin);
 
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-
-        {/* Breadcrumb y Titulo */}
+        {/* Bradcrumb y Titulo */}
         <div className="mb-3">
-          <nav className="mb-1" style={{ fontSize: "0.9rem" }}>
+          <nav
+            className="mb-1"
+            style={{
+              fontSize: "0.9rem",
+            }}
+          >
             <span
               className="text-muted"
-              style={{ cursor: "pointer" }}
+              style={{
+                cursor: "pointer",
+              }}
               onClick={() => navigate("/panel/delegado")}
             >
               Panel de Delegado
@@ -64,9 +72,10 @@ const MisEquipos = () => {
 
             <span className="text-muted">Mis Equipos</span>
           </nav>
-          
+
           <div className="d-flex align-items-center mb-2">
             <h3 className="fw-bold me-2 mb-0">Mis Equipos</h3>
+
             <span
               onClick={() => setShowHelp(true)}
               style={{
@@ -77,7 +86,7 @@ const MisEquipos = () => {
                 width: "24px",
                 height: "24px",
                 borderRadius: "50%",
-                backgroundColor: "#6c757d", // gris Bootstrap
+                backgroundColor: "#6c757d",
                 color: "white",
                 fontSize: "1rem",
                 fontWeight: "bold",
@@ -88,47 +97,32 @@ const MisEquipos = () => {
           </div>
         </div>
 
-        {/* Botones */}
-        <div className="d-flex justify-content-between mb-3">
+        {/* BOTONES */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
           <button
+            type="button"
             className="btn btn-dark"
             onClick={() => navigate("/panel/delegado")}
           >
             ← Volver
           </button>
-          <Link to="/panel/delegado/equipos/crear" className="btn btn-primary">
-            + Crear Equipo
-          </Link>
+
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => navigate("/panel/delegado/equipos/crear")}
+          >
+            + Crear equipo
+          </button>
         </div>
 
-        {/* Tarjeta de la Tabla */}
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
-            <h5 className="mb-0">Equipos</h5>
+        {/* ERROR */}
+        {mensaje && <div className="alert alert-danger">{mensaje}</div>}
 
-            {totalPaginas > 1 && (
-              <div className="d-flex justify-content-center align-items-center gap-2">
-                <button
-                  className="btn btn-outline-light btn-sm"
-                  disabled={paginaActual === 1}
-                  onClick={() => setPaginaActual(paginaActual - 1)}
-                >
-                  Anterior
-                </button>
-
-                <span className="mx-2 small text-light">
-                  Página {paginaActual} de {totalPaginas}
-                </span>
-
-                <button
-                  className="btn btn-outline-light btn-sm"
-                  disabled={paginaActual === totalPaginas}
-                  onClick={() => setPaginaActual(paginaActual + 1)}
-                >
-                  Siguiente
-                </button>
-              </div>
-            )}
+        {/* LISTADO */}
+        <div className="card shadow-sm">
+          <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <strong>Equipos</strong>
 
             <input
               type="text"
@@ -139,53 +133,74 @@ const MisEquipos = () => {
             />
           </div>
 
-          <div className="card-body p-0">
+          <div className="card-body">
             {equipos.length === 0 ? (
-              <div className="p-4">
-                <div
-                  className="alert alert-info mb-0 border-0"
-                  style={{ backgroundColor: "#cff4fc", color: "#055160" }}
-                >
-                  No hay equipos registrados.
-                </div>
+              <div className="alert alert-info mb-0">
+                <p className="mb-2">No existen equipos creados.</p>
+              </div>
+            ) : equiposFiltrados.length === 0 ? (
+              <div className="text-center text-muted py-3">
+                No se encontraron equipos.
               </div>
             ) : (
               <div className="table-responsive">
-                <table className="table table-striped table-hover align-middle mb-0">
-                  <thead className="table-light">
+                <table className="table table-hover align-middle">
+                  <thead>
                     <tr>
-                      <th className="py-3 ps-3">Nombre</th>
-                      <th className="py-3">Descripción</th>
-                      <th className="py-3 text-end pe-3">Jugadores</th>
+                      <th>Equipo</th>
+                      <th>Año de creación</th>
+                      <th>Jugadores actuales</th>
+                      <th>Competencias</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
+
                   <tbody>
-                    {equiposFiltrados.length > 0 ? (
-                      equiposFiltrados.map((equipo) => (
-                        <tr key={equipo.id}>
-                          <td className="ps-3 fw-bold">{equipo.nombre}</td>
-                          <td>{equipo.descripcion || "Sin descripción"}</td>
-                          <td className="text-end pe-3">
-                            <button
-                              className="btn btn-sm btn-outline-dark"
-                              onClick={() =>
-                                navigate(
-                                  `/panel/delegado/equipos/${equipo.id}/jugadores`,
-                                )
-                              }
+                    {equiposFiltrados.map((equipo) => (
+                      <tr key={equipo.id}>
+                        <td>
+                          <strong>{equipo.nombre}</strong>
+
+                          {equipo.descripcion && (
+                            <>
+                              <br />
+
+                              <small className="text-muted">
+                                {equipo.descripcion}
+                              </small>
+                            </>
+                          )}
+                        </td>
+
+                        <td>{equipo.creado_en || "-"}</td>
+
+                        <td>
+                          <strong>{equipo.cantidad_jugadores ?? 0}</strong>
+
+                          {" / 12"}
+                        </td>
+
+                        <td>{equipo.cantidad_competencias ?? 0}</td>
+
+                        <td>
+                          <div className="d-flex gap-2 flex-wrap">
+                            <Link
+                              to={`/panel/delegado/equipos/${equipo.id}/jugadores`}
+                              className="btn btn-dark btn-sm"
                             >
-                              Ver
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="7" className="text-center text-muted">
-                          No se encontraron equipos.
+                              Gestionar
+                            </Link>
+
+                            <Link
+                              to={`/panel/delegado/equipos/${equipo.id}/historial`}
+                              className="btn btn-outline-secondary btn-sm"
+                            >
+                              Historial
+                            </Link>
+                          </div>
                         </td>
                       </tr>
-                    )}
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -193,27 +208,56 @@ const MisEquipos = () => {
           </div>
         </div>
 
-        {/* Modal ayuda */}
+        {/* MODAL AYUDA */}
+
         {showHelp && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-            style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 1050,
+              padding: "20px",
+            }}
           >
             <div
               className="bg-white p-4 rounded shadow"
-              style={{ maxWidth: "550px" }}
+              style={{
+                maxWidth: "550px",
+                width: "100%",
+              }}
             >
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5>¿Cómo funciona este apartado?</h5>
+                <h5 className="mb-0">¿Cómo funciona este apartado?</h5>
+
                 <button
+                  type="button"
                   className="btn-close"
                   onClick={() => setShowHelp(false)}
                 />
               </div>
+
               <p>
-                Desde esta sección podés ver el listado de los equipos que están
-                bajo tu mando.
+                Desde esta sección podés consultar y administrar tus equipos.
               </p>
+
+              <p>
+                Cada equipo conserva su identidad a lo largo del tiempo y podrá
+                participar en distintas competencias.
+              </p>
+
+              <ul className="mb-0">
+                <li>No podés crear dos equipos con el mismo nombre.</li>
+
+                <li>
+                  El plantel puede modificarse cuando el equipo no se encuentra
+                  comprometido en una inscripción.
+                </li>
+
+                <li>
+                  Las participaciones del equipo se conservarán como parte de su
+                  historial.
+                </li>
+              </ul>
             </div>
           </div>
         )}

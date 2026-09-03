@@ -20,6 +20,8 @@ export const crearJugador = async (req, res, next) => {
       !apellido ||
       !dni ||
       dorsal === undefined ||
+      dorsal === null ||
+      dorsal === "" ||
       !fecha_nacimiento ||
       !sexo ||
       !equipo_id
@@ -30,7 +32,7 @@ export const crearJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR DNI
+    // DNI
     // =========================
 
     if (!/^\d{7,8}$/.test(dni)) {
@@ -40,16 +42,16 @@ export const crearJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR DORSAL
+    // DORSAL
     // =========================
 
-    if (!Number.isInteger(Number(dorsal))) {
+    const dorsalNumero = Number(dorsal);
+
+    if (!Number.isInteger(dorsalNumero)) {
       return res.status(400).json({
         message: "El dorsal debe ser numérico.",
       });
     }
-
-    const dorsalNumero = Number(dorsal);
 
     if (dorsalNumero < 0 || dorsalNumero > 99) {
       return res.status(400).json({
@@ -58,7 +60,7 @@ export const crearJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR SEXO
+    // SEXO
     // =========================
 
     if (sexo !== "masculino" && sexo !== "femenino") {
@@ -68,7 +70,7 @@ export const crearJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR FECHA NACIMIENTO
+    // FECHA DE NACIMIENTO
     // =========================
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha_nacimiento)) {
@@ -79,19 +81,18 @@ export const crearJugador = async (req, res, next) => {
 
     const [anio, mes, dia] = fecha_nacimiento.split("-").map(Number);
 
-    const fechaValidacion = new Date(anio, mes - 1, dia);
+    const fechaNacimiento = new Date(anio, mes - 1, dia);
 
     if (
-      fechaValidacion.getFullYear() !== anio ||
-      fechaValidacion.getMonth() !== mes - 1 ||
-      fechaValidacion.getDate() !== dia
+      fechaNacimiento.getFullYear() !== anio ||
+      fechaNacimiento.getMonth() !== mes - 1 ||
+      fechaNacimiento.getDate() !== dia
     ) {
       return res.status(400).json({
         message: "La fecha de nacimiento no es válida.",
       });
     }
 
-    // Evitar fechas futuras
     const hoy = new Date();
 
     const hoySinHora = new Date(
@@ -100,7 +101,7 @@ export const crearJugador = async (req, res, next) => {
       hoy.getDate(),
     );
 
-    if (fechaValidacion > hoySinHora) {
+    if (fechaNacimiento > hoySinHora) {
       return res.status(400).json({
         message: "La fecha de nacimiento no puede ser futura.",
       });
@@ -138,17 +139,18 @@ export const crearJugador = async (req, res, next) => {
       return res.status(400).json({
         code: "PLANTEL_BLOQUEADO",
         message:
-          "No es posible agregar jugadores porque el equipo ya realizó una inscripción.",
+          "No es posible agregar jugadores mientras el equipo tenga una inscripción pendiente o participe en una competencia.",
       });
     }
 
     // =========================
-    // MÁXIMO 12 JUGADORES
+    // MÁXIMO 12 EN PLANTEL ACTUAL
     // =========================
 
     const cantidadJugadores = await Jugador.count({
       where: {
         equipo_id,
+        en_plantel: true,
       },
     });
 
@@ -159,41 +161,78 @@ export const crearJugador = async (req, res, next) => {
     }
 
     // =========================
-    // DNI REPETIDO EN EL EQUIPO
-    // =========================
-
-    const existeJugador = await Jugador.findOne({
-      where: {
-        dni,
-        equipo_id,
-      },
-    });
-
-    if (existeJugador) {
-      return res.status(400).json({
-        message: "Ya existe un jugador con ese DNI en el equipo",
-      });
-    }
-
-    // =========================
-    // DORSAL REPETIDO
+    // DORSAL ACTUAL REPETIDO
     // =========================
 
     const existeDorsal = await Jugador.findOne({
       where: {
         dorsal: dorsalNumero,
         equipo_id,
+        en_plantel: true,
       },
     });
 
     if (existeDorsal) {
       return res.status(400).json({
-        message: "Ya existe un jugador con ese dorsal en el equipo",
+        message: "Ya existe un jugador con ese dorsal en el plantel.",
       });
     }
 
     // =========================
-    // CREAR JUGADOR
+    // BUSCAR DNI HISTÓRICO
+    // =========================
+
+    const jugadorExistente = await Jugador.findOne({
+      where: {
+        dni,
+        equipo_id,
+      },
+    });
+
+    // =========================
+    // YA ESTÁ EN EL PLANTEL
+    // =========================
+
+    if (jugadorExistente && jugadorExistente.en_plantel) {
+      return res.status(400).json({
+        code: "JUGADOR_YA_EN_PLANTEL",
+        message: "El jugador ya pertenece actualmente a este plantel.",
+      });
+    }
+
+    // =========================
+    // JUGADOR HISTÓRICO:
+    // REINCORPORAR
+    // =========================
+
+    if (jugadorExistente && !jugadorExistente.en_plantel) {
+
+      // Verificar si todavía posee alguna sanción activa
+      const sancionesActivas = await Sancion.count({
+        where: {
+          jugador_id: jugadorExistente.id,
+          estado: "activa",
+        },
+      });
+
+      await jugadorExistente.update({
+        nombre: nombre.trim(),
+        apellido: apellido.trim(),
+        dorsal: dorsalNumero,
+        fecha_nacimiento,
+        sexo,
+        en_plantel: true,
+        estado: sancionesActivas > 0 ? "inactivo" : "activo",
+      });
+      return res.status(200).json({
+        code: "JUGADOR_REINCORPORADO",
+        message: "El jugador perteneció anteriormente al equipo y fue reincorporado al plantel.",
+        jugador: jugadorExistente,
+      });
+    }
+
+    // =========================
+    // NUEVO JUGADOR
     // =========================
 
     const jugador = await Jugador.create({
@@ -204,9 +243,17 @@ export const crearJugador = async (req, res, next) => {
       fecha_nacimiento,
       sexo,
       equipo_id,
+      estado: "activo",
+      en_plantel: true,
+      es_delegado: false,
+      usuario_id: null,
     });
 
-    res.status(201).json(jugador);
+    res.status(201).json({
+      code: "JUGADOR_CREADO",
+      message: "Jugador creado correctamente.",
+      jugador,
+    });
   } catch (error) {
     next(error);
   }
@@ -234,6 +281,7 @@ export const obtenerJugadoresPorEquipo = async (req, res, next) => {
     const jugadores = await Jugador.findAll({
       where: {
         equipo_id: equipoId,
+        en_plantel: true,
       },
       include: [
         {
@@ -305,11 +353,10 @@ export const editarJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR PROPIETARIO
+    // OWNERSHIP
     // =========================
 
     const usuarioId = req.usuario.id;
-
     const equipo = await Equipo.findByPk(jugador.equipo_id);
 
     if (!equipo || equipo.id_usuario_creador !== usuarioId) {
@@ -319,7 +366,7 @@ export const editarJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR PLANTEL BLOQUEADO
+    // PLANTEL BLOQUEADO
     // =========================
 
     const bloqueado = await plantelBloqueado(jugador.equipo_id);
@@ -328,19 +375,72 @@ export const editarJugador = async (req, res, next) => {
       return res.status(400).json({
         code: "PLANTEL_BLOQUEADO",
         message:
-          "No es posible editar el jugador porque el equipo ya realizó una inscripción.",
+          "No es posible editar el plantel mientras el equipo tenga una inscripción pendiente o participe en una competencia.",
       });
     }
 
     // =========================
-    // DATOS
+    // JUGADOR DELEGADO
+    // =========================
+
+    if (jugador.es_delegado) {
+      const { dorsal } = req.body;
+
+      if (dorsal === undefined || dorsal === null || dorsal === "") {
+        return res.status(400).json({
+          message: "Debe ingresar un dorsal.",
+        });
+      }
+
+      const dorsalNumero = Number(dorsal);
+
+      if (!Number.isInteger(dorsalNumero)) {
+        return res.status(400).json({
+          message: "El dorsal debe ser un número entero.",
+        });
+      }
+
+      if (dorsalNumero < 0 || dorsalNumero > 99) {
+        return res.status(400).json({
+          message: "El dorsal debe estar entre 0 y 99.",
+        });
+      }
+
+      // Verificar que otro jugador
+      // no tenga ese dorsal
+
+      const existeDorsal = await Jugador.findOne({
+        where: {
+          dorsal: dorsalNumero,
+          equipo_id: jugador.equipo_id,
+          en_plantel: true,
+          id: {
+            [Op.ne]: jugador.id,
+          },
+        },
+      });
+
+      if (existeDorsal) {
+        return res.status(400).json({
+          message: "Ya existe otro jugador con ese dorsal.",
+        });
+      }
+
+      await jugador.update({
+        dorsal: dorsalNumero,
+      });
+
+      return res.json({
+        message: "Dorsal actualizado correctamente.",
+        jugador,
+      });
+    }
+
+    // =========================
+    // JUGADOR NORMAL
     // =========================
 
     const { nombre, apellido, dni, dorsal, fecha_nacimiento, sexo } = req.body;
-
-    // =========================
-    // CAMPOS OBLIGATORIOS
-    // =========================
 
     if (!nombre || !nombre.trim()) {
       return res.status(400).json({
@@ -354,32 +454,8 @@ export const editarJugador = async (req, res, next) => {
       });
     }
 
-    if (!dni) {
-      return res.status(400).json({
-        message: "Debe ingresar un DNI.",
-      });
-    }
-
-    if (dorsal === undefined || dorsal === null || dorsal === "") {
-      return res.status(400).json({
-        message: "Debe ingresar un dorsal.",
-      });
-    }
-
-    if (!fecha_nacimiento) {
-      return res.status(400).json({
-        message: "Debe ingresar la fecha de nacimiento.",
-      });
-    }
-
-    if (!sexo) {
-      return res.status(400).json({
-        message: "Debe seleccionar el sexo del jugador.",
-      });
-    }
-
     // =========================
-    // VALIDAR DNI
+    // DNI
     // =========================
 
     if (!/^\d{7,8}$/.test(dni)) {
@@ -389,7 +465,7 @@ export const editarJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR DORSAL
+    // DORSAL
     // =========================
 
     const dorsalNumero = Number(dorsal);
@@ -407,7 +483,7 @@ export const editarJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR SEXO
+    // SEXO
     // =========================
 
     if (sexo !== "masculino" && sexo !== "femenino") {
@@ -417,20 +493,18 @@ export const editarJugador = async (req, res, next) => {
     }
 
     // =========================
-    // VALIDAR FECHA NACIMIENTO
+    // FECHA NACIMIENTO
     // =========================
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha_nacimiento)) {
+    if (!fecha_nacimiento || !/^\d{4}-\d{2}-\d{2}$/.test(fecha_nacimiento)) {
       return res.status(400).json({
         message: "La fecha de nacimiento no es válida.",
       });
     }
 
     const [anio, mes, dia] = fecha_nacimiento.split("-").map(Number);
-
     const fechaNacimiento = new Date(anio, mes - 1, dia);
 
-    // Detecta fechas imposibles como 31/02
     if (
       fechaNacimiento.getFullYear() !== anio ||
       fechaNacimiento.getMonth() !== mes - 1 ||
@@ -441,7 +515,6 @@ export const editarJugador = async (req, res, next) => {
       });
     }
 
-    // No permitir fecha futura
     const hoy = new Date();
 
     const hoySinHora = new Date(
@@ -457,13 +530,14 @@ export const editarJugador = async (req, res, next) => {
     }
 
     // =========================
-    // DNI REPETIDO EN EL EQUIPO
+    // DNI REPETIDO EN PLANTEL
     // =========================
 
     const existeDni = await Jugador.findOne({
       where: {
         dni,
         equipo_id: jugador.equipo_id,
+        en_plantel: true,
         id: {
           [Op.ne]: jugador.id,
         },
@@ -484,6 +558,7 @@ export const editarJugador = async (req, res, next) => {
       where: {
         dorsal: dorsalNumero,
         equipo_id: jugador.equipo_id,
+        en_plantel: true,
         id: {
           [Op.ne]: jugador.id,
         },
@@ -510,7 +585,7 @@ export const editarJugador = async (req, res, next) => {
     });
 
     res.json({
-      message: "Jugador actualizado correctamente",
+      message: "Jugador actualizado correctamente.",
       jugador,
     });
   } catch (error) {
@@ -543,6 +618,89 @@ export const cambiarEstadoJugador = async (req, res, next) => {
 
     res.json({
       message: "Estado actualizado correctamente",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const quitarJugador = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const usuarioId = req.usuario.id;
+
+    // =========================
+    // BUSCAR JUGADOR
+    // =========================
+
+    const jugador = await Jugador.findByPk(id);
+
+    if (!jugador) {
+      return res.status(404).json({
+        message: "Jugador no encontrado.",
+      });
+    }
+
+    // =========================
+    // BUSCAR EQUIPO / OWNERSHIP
+    // =========================
+
+    const equipo = await Equipo.findByPk(jugador.equipo_id);
+
+    if (!equipo || equipo.id_usuario_creador !== usuarioId) {
+      return res.status(403).json({
+        message: "No autorizado.",
+      });
+    }
+
+    // =========================
+    // YA NO ESTÁ EN EL PLANTEL
+    // =========================
+
+    if (!jugador.en_plantel) {
+      return res.status(400).json({
+        message: "El jugador ya no pertenece al plantel.",
+      });
+    }
+
+    // =========================
+    // DELEGADO OBLIGATORIO
+    // =========================
+
+    if (jugador.es_delegado) {
+      return res.status(400).json({
+        code: "DELEGADO_OBLIGATORIO",
+
+        message:
+          "El delegado debe formar parte del equipo y no puede ser quitado del plantel.",
+      });
+    }
+
+    // =========================
+    // PLANTEL BLOQUEADO
+    // =========================
+
+    const bloqueado = await plantelBloqueado(jugador.equipo_id);
+
+    if (bloqueado) {
+      return res.status(400).json({
+        code: "PLANTEL_BLOQUEADO",
+
+        message:
+          "No es posible quitar jugadores mientras el equipo tenga una inscripción pendiente o participe en una competencia.",
+      });
+    }
+
+    // =========================
+    // QUITAR DEL PLANTEL
+    // =========================
+
+    await jugador.update({
+      en_plantel: false,
+    });
+
+    res.json({
+      message: "Jugador quitado del plantel correctamente.",
     });
   } catch (error) {
     next(error);

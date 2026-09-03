@@ -12,6 +12,7 @@ const EditarJugador = () => {
     dorsal: "",
     fecha_nacimiento: "",
     sexo: "",
+    es_delegado: false,
   });
 
   const [mensaje, setMensaje] = useState("");
@@ -48,6 +49,7 @@ const EditarJugador = () => {
         dorsal: data.dorsal ?? "",
         fecha_nacimiento: data.fecha_nacimiento || "",
         sexo: data.sexo || "",
+        es_delegado: data.es_delegado === true,
       });
     } catch (error) {
       console.error(error);
@@ -181,6 +183,18 @@ const EditarJugador = () => {
 
             {" > "}
 
+            <span
+              className="text-muted"
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                navigate(`/panel/delegado/equipos/${equipoId}/jugadores`)
+              }
+            >
+              Mis Jugadores
+            </span>
+
+            {" > "}
+
             <span className="text-muted">Editar Jugador</span>
           </nav>
           <div className="d-flex align-items-center mb-2">
@@ -223,31 +237,41 @@ const EditarJugador = () => {
 
           <div className="card-body p-4">
             {mensaje && <div className="alert alert-danger">{mensaje}</div>}
-
+            {formData.es_delegado && (
+              <div className="alert alert-info">
+                <strong>Sos el delegado de este equipo.</strong>
+                <br />
+                Tus datos personales forman parte de tu perfil de delegado y no
+                pueden modificarse desde esta sección.
+                <br />
+                Mientras el plantel se encuentre habilitado, únicamente podés
+                modificar tu dorsal.
+              </div>
+            )}
             <form onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Nombre</label>
-
                   <input
                     type="text"
                     name="nombre"
                     className="form-control"
                     value={formData.nombre}
                     onChange={handleChange}
+                    disabled={formData.es_delegado}
                     required
                   />
                 </div>
 
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Apellido</label>
-
                   <input
                     type="text"
                     name="apellido"
                     className="form-control"
                     value={formData.apellido}
                     onChange={handleChange}
+                    disabled={formData.es_delegado}
                     required
                   />
                 </div>
@@ -256,7 +280,6 @@ const EditarJugador = () => {
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label">DNI</label>
-
                   <input
                     type="text"
                     inputMode="numeric"
@@ -265,13 +288,13 @@ const EditarJugador = () => {
                     className="form-control"
                     value={formData.dni}
                     onChange={handleChange}
+                    disabled={formData.es_delegado}
                     required
                   />
                 </div>
 
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Dorsal</label>
-
                   <input
                     type="number"
                     name="dorsal"
@@ -288,31 +311,29 @@ const EditarJugador = () => {
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Fecha de nacimiento</label>
-
                   <input
                     type="date"
                     name="fecha_nacimiento"
                     className="form-control"
                     value={formData.fecha_nacimiento}
                     onChange={handleChange}
+                    disabled={formData.es_delegado}
                     required
                   />
                 </div>
 
                 <div className="col-md-6 mb-3">
                   <label className="form-label">Sexo</label>
-
                   <select
                     name="sexo"
                     className="form-select"
                     value={formData.sexo}
                     onChange={handleChange}
+                    disabled={formData.es_delegado}
                     required
                   >
                     <option value="">Seleccionar</option>
-
                     <option value="masculino">Masculino</option>
-
                     <option value="femenino">Femenino</option>
                   </select>
                 </div>
