@@ -2,368 +2,404 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const AdminTorneoCategorias = () => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const [showHelp, setShowHelp] = useState(false);
 
-    const [showHelp, setShowHelp] = useState(false);
-    const [formatoCompetencia, setFormatoCompetencia] = useState("solo_liga");
+  const [torneoCategorias, setTorneoCategorias] = useState([]);
 
-    const [torneos, setTorneos] = useState([]);
-    const [categorias, setCategorias] = useState([]);
-    const [torneoCategorias, setTorneoCategorias] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
 
-    const [torneoId, setTorneoId] = useState("");
-    const [categoriaId, setCategoriaId] = useState("");
-    const [arancel, setArancel] = useState("");
+  const [mensaje, setMensaje] = useState("");
 
-    const [mensaje, setMensaje] = useState("");
-    const [tipoMensaje, setTipoMensaje] = useState("success");
-    const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
 
-    const token = localStorage.getItem("token");
+  // =========================
+  // CARGAR COMPETENCIAS
+  // =========================
 
-    useEffect(() => {
-        obtenerTorneos();
-        obtenerCategorias();
-        obtenerTorneoCategorias();
-    }, []);
+  useEffect(() => {
+    obtenerTorneoCategorias();
+  }, []);
 
-    const obtenerTorneos = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/torneos");
-            const data = await response.json();
-            setTorneos(data);
-        } catch (error) { console.error(error); }
-    };
+  // =========================
+  // OBTENER COMPETENCIAS
+  // =========================
 
-    const obtenerCategorias = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/categorias");
-            const data = await response.json();
-            setCategorias(data);
-        } catch (error) { console.error(error); }
-    };
+  const obtenerTorneoCategorias = async () => {
+    try {
+      setCargando(true);
+      setMensaje("");
 
-    const obtenerTorneoCategorias = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias");
-            const data = await response.json();
-            setTorneoCategorias(data);
-        } catch (error) { console.error(error); }
-    };
+      const response = await fetch(
+        "http://localhost:3000/api/v1/torneo-categorias",
+      );
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setMensaje("");
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/torneo-categorias", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    torneo_id: torneoId,
-                    categoria_id: categoriaId,
-                    arancel,
-                    formato_competencia: formatoCompetencia
-                })
-            });
+      const data = await response.json();
 
-            const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Error al obtener las competencias.");
+      }
 
-            if (!response.ok) {
-                setTipoMensaje("danger");
-                setMensaje(data.message);
-                return;
-            }
+      setTorneoCategorias(data);
+    } catch (error) {
+      console.error(error);
 
-            setTipoMensaje("success");
-            setMensaje("Categoría asignada correctamente al torneo.");
-            setTorneoId("");
-            setCategoriaId("");
-            setArancel("");
-            obtenerTorneoCategorias();
+      setMensaje(error.message || "Error al obtener las competencias.");
+    } finally {
+      setCargando(false);
+    }
+  };
 
-        } catch (error) {
-            console.error(error);
-            setTipoMensaje("danger");
-            setMensaje("Error al crear la relación.");
-        }
-    };
+  // =========================
+  // FILTRO
+  // =========================
 
-    const torneoCategoriasFiltradas = torneoCategorias.filter((tc) => {
-        const texto = busqueda.toLowerCase();
+  const torneoCategoriasFiltradas = torneoCategorias.filter((tc) => {
+    const texto = busqueda.trim().toLowerCase();
 
-        const nombreTorneo = tc.torneo?.nombre?.toLowerCase() || "";
-        const nombreCategoria = tc.categoria?.nombre?.toLowerCase() || "";
+    const nombreTorneo = tc.torneo?.nombre?.toLowerCase() || "";
 
-        return (
-            nombreTorneo.includes(texto) ||
-            nombreCategoria.includes(texto)
-        );
-    });
+    const nombreCategoria = tc.categoria?.nombre?.toLowerCase() || "";
 
-    const totalEquipos = torneoCategorias.reduce((acc, tc) => acc + Number(tc.equipos_inscriptos || 0), 0);
-    const listosParaFixture = torneoCategorias.filter(tc => Number(tc.equipos_inscriptos) >= 4).length;
+    const formato = tc.formato_competencia?.toLowerCase() || "";
+
+    const estado = tc.estado_competencia?.toLowerCase() || "";
 
     return (
-        <div className="container mt-4 mb-5">
-            <div className="col-lg-10 mx-auto">
+      nombreTorneo.includes(texto) ||
+      nombreCategoria.includes(texto) ||
+      formato.includes(texto) ||
+      estado.includes(texto)
+    );
+  });
 
-                {/* Título */}
-                <div className="d-flex align-items-center mb-2">
-                    <h2 className="me-2">Torneos y Categorías</h2>
-                    <span
-                        className="text-primary"
-                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                        title="Ayuda"
-                        onClick={() => setShowHelp(true)}
-                    >
-                        ❓
-                    </span>
-                </div>
+  // =========================
+  // FORMATO
+  // =========================
 
-                {/* Breadcrumb */}
-                <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
-                    <span
-                        className="text-primary"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => navigate("/panel/admin")}
-                    >
-                        Panel del Administrador
-                    </span>
-                    {" > "}
-                    <span className="text-muted">Torneos - Categorías</span>
-                </nav>
+  const obtenerFormato = (formato) => {
+    switch (formato) {
+      case "solo_liga":
+        return "Solo Liga";
+
+      case "playoff_4":
+        return "Liga + Playoff Top 4";
+
+      case "playoff_8":
+        return "Liga + Playoff Top 8";
+
+      default:
+        return "-";
+    }
+  };
+
+  // =========================
+  // ESTADO
+  // =========================
+
+  const obtenerEstado = (estado) => {
+    switch (estado) {
+      case "configuracion":
+        return <span className="badge bg-secondary">En Configuración</span>;
+
+      case "en_curso":
+        return <span className="badge bg-success">En Curso</span>;
+
+      case "finalizada":
+      case "finalizado":
+        return <span className="badge bg-dark">Finalizado</span>;
+
+      default:
+        return (
+          <span className="badge bg-secondary">{estado || "Sin estado"}</span>
+        );
+    }
+  };
+
+  // =========================
+  // ARANCEL
+  // =========================
+
+  const formatearArancel = (arancel) => {
+    const valor = Number(arancel);
+
+    if (Number.isNaN(valor)) {
+      return "$0";
+    }
+
+    return valor.toLocaleString("es-AR", {
+      style: "currency",
+      currency: "ARS",
+      maximumFractionDigits: 2,
+    });
+  };
+
+  return (
+    <div className="container mt-5 mb-5">
+      <div className="col-lg-10 mx-auto">
+        {/* =========================
+                    TÍTULO
+                ========================= */}
+
+        <div className="d-flex align-items-center mb-2">
+          <h2 className="me-2 mb-0">Competencias</h2>
+
+          <span
+            className="text-primary"
+            style={{
+              cursor: "pointer",
+              fontSize: "1.2rem",
+            }}
+            title="Ayuda"
+            onClick={() => setShowHelp(true)}
+          >
+            ❓
+          </span>
+        </div>
+
+        {/* =========================
+                    BREADCRUMB
+                ========================= */}
+
+        <nav
+          className="mb-3"
+          style={{
+            fontSize: "0.9rem",
+          }}
+        >
+          <span
+            className="text-primary"
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/panel/admin")}
+          >
+            Panel del Administrador
+          </span>
+
+          {" > "}
+
+          <span className="text-muted">Competencias</span>
+        </nav>
+
+        {/* =========================
+                    BOTONES SUPERIORES
+                ========================= */}
+
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <button
+            type="button"
+            className="btn btn-dark"
+            onClick={() => navigate("/panel/admin")}
+          >
+            ← Regresar al panel
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => navigate("/panel/admin/torneo-categorias/crear")}
+          >
+            + Crear Competencia
+          </button>
+        </div>
+
+        {/* =========================
+                    ERROR
+                ========================= */}
+
+        {mensaje && <div className="alert alert-danger">{mensaje}</div>}
+
+        {/* =========================
+                    LISTADO
+                ========================= */}
+
+        <div className="card shadow-sm">
+          <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <strong>Competencias registradas</strong>
+
+            <input
+              type="text"
+              className="form-control w-auto"
+              placeholder="Buscar..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+            />
+          </div>
+
+          <div className="card-body">
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando competencias...</p>
+              </div>
+            ) : torneoCategorias.length === 0 ? (
+              /* SIN COMPETENCIAS */
+
+              <div className="text-center py-5">
+                <h5>No existen competencias creadas</h5>
+
+                <p className="text-muted mb-3">
+                  Creá una competencia relacionando un torneo con una categoría.
+                </p>
 
                 <button
-                    className="btn btn-dark mb-3"
-                    onClick={() => navigate("/panel/admin")}
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  onClick={() =>
+                    navigate("/panel/admin/torneo-categorias/crear")
+                  }
                 >
-                    ← Regresar al panel
+                  + Crear primera competencia
                 </button>
+              </div>
+            ) : torneoCategoriasFiltradas.length === 0 ? (
+              /* SIN RESULTADOS */
 
-                {/* Formulario */}
-                <div className="card shadow-sm mb-4">
-                    <div className="card-header bg-dark text-white">
-                        <strong>Asignar categoría a torneo</strong>
-                    </div>
-                    <div className="card-body">
-                        {mensaje && (
-                            <div className={`alert alert-${tipoMensaje}`}>{mensaje}</div>
-                        )}
+              <div className="text-center text-muted py-4">
+                No se encontraron competencias.
+              </div>
+            ) : (
+              /* TABLA */
 
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-3">
-                                <label className="form-label">Torneo</label>
-                                <select
-                                    className="form-select"
-                                    value={torneoId}
-                                    onChange={(e) => setTorneoId(e.target.value)}
-                                    required
-                                >
-                                    <option value="">Seleccionar torneo</option>
-                                    {torneos.map((torneo) => (
-                                        <option key={torneo.id} value={torneo.id}>
-                                            {torneo.nombre}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Torneo</th>
 
-                            <div className="mb-3">
-                                <label className="form-label">Categoría</label>
-                                <select
-                                    className="form-select"
-                                    value={categoriaId}
-                                    onChange={(e) => setCategoriaId(e.target.value)}
-                                    required
-                                >
-                                    <option value="">Seleccionar categoría</option>
-                                    {categorias.map((categoria) => (
-                                        <option key={categoria.id} value={categoria.id}>
-                                            {categoria.nombre}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                      <th>Categoría</th>
 
-                            <div className="mb-4">
-                                <label className="form-label">Arancel</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    value={arancel}
-                                    onChange={(e) => setArancel(e.target.value)}
-                                    required
-                                />
-                            </div>
+                      <th>Equipos</th>
 
-                            <div className="mb-4">
-                                <label className="form-label">Formato</label>
-                                <select
-                                    className="form-select"
-                                    value={formatoCompetencia}
-                                    onChange={(e) => setFormatoCompetencia(e.target.value)}
-                                >
-                                    <option value="solo_liga">Solo Liga</option>
-                                    <option value="playoff_4">Liga + Playoff Top 4</option>
-                                    <option value="playoff_8">Liga + Playoff Top 8</option>
-                                </select>
-                            </div>
+                      <th>Formato</th>
 
-                            <button type="submit" className="btn btn-primary">
-                                Guardar relación
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                      <th>Estado</th>
 
-                {/* Resumen */}
-                {/* 
-                <div className="row mb-4">
-                    <div className="col-md-4">
-                        <div className="card shadow-sm border-0">
-                            <div className="card-body">
-                                <h6 className="text-muted">Relaciones</h6>
-                                <h3>{torneoCategorias.length}</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="card shadow-sm border-0">
-                            <div className="card-body">
-                                <h6 className="text-muted">Equipos Inscriptos</h6>
-                                <h3>{totalEquipos}</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="card shadow-sm border-0">
-                            <div className="card-body">
-                                <h6 className="text-muted">Listos para Fixture</h6>
-                                <h3>{listosParaFixture}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                */}
+                      <th>Arancel</th>
 
-                {/* Tabla */}
-                <div className="card shadow-sm">
-                    <div className="card-header bg-dark text-white">
-                        <strong>Categorías asignadas</strong>
-                    </div>
-                    <div className="card-body">
-                        <div className="table-responsive">
-                            <table className="table table-hover align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Torneo</th>
-                                        <th>Categoría</th>
-                                        <th>Equipos</th>
-                                        <th>Formato</th>
-                                        <th>Estado</th>
-                                        <th>Arancel</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {torneoCategorias.map((tc) => (
-                                        <tr key={tc.id}>
-                                            <td>{tc.torneo?.nombre}</td>
-                                            <td>{tc.categoria?.nombre}</td>
-                                            <td>
-                                                {Number(tc.equipos_inscriptos) >= 4 ? (
-                                                    <span className="badge bg-success">{tc.equipos_inscriptos} equipos</span>
-                                                ) : (
-                                                    <span className="badge bg-danger">{tc.equipos_inscriptos || 0}/4 mínimos</span>
-                                                )}
-                                            </td>
-                                            <td>
-                                                {tc.formato_competencia === "solo_liga" ? "Solo Liga"
-                                                    : tc.formato_competencia === "playoff_4" ? "Playoff Top 4"
-                                                        : "Playoff Top 8"}
-                                            </td>
-                                            <td>
-                                                {tc.estado_competencia === "configuracion" && <span className="badge bg-secondary">En Configuración</span>}
-                                                {tc.estado_competencia === "en_curso" && <span className="badge bg-success">En Curso</span>}
-                                                {tc.estado_competencia === "finalizado" && <span className="badge bg-dark">Finalizado</span>}
-                                            </td>
-                                            <td>
-                                                <span className="badge bg-primary">${tc.arancel}</span>
-                                            </td>
-                                            <td>
-                                                <Link to={`/panel/admin/fixture/${tc.id}`} className="btn btn-dark btn-sm">
-                                                    Ver Fixture
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
 
-                {/* Modal Ayuda */}
-                {
-                    showHelp && (
-                        <div
-                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                            style={{
-                                backgroundColor:
-                                    "rgba(0,0,0,0.5)",
-                                zIndex: 1050
-                            }}
-                        >
-                            <div
-                                className="bg-white p-4 rounded shadow"
-                                style={{
-                                    maxWidth: "550px"
-                                }}
+                  <tbody>
+                    {torneoCategoriasFiltradas.map((tc) => (
+                      <tr key={tc.id}>
+                        {/* TORNEO */}
+
+                        <td>
+                          <strong>{tc.torneo?.nombre || "-"}</strong>
+                        </td>
+
+                        {/* CATEGORÍA */}
+
+                        <td>{tc.categoria?.nombre || "-"}</td>
+
+                        {/* EQUIPOS */}
+
+                        <td>
+                          {Number(tc.equipos_inscriptos) >= 4 ? (
+                            <span className="badge bg-success">
+                              {tc.equipos_inscriptos} equipos
+                            </span>
+                          ) : (
+                            <span className="badge bg-danger">
+                              {tc.equipos_inscriptos || 0}
+                              /4 mínimos
+                            </span>
+                          )}
+                        </td>
+
+                        {/* FORMATO */}
+
+                        <td>{obtenerFormato(tc.formato_competencia)}</td>
+
+                        {/* ESTADO */}
+
+                        <td>{obtenerEstado(tc.estado_competencia)}</td>
+
+                        {/* ARANCEL */}
+
+                        <td>
+                          <strong>{formatearArancel(tc.arancel)}</strong>
+                        </td>
+
+                        {/* ACCIONES */}
+
+                        <td>
+                          <div className="d-flex gap-2 flex-wrap">
+                            <Link
+                              to={`/panel/admin/fixture/${tc.id}`}
+                              className="btn btn-dark btn-sm"
                             >
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5>¿Cómo funciona este apartado?</h5>
-                                    <button
-                                        className="btn-close"
-                                        onClick={() =>
-                                            setShowHelp(false)
-                                        }
-                                    />
-                                </div>
-                                <p>
-                                    Desde esta sección podés
-                                    crear competencias, o sea, asignar las relaciones
-                                    torneos-categorías. Al final tienes el listado de las mismas
-                                    con información variada.
-                                    <br /><br />
-                                    ACLARACIÓN: Una vez creada una competición no se podrá borrar.
-                                </p>
-                            </div>
-                        </div>
-                    )
-                }
-            </div>
-
-            {/* Modal ayuda */}
-            {showHelp && (
-                <div
-                    className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                    style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
-                >
-                    <div className="bg-white p-4 rounded shadow" style={{ maxWidth: "500px" }}>
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                            <h5>¿Cómo funciona este apartado?</h5>
-                            <button className="btn-close" onClick={() => setShowHelp(false)} />
-                        </div>
-                        <p>Desde aquí podés asignar categorías a los torneos existentes, definir el formato de competencia y el arancel.</p>
-                    </div>
-                </div>
+                              Ver Fixture
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
+          </div>
         </div>
-    );
+
+        {/* =========================
+                    MODAL AYUDA
+                ========================= */}
+
+        {showHelp && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 1050,
+              padding: "20px",
+            }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow"
+              style={{
+                maxWidth: "550px",
+                width: "100%",
+              }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">¿Cómo funciona este apartado?</h5>
+
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowHelp(false)}
+                />
+              </div>
+
+              <p>
+                Desde esta sección podés consultar todas las competencias
+                creadas en el sistema.
+              </p>
+
+              <p>
+                Una competencia surge de la relación entre un torneo y una
+                categoría, y posee su propio formato, arancel, equipos
+                inscriptos y estado.
+              </p>
+
+              <p className="mb-0">
+                Para registrar una nueva, utilizá el botón{" "}
+                <strong>Crear Competencia</strong>.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default AdminTorneoCategorias;

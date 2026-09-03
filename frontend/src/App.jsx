@@ -29,6 +29,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminInscripciones from "./pages/admin/AdminInscripciones";
 import AdminTorneos from "./pages/admin/torneos/AdminTorneos";
 import AdminTorneoCategorias from "./pages/admin/AdminTorneoCategorias";
+import CrearCompetencia from "./pages/admin/CrearCompetencia";
 import CrearTorneo from "./pages/admin/torneos/CrearTorneo";
 import EditarTorneo from "./pages/admin/torneos/EditarTorneo";
 import AdminCategorias from './pages/admin/categorias/AdminCategorias';
@@ -91,6 +92,7 @@ function App() {
           <Route path="/panel/admin/categorias/crear" element={<ProtectedRoute roles={["admin"]}><CrearCategoria /></ProtectedRoute>} />
           <Route path="/panel/admin/categorias/editar/:id" element={<ProtectedRoute roles={["admin"]}><EditarCategoria /></ProtectedRoute>} />
           <Route path="/panel/admin/torneo-categorias" element={<ProtectedRoute roles={["admin"]}><AdminTorneoCategorias /></ProtectedRoute>} />
+          <Route path="/panel/admin/torneo-categorias/crear" element={<ProtectedRoute roles={["admin"]}><CrearCompetencia /></ProtectedRoute>} />
           <Route path="/panel/admin/anuncios" element={<ProtectedRoute roles={['admin']}><AdminAnuncios /></ProtectedRoute>} />
           <Route path="/panel/admin/anuncios/crear" element={<ProtectedRoute roles={['admin']}><CrearAnuncio /></ProtectedRoute>} />
           <Route path="/panel/admin/anuncios/editar/:id" element={<ProtectedRoute roles={['admin']}><EditarAnuncio /></ProtectedRoute>} />

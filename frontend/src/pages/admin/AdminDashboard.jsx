@@ -8,7 +8,7 @@ const DashboardAdmin = () => {
     { titulo: "Carrusel", desc: "Administrar imágenes del carrusel de inicio.", link: "/panel/admin/carrusel" },
     { titulo: "Torneos", desc: "Crear y administrar torneos.", link: "/panel/admin/torneos" },
     { titulo: "Categorías", desc: "Crear y administrar categorías.", link: "/panel/admin/categorias" },
-    { titulo: "Torneo-Categorías", desc: "Asignar categorías a torneos y administrar fixtures.", link: "/panel/admin/torneo-categorias" },
+    { titulo: "Competencias", desc: "Asignar categorías a torneos y administrar fixtures.", link: "/panel/admin/torneo-categorias" },
     { titulo: "Anuncios", desc: "Crear y administrar anuncios informativos.", link: "/panel/admin/anuncios" },
     { titulo: "Sedes", desc: "Crear y administrar sedes y canchas.", link: "/panel/admin/sedes" },
     { titulo: "Árbitros", desc: "Registrar y administrar cuerpo arbitral.", link: "/panel/admin/arbitros" },
