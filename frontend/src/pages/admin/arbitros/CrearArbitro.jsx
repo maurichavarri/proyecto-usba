@@ -2,236 +2,238 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CrearArbitro = () => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
-    const [showHelp, setShowHelp] = useState(false);
-    const [formData, setFormData] = useState({
-        nombre: "",
-        apellido: "",
-        correo: "",
-        contraseña: ""
+  const [showHelp, setShowHelp] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    apellido: "",
+    correo: "",
+    contraseña: "",
+  });
+  const [mensaje, setMensaje] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
-    const [mensaje, setMensaje] = useState("");
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+    setMensaje("");
+  };
 
-        setMensaje("");
-    };
+  const validarFormulario = () => {
+    if (!formData.nombre.trim()) {
+      return "El nombre es obligatorio.";
+    }
 
-    const validarFormulario = () => {
+    if (!formData.apellido.trim()) {
+      return "El apellido es obligatorio.";
+    }
 
-        if (!formData.nombre.trim()) {
-            return "El nombre es obligatorio.";
-        }
+    if (!formData.correo.trim()) {
+      return "El correo es obligatorio.";
+    }
 
-        if (!formData.apellido.trim()) {
-            return "El apellido es obligatorio.";
-        }
+    if (!formData.contraseña.trim()) {
+      return "La contraseña es obligatoria.";
+    }
 
-        if (!formData.correo.trim()) {
-            return "El correo es obligatorio.";
-        }
+    return "";
+  };
 
-        if (!formData.contraseña.trim()) {
-            return "La contraseña es obligatoria.";
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const error = validarFormulario();
 
-        return "";
-    };
+    if (error) {
+      setMensaje(error);
+      return;
+    }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const error = validarFormulario();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:3000/api/v1/arbitros", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
-        if (error) {
-            setMensaje(error);
-            return;
-        }
+      const data = await response.json();
 
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:3000/api/v1/arbitros",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify(formData)
-                }
-            );
+      if (!response.ok) {
+        setMensaje(data.message);
+        return;
+      }
 
-            const data = await response.json();
+      navigate("/panel/admin/arbitros");
+    } catch (error) {
+      console.error(error);
+      setMensaje("Error al crear el árbitro.");
+    }
+  };
 
-            if (!response.ok) {
-                setMensaje(data.message);
-                return;
-            }
+  return (
+    <div className="container mt-5 mb-5">
+      <div className="col-md-10 mx-auto">
+        
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
+            style={{
+              fontSize: "0.9rem",
+            }}
+          >
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin")}
+            >
+              Panel de Administrador
+            </span>
 
-            navigate("/panel/admin/arbitros");
+            {" > "}
 
-        } catch (error) {
-            console.error(error);
-            setMensaje("Error al crear el árbitro.");
-        }
-    };
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin/arbitros")}
+            >
+              Arbitros
+            </span>
 
-    return (
-        <div className="container mt-5 mb-5">
-            <div className="col-md-10 mx-auto">
-                <div className="d-flex align-items-center mb-2">
-                    <h2 className="me-2">
-                        Crear Árbitro
-                    </h2>
+            {" > "}
 
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer",
-                            fontSize: "1.2rem"
-                        }}
-                        onClick={() => setShowHelp(true)}
-                    >
-                        ❓
-                    </span>
-                </div>
+            <span className="text-muted">Crear Arbitro</span>
+          </nav>
 
-                <nav
-                    className="mb-3"
-                    style={{ fontSize: "0.9rem" }}
-                >
-                    <span
-                        className="text-primary"
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                            navigate("/panel/admin")
-                        }
-                    >
-                        Panel del Admisnitrador
-                    </span>
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Crear Arbitro</h3>
 
-                    {" > "}
-
-                    <span
-                        className="text-primary"
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                            navigate("/panel/admin/arbitros")
-                        }
-                    >
-                        Árbitros
-                    </span>
-
-                    {" > "}
-
-                    <span className="text-muted">
-                        Crear Árbitro
-                    </span>
-                </nav>
-
-                <button
-                    className="btn btn-dark mb-3"
-                    onClick={() => navigate(-1)}
-                >
-                    ← Regresar a gestion de arbitros
-                </button>
-
-                <div className="card shadow-sm">
-
-                    <div className="card-header bg-dark text-white">
-                        <strong>
-                            Formulario de creación
-                        </strong>
-                    </div>
-
-                    <div className="card-body">
-
-                        {
-                            mensaje &&
-                            <div className="alert alert-danger">
-                                {mensaje}
-                            </div>
-                        }
-
-                        <form onSubmit={handleSubmit}>
-
-                            <div className="mb-3">
-                                <label className="form-label">
-                                    Nombre
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="nombre"
-                                    className="form-control"
-                                    value={formData.nombre}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">
-                                    Apellido
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="apellido"
-                                    className="form-control"
-                                    value={formData.apellido}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">
-                                    Correo
-                                </label>
-
-                                <input
-                                    type="email"
-                                    name="correo"
-                                    className="form-control"
-                                    value={formData.correo}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">
-                                    Contraseña
-                                </label>
-
-                                <input
-                                    type="password"
-                                    name="contraseña"
-                                    className="form-control"
-                                    value={formData.contraseña}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                            >
-                                Crear árbitro
-                            </button>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-            </div>
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
         </div>
-    );
 
+        <button
+          className="btn btn-dark mb-3"
+          onClick={() => navigate("/panel/admin/arbitros")}
+        >
+          ← Volver
+        </button>
+
+        <div className="card shadow-sm">
+          <div className="card-header bg-dark text-white">
+            <strong>Formulario de creación</strong>
+          </div>
+
+          <div className="card-body">
+            {mensaje && <div className="alert alert-danger">{mensaje}</div>}
+
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Nombre</label>
+
+                <input
+                  type="text"
+                  name="nombre"
+                  className="form-control"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Apellido</label>
+
+                <input
+                  type="text"
+                  name="apellido"
+                  className="form-control"
+                  value={formData.apellido}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Correo</label>
+
+                <input
+                  type="email"
+                  name="correo"
+                  className="form-control"
+                  value={formData.correo}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Contraseña</label>
+
+                <input
+                  type="password"
+                  name="contraseña"
+                  className="form-control"
+                  value={formData.contraseña}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <button type="submit" className="btn btn-primary">
+                Crear árbitro
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Modal ayuda */}
+        {showHelp && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow"
+              style={{ maxWidth: "500px" }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5>¿Cómo funciona este apartado?</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowHelp(false)}
+                />
+              </div>
+              <p>Desde aquí podés registrar un nuevo arbitro.</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default CrearArbitro;

@@ -2,208 +2,301 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditarAnuncio = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    const { id } = useParams();
-    const navigate = useNavigate();
+  const [showHelp, setShowHelp] = useState(false);
+  const [formData, setFormData] = useState({
+    titulo: "",
+    contenido: "",
+  });
+  const [imagenActual, setImagenActual] = useState(null); // URL de imagen guardada en BD
+  const [nuevaImagen, setNuevaImagen] = useState(null); // Archivo nuevo seleccionado
+  const [preview, setPreview] = useState(null);
+  const [mensaje, setMensaje] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const [formData, setFormData] = useState({
-        titulo: "",
-        contenido: ""
+  useEffect(() => {
+    obtenerAnuncio();
+  }, []);
+
+  const obtenerAnuncio = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/v1/anuncios/${id}`,
+      );
+      const data = await response.json();
+
+      setFormData({
+        titulo: data.titulo || "",
+        contenido: data.contenido || "",
+      });
+
+      // Guardamos la imagen existente para mostrarla
+      setImagenActual(data.imagen || null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
-    const [imagenActual, setImagenActual] = useState(null); // URL de imagen guardada en BD
-    const [nuevaImagen, setNuevaImagen] = useState(null);   // Archivo nuevo seleccionado
-    const [preview, setPreview] = useState(null);
-    const [mensaje, setMensaje] = useState("");
-    const [loading, setLoading] = useState(false);
+    setMensaje("");
+  };
 
-    useEffect(() => {
-        obtenerAnuncio();
-    }, []);
+  const handleImagenChange = (e) => {
+    const archivo = e.target.files[0];
+    if (!archivo) return;
 
-    const obtenerAnuncio = async () => {
-        try {
-            const response = await fetch(
-                `http://localhost:3000/api/v1/anuncios/${id}`
-            );
-            const data = await response.json();
+    setNuevaImagen(archivo);
 
-            setFormData({
-                titulo: data.titulo || "",
-                contenido: data.contenido || ""
-            });
+    // Previsualización local de la nueva imagen
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result);
+    reader.readAsDataURL(archivo);
+  };
 
-            // Guardamos la imagen existente para mostrarla
-            setImagenActual(data.imagen || null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMensaje("");
 
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    try {
+      const token = localStorage.getItem("token");
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-        setMensaje("");
-    };
+      const data = new FormData();
+      data.append("titulo", formData.titulo);
+      data.append("contenido", formData.contenido);
+      if (nuevaImagen) {
+        data.append("imagen", nuevaImagen);
+      }
 
-    const handleImagenChange = (e) => {
-        const archivo = e.target.files[0];
-        if (!archivo) return;
+      const response = await fetch(
+        `http://localhost:3000/api/v1/anuncios/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            // NO pongas Content-Type — el browser lo maneja automático con FormData
+            Authorization: `Bearer ${token}`,
+          },
+          body: data,
+        },
+      );
 
-        setNuevaImagen(archivo);
+      const result = await response.json();
 
-        // Previsualización local de la nueva imagen
-        const reader = new FileReader();
-        reader.onloadend = () => setPreview(reader.result);
-        reader.readAsDataURL(archivo);
-    };
+      if (!response.ok) {
+        setMensaje(result.message);
+        return;
+      }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setMensaje("");
+      navigate("/panel/admin/anuncios");
+    } catch (error) {
+      console.error(error);
+      setMensaje("Error al actualizar el anuncio");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            const token = localStorage.getItem("token");
+  const imagenMostrada =
+    preview || (imagenActual ? `http://localhost:3000${imagenActual}` : null);
 
-            const data = new FormData();
-            data.append("titulo", formData.titulo);
-            data.append("contenido", formData.contenido);
-            if (nuevaImagen) {
-                data.append("imagen", nuevaImagen);
-            }
+  return (
+    <div className="container mt-5 mb-5">
+      <div className="col-lg-10 mx-auto">
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
+            style={{
+              fontSize: "0.9rem",
+            }}
+          >
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin")}
+            >
+              Panel de Administrador
+            </span>
 
-            const response = await fetch(
-                `http://localhost:3000/api/v1/anuncios/${id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        // NO pongas Content-Type — el browser lo maneja automático con FormData
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: data
-                }
-            );
+            {" > "}
 
-            const result = await response.json();
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin/anuncios")}
+            >
+              Anuncios
+            </span>
 
-            if (!response.ok) {
-                setMensaje(result.message);
-                return;
-            }
+            {" > "}
 
-            navigate("/panel/admin/anuncios");
+            <span className="text-muted">Editar Anuncio</span>
+          </nav>
 
-        } catch (error) {
-            console.error(error);
-            setMensaje("Error al actualizar el anuncio");
-        } finally {
-            setLoading(false);
-        }
-    };
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Editar Anuncio</h3>
 
-    const imagenMostrada = preview || (imagenActual ? `http://localhost:3000${imagenActual}` : null);
-
-    return (
-        <div className="container mt-5 mb-5 col-md-8">
-
-            <h2 className="mb-4">Editar anuncio</h2>
-                {/* Botón ir al dashboard */}
-            <div className="mb-3">
-                <button
-                    className="btn btn-dark"
-                    onClick={() => navigate("/panel/admin/anuncios")}
-                >
-                    ← Regresar al panel 
-                </button>
-            </div>
-            <form onSubmit={handleSubmit}>
-
-                <div className="mb-3">
-                    <label className="form-label">Título</label>
-                    <input
-                        type="text"
-                        name="titulo"
-                        className="form-control"
-                        value={formData.titulo}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Contenido</label>
-                    <textarea
-                        name="contenido"
-                        className="form-control"
-                        rows="6"
-                        value={formData.contenido}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">
-                        {imagenActual ? "Cambiar imagen" : "Agregar imagen (opcional)"}
-                    </label>
-                    <input
-                        type="file"
-                        className="form-control"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                        onChange={handleImagenChange}
-                    />
-                    <small className="text-muted">Formatos permitidos: JPG, PNG, WEBP, GIF. Máximo 5MB.</small>
-                </div>
-
-                {/* Imagen actual o previsualización de la nueva */}
-                {imagenMostrada && (
-                    <div className="mb-3">
-                        <label className="form-label">
-                            {preview ? "Nueva imagen (vista previa):" : "Imagen actual:"}
-                        </label>
-                        <div>
-                            <img
-                                src={imagenMostrada}
-                                alt="Imagen del anuncio"
-                                style={{
-                                    maxWidth: "100%",
-                                    maxHeight: "300px",
-                                    objectFit: "cover",
-                                    borderRadius: "8px",
-                                    border: "1px solid #dee2e6"
-                                }}
-                            />
-                        </div>
-                        {preview && (
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-outline-secondary mt-2"
-                                onClick={() => {
-                                    setNuevaImagen(null);
-                                    setPreview(null);
-                                }}
-                            >
-                                Cancelar cambio de imagen
-                            </button>
-                        )}
-                    </div>
-                )}
-
-                <button className="btn btn-dark" disabled={loading}>
-                    {loading ? "Guardando..." : "Guardar cambios"}
-                </button>
-
-            </form>
-
-            {mensaje && (
-                <div className="alert alert-danger mt-3">
-                    {mensaje}
-                </div>
-            )}
-
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
         </div>
-    );
+
+        {/* Botones */}
+        <div className="d-flex justify-content-between mb-3">
+          <button
+            className="btn btn-dark"
+            onClick={() => navigate("/panel/admin/anuncios")}
+          >
+            ← Volver
+          </button>
+        </div>
+
+        {/* Card con header y formulario */}
+        <div className="card shadow-sm">
+          <div className="card-header bg-dark">
+            <strong className="text-white">Formulario de edición</strong>
+          </div>
+          <div className="card-body p-3">
+            {/* 
+            {error && <div className="alert alert-danger mb-3">{error}</div>}
+            */}
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Título</label>
+                <input
+                  type="text"
+                  name="titulo"
+                  className="form-control"
+                  value={formData.titulo}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Contenido</label>
+                <textarea
+                  name="contenido"
+                  className="form-control"
+                  rows="6"
+                  value={formData.contenido}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">
+                  {imagenActual
+                    ? "Cambiar imagen"
+                    : "Agregar imagen (opcional)"}
+                </label>
+                <input
+                  type="file"
+                  className="form-control"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleImagenChange}
+                />
+                <small className="text-muted">
+                  Formatos permitidos: JPG, PNG, WEBP, GIF. Máximo 5MB.
+                </small>
+              </div>
+
+              {/* Imagen actual o previsualización de la nueva */}
+              {imagenMostrada && (
+                <div className="mb-3">
+                  <label className="form-label">
+                    {preview
+                      ? "Nueva imagen (vista previa):"
+                      : "Imagen actual:"}
+                  </label>
+                  <div>
+                    <img
+                      src={imagenMostrada}
+                      alt="Imagen del anuncio"
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "300px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                        border: "1px solid #dee2e6",
+                      }}
+                    />
+                  </div>
+                  {preview && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-secondary mt-2"
+                      onClick={() => {
+                        setNuevaImagen(null);
+                        setPreview(null);
+                      }}
+                    >
+                      Cancelar cambio de imagen
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <button className="btn btn-primary" disabled={loading}>
+                {loading ? "Guardando..." : "Guardar cambios"}
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {mensaje && <div className="alert alert-danger mt-3">{mensaje}</div>}
+
+        {/* Modal de ayuda */}
+        {showHelp && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow"
+              style={{ maxWidth: "500px" }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5>¿Cómo funciona este apartado?</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setShowHelp(false)}
+                ></button>
+              </div>
+              <p>
+                En este apartado podés modificar un anuncio.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default EditarAnuncio;

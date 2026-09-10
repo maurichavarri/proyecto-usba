@@ -19,17 +19,13 @@ const CrearInscripcion = () => {
   // MODAL DUPLICADOS
 
   const [mostrarModalDuplicados, setMostrarModalDuplicados] = useState(false);
-
   const [jugadoresDuplicados, setJugadoresDuplicados] = useState([]);
 
   // MODAL NO APTOS
 
   const [mostrarModalNoAptos, setMostrarModalNoAptos] = useState(false);
-
   const [jugadoresNoAptos, setJugadoresNoAptos] = useState([]);
-
   const [requisitosCategoria, setRequisitosCategoria] = useState(null);
-
   const [puedeEditarPlantel, setPuedeEditarPlantel] = useState(false);
 
   useEffect(() => {
@@ -132,23 +128,17 @@ const CrearInscripcion = () => {
 
     try {
       setEnviando(true);
-
       const token = localStorage.getItem("token");
-
-      const response = await fetch(
-        "http://localhost:3000/api/v1/delegado/inscripciones",
+      const response = await fetch("http://localhost:3000/api/v1/delegado/inscripciones",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json",
-
             Authorization: `Bearer ${token}`,
           },
 
           body: JSON.stringify({
             equipo_id: equipoId,
-
             torneo_categoria_id: torneoCategoriaId,
           }),
         },
@@ -165,9 +155,7 @@ const CrearInscripcion = () => {
 
         if (data.code === "JUGADORES_DUPLICADOS") {
           setJugadoresDuplicados(data.jugadores || []);
-
           setMostrarModalDuplicados(true);
-
           return;
         }
 

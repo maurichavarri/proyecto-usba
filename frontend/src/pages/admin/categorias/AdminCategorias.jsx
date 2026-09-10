@@ -70,137 +70,153 @@ const AdminCategorias = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-        <div className="col-md-12 mx-auto">
-          {/* Título */}
-          <div className="d-flex align-items-center mb-2">
-            <h2 className="me-2">Gestión de Categorías</h2>
-            <span
-              style={{ cursor: "pointer", fontSize: "1.2rem" }}
-              className="text-primary"
-              onClick={() => setShowHelp(true)}
-            >
-              ❓
-            </span>
-          </div>
 
-          {/* Breadcrumb */}
-          <nav className="mb-3" style={{ fontSize: "0.9rem" }}>
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
+            style={{
+              fontSize: "0.9rem",
+            }}
+          >
             <span
-              className="text-primary"
-              style={{ cursor: "pointer" }}
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
               onClick={() => navigate("/panel/admin")}
             >
-              Panel del Administrador
+              Panel de Administrador
             </span>
+
             {" > "}
+
             <span className="text-muted">Categorías</span>
           </nav>
 
-          {/* Botones */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <button
-              className="btn btn-dark"
-              onClick={() => navigate("/panel/admin")}
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Categorías</h3>
+
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
             >
-              ← Regresar al panel
-            </button>
-            <Link
-              to="/panel/admin/categorias/crear"
-              className="btn btn-primary"
-            >
-              + Crear categoría
-            </Link>
+              ?
+            </span>
+          </div>
+        </div>
+
+        {/* Botones */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <button
+            className="btn btn-dark"
+            onClick={() => navigate("/panel/admin")}
+          >
+            ← Volver
+          </button>
+          <Link to="/panel/admin/categorias/crear" className="btn btn-primary">
+            + Crear Categoría
+          </Link>
+        </div>
+
+        {/* Tabla */}
+        <div className="card shadow-sm">
+          <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <strong>Categorías registradas</strong>
+            <input
+              type="text"
+              className="form-control w-auto"
+              placeholder="Buscar..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+            />
           </div>
 
-          {/* Tabla */}
-          <div className="card shadow-sm">
-            <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-              <strong>Categorías registradas</strong>
-              <input
-                type="text"
-                className="form-control w-auto"
-                placeholder="Buscar..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-              />
-            </div>
-
-            <div className="card-body">
-              {categorias.length === 0 ? (
-                <div className="alert alert-info">
-                  No existen categorías registradas.
-                </div>
-              ) : (
-                <div className="table-responsive">
-                  <table className="table align-middle">
-                    <thead>
-                      <tr>
-                        <th>Nombre</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {categoriasFiltradas.length > 0 ? (
-                        categoriasFiltradas.map((categoria) => (
-                          <tr key={categoria.id}>
-                            <td>{categoria.nombre}</td>
-                            <td>
-                              {categoria.estado === "activo" ? (
-                                <span className="badge bg-success">Activa</span>
-                              ) : (
-                                <span className="badge bg-danger">
-                                  Archivada
-                                </span>
-                              )}
-                            </td>
-                            <td>
-                              <div className="d-flex gap-2">
-                                {categoria.vinculada ? (
-                                  <button
-                                    type="button"
-                                    className="btn btn-secondary btn-sm"
-                                    disabled
-                                    title="No puede editarse porque la categoría ya fue utilizada en una competencia."
-                                  >
-                                    Editar
-                                  </button>
-                                ) : (
-                                  <Link
-                                    to={`/panel/admin/categorias/editar/${categoria.id}`}
-                                    className="btn btn-primary btn-sm"
-                                  >
-                                    Editar
-                                  </Link>
-                                )}
+          <div className="card-body">
+            {categorias.length === 0 ? (
+              <div className="alert alert-info">
+                No existen categorías registradas.
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <table className="table align-middle">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categoriasFiltradas.length > 0 ? (
+                      categoriasFiltradas.map((categoria) => (
+                        <tr key={categoria.id}>
+                          <td>{categoria.nombre}</td>
+                          <td>
+                            {categoria.estado === "activo" ? (
+                              <span className="badge bg-success">Visible</span>
+                            ) : (
+                              <span className="badge bg-danger">Oculto</span>
+                            )}
+                          </td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              {categoria.vinculada ? (
                                 <button
-                                  onClick={() => cambiarEstado(categoria.id)}
-                                  className={
-                                    categoria.estado === "activo"
-                                      ? "btn btn-danger btn-sm"
-                                      : "btn btn-success btn-sm"
-                                  }
+                                  type="button"
+                                  className="btn btn-secondary btn-sm"
+                                  disabled
+                                  title="No puede editarse porque la categoría ya fue utilizada en una competencia."
                                 >
-                                  {categoria.estado === "activo"
-                                    ? "Archivar"
-                                    : "Activar"}
+                                  Editar
                                 </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="3" className="text-center text-muted">
-                            No se encontraron categorías.
+                              ) : (
+                                <Link
+                                  to={`/panel/admin/categorias/editar/${categoria.id}`}
+                                  className="btn btn-primary btn-sm"
+                                >
+                                  Editar
+                                </Link>
+                              )}
+                              <button
+                                onClick={() => cambiarEstado(categoria.id)}
+                                className={
+                                  categoria.estado === "activo"
+                                    ? "btn btn-danger btn-sm"
+                                    : "btn btn-success btn-sm"
+                                }
+                              >
+                                {categoria.estado === "activo"
+                                  ? "Ocultar"
+                                  : "Mostrar"}
+                              </button>
+                            </div>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-center text-muted">
+                          No se encontraron categorías.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
 

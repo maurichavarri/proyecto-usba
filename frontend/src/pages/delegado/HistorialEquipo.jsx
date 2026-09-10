@@ -6,12 +6,10 @@ const HistorialEquipo = () => {
 
   const navigate = useNavigate();
 
+  const [showHelp, setShowHelp] = useState(false);
   const [equipo, setEquipo] = useState(null);
-
   const [participaciones, setParticipaciones] = useState([]);
-
   const [cargando, setCargando] = useState(true);
-
   const [mensaje, setMensaje] = useState("");
 
   // =========================
@@ -25,13 +23,10 @@ const HistorialEquipo = () => {
   const obtenerHistorial = async () => {
     try {
       setCargando(true);
-
       setMensaje("");
-
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `http://localhost:3000/api/v1/delegado/equipos/${id}/historial`,
+      const response = await fetch(`http://localhost:3000/api/v1/delegado/equipos/${id}/historial`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -67,7 +62,6 @@ const HistorialEquipo = () => {
     }
 
     const limpia = String(fecha).split("T")[0];
-
     const [anio, mes, dia] = limpia.split("-");
 
     if (!anio || !mes || !dia) {
@@ -92,55 +86,67 @@ const HistorialEquipo = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-        {/* BREADCRUMB */}
 
-        <nav
-          className="mb-2"
-          style={{
-            fontSize: "0.9rem",
-          }}
-        >
-          <span
-            className="text-muted"
+        {/* Bradcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
             style={{
-              cursor: "pointer",
+              fontSize: "0.9rem",
             }}
-            onClick={() => navigate("/panel/delegado")}
           >
-            Panel de Delegado
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/delegado")}
+            >
+              Panel de Delegado
+            </span>
 
-          {" > "}
+            {" > "}
 
-          <span
-            className="text-muted"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/panel/delegado/equipos")}
-          >
-            Mis Equipos
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/delegado/equipos")}
+            >
+              Mis Equipos
+            </span>
 
-          {" > "}
+            {" > "}
 
-          <span className="text-muted">Historial</span>
-        </nav>
+            <span className="text-muted">Historial</span>
+          </nav>
 
-        {/* TÍTULO */}
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Historial de {equipo?.nombre || "equipo"}</h3>
 
-        <div className="mb-4">
-          <h3 className="fw-bold mb-1">
-            Historial de {equipo?.nombre || "equipo"}
-          </h3>
-
-          <p className="text-muted mb-0">
-            Participaciones y planteles presentados en competencias.
-          </p>
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
         </div>
 
         {/* VOLVER */}
-
         <div className="d-flex gap-2 mb-4">
           <button
             type="button"
@@ -152,7 +158,7 @@ const HistorialEquipo = () => {
 
           <button
             type="button"
-            className="btn btn-outline-dark"
+            className="btn btn-secondary"
             onClick={() => navigate(`/panel/delegado/equipos/${id}/jugadores`)}
           >
             Ver plantel actual
@@ -160,11 +166,9 @@ const HistorialEquipo = () => {
         </div>
 
         {/* ERROR */}
-
         {mensaje && <div className="alert alert-danger">{mensaje}</div>}
 
         {/* CARGANDO */}
-
         {cargando ? (
           <div className="text-center py-5">
             <div className="spinner-border" role="status" />
@@ -215,7 +219,7 @@ const HistorialEquipo = () => {
                     {/* DATOS */}
 
                     <div className="row mb-4">
-                      <div className="col-md-4 mb-2">
+                      <div className="col-md-3 mb-2">
                         <small className="text-muted d-block">
                           Fecha de inscripción
                         </small>
@@ -223,7 +227,7 @@ const HistorialEquipo = () => {
                         <strong>{formatearFecha(participacion.fecha)}</strong>
                       </div>
 
-                      <div className="col-md-4 mb-2">
+                      <div className="col-md-3 mb-2">
                         <small className="text-muted d-block">
                           Inicio del torneo
                         </small>
@@ -231,7 +235,15 @@ const HistorialEquipo = () => {
                         <strong>{formatearFecha(torneo?.fecha_inicio)}</strong>
                       </div>
 
-                      <div className="col-md-4 mb-2">
+                      <div className="col-md-3 mb-2">
+                        <small className="text-muted d-block">
+                          Finalización del torneo
+                        </small>
+
+                        <strong>{formatearFecha(torneo?.fecha_fin)}</strong>
+                      </div>
+
+                      <div className="col-md-3 mb-2">
                         <small className="text-muted d-block">
                           Plantel registrado
                         </small>
@@ -304,6 +316,40 @@ const HistorialEquipo = () => {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* MODAL AYUDA */}
+        {showHelp && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 1050,
+              padding: "20px",
+            }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow"
+              style={{
+                maxWidth: "550px",
+                width: "100%",
+              }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">¿Cómo funciona este apartado?</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowHelp(false)}
+                />
+              </div>
+              <p>
+                Desde esta sección podés consultar el historial de tu equipo. Esto es, el plantel que juega
+                o jugó en algún momento desde su creación, como así también la competencia a la cual está o 
+                estuvo vinculado.
+              </p>
+            </div>
           </div>
         )}
       </div>

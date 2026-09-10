@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 
 const AdminFixture = () => {
   const navigate = useNavigate();
+
   const { id } = useParams();
   const [detalle, setDetalle] = useState(null);
   const [resumen, setResumen] = useState(null);
@@ -273,48 +274,70 @@ const AdminFixture = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-        {/* Header */}
-        <div className="d-flex align-items-center mb-2">
-          <h2 className="me-2">Fixture</h2>
 
-          <span
-            className="text-primary"
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
             style={{
-              cursor: "pointer",
-              fontSize: "1.2rem",
+              fontSize: "0.9rem",
             }}
-            onClick={() => setShowHelp(true)}
-            title="Ayuda"
           >
-            ❓
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin")}
+            >
+              Panel de Administrador
+            </span>
+
+            {" > "}
+
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin/torneo-categorias/")}
+            >
+              Competencias
+            </span>
+
+            {" > "}
+
+            <span className="text-muted">Fixture</span>
+          </nav>
+
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Fixture</h3>
+
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
         </div>
-
-        <nav
-          className="mb-3"
-          style={{
-            fontSize: "0.9rem",
-          }}
-        >
-          <Link to="/panel/admin" className="text-primary">
-            Admin Dashboard
-          </Link>
-
-          {" > "}
-
-          <Link to="/panel/admin/torneo-categorias" className="text-primary">
-            Torneos - Categorías
-          </Link>
-
-          {" > "}
-
-          <span className="text-muted">Fixture</span>
-        </nav>
 
         {/* Botones */}
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <button className="btn btn-dark" onClick={() => navigate(-1)}>
-            Volver
+          <button className="btn btn-dark" onClick={() => navigate("/panel/admin/torneo-categorias/")}>
+            ← Volver
           </button>
 
           <div className="d-flex gap-2">

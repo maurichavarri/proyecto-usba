@@ -316,15 +316,10 @@ const MisInscripciones = () => {
                   <thead>
                     <tr>
                       <th>Equipo</th>
-
                       <th>Torneo</th>
-
                       <th>Categoría</th>
-
                       <th>Fecha</th>
-
                       <th>Estado</th>
-
                       <th>Acciones</th>
                     </tr>
                   </thead>
@@ -333,19 +328,16 @@ const MisInscripciones = () => {
                     {inscripcionesPaginadas.map((inscripcion) => (
                       <tr key={inscripcion.id}>
                         {/* EQUIPO */}
-
                         <td>
                           <strong>{inscripcion.Equipo?.nombre || "-"}</strong>
                         </td>
 
                         {/* TORNEO */}
-
                         <td>
                           {inscripcion.torneoCategoria?.torneo?.nombre || "-"}
                         </td>
 
                         {/* CATEGORÍA */}
-
                         <td>
                           <strong>
                             {inscripcion.torneoCategoria?.categoria?.nombre ||
@@ -354,11 +346,9 @@ const MisInscripciones = () => {
                         </td>
 
                         {/* FECHA */}
-
                         <td>{formatearFecha(inscripcion.fecha)}</td>
 
                         {/* ESTADO */}
-
                         <td>
                           <span
                             className={obtenerBadgeEstado(inscripcion.estado)}
@@ -368,12 +358,11 @@ const MisInscripciones = () => {
                         </td>
 
                         {/* ACCIONES */}
-
                         <td>
                           {inscripcion.estado === "rechazado" ? (
                             <button
                               type="button"
-                              className="btn btn-outline-danger btn-sm"
+                              className="btn btn-secondary btn-sm"
                               onClick={() =>
                                 setInscripcionRechazada(inscripcion)
                               }
@@ -393,10 +382,7 @@ const MisInscripciones = () => {
           </div>
         </div>
 
-        {/* =====================================================
-            MODAL MOTIVO DE RECHAZO
-        ===================================================== */}
-
+        {/* MODAL MOTIVO DE RECHAZO */}
         {inscripcionRechazada && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -411,11 +397,11 @@ const MisInscripciones = () => {
               style={{
                 width: "100%",
                 maxWidth: "550px",
-                overflow: "hidden",
+                maxHeight: "90vh",
+                overflowY: "auto",
               }}
             >
               {/* CABECERA */}
-
               <div className="p-4 pb-2 text-center">
                 <div
                   className="text-danger mb-3"
@@ -436,7 +422,6 @@ const MisInscripciones = () => {
               </div>
 
               {/* DATOS INSCRIPCIÓN */}
-
               <div className="px-4">
                 <div className="alert alert-light border">
                   <p className="mb-2">
@@ -459,7 +444,6 @@ const MisInscripciones = () => {
               </div>
 
               {/* MOTIVO */}
-
               <div className="px-4 pb-4">
                 <label className="form-label fw-semibold">
                   Mensaje del administrador
@@ -477,7 +461,6 @@ const MisInscripciones = () => {
                 </div>
 
                 {/* INFORMACIÓN */}
-
                 <div className="alert alert-info mt-3 mb-0">
                   <strong>¿Qué podés hacer ahora?</strong>
                   <br />
@@ -488,7 +471,6 @@ const MisInscripciones = () => {
               </div>
 
               {/* PIE */}
-
               <div className="border-top p-3 d-flex justify-content-end gap-2">
                 <button
                   type="button"
@@ -514,10 +496,7 @@ const MisInscripciones = () => {
           </div>
         )}
 
-        {/* =====================================================
-            MODAL AYUDA
-        ===================================================== */}
-
+        {/* MODAL AYUDA */}
         {showHelp && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
