@@ -43,6 +43,22 @@ const JugadoresEquipo = () => {
     }
   };
 
+  // Función para calcular edad
+  const calcularEdad = (fechaNacimiento) => {
+    if (!fechaNacimiento) return "-"; // si no hay fecha registrada
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+
+    return edad;
+  };
+
   const verHistorial = async (jugador) => {
     try {
       setCargandoHistorial(true);
@@ -227,6 +243,8 @@ const JugadoresEquipo = () => {
                       <th>Dorsal</th>
                       <th>Jugador</th>
                       <th>DNI</th>
+                      <th>Edad</th>
+                      <th>Sexo</th>
                       <th>Disponibilidad</th>
                       <th>Disciplina</th>
                       <th>Acciones</th>
@@ -256,6 +274,8 @@ const JugadoresEquipo = () => {
                               </div>
                             </td>
                             <td>{jugador.dni}</td>
+                            <td>{calcularEdad(jugador.fecha_nacimiento)}</td>
+                            <td>{jugador.sexo === 'masculino' ? "Masculino" : "Femenino"}</td>
                             <td>
                               {estaSuspendido ? (
                                 <span className="badge bg-danger">

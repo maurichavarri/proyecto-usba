@@ -4,46 +4,23 @@ import { useNavigate } from "react-router-dom";
 const AdminInscripciones = () => {
   const navigate = useNavigate();
 
-  // =========================
-  // PAGINACIÓN
-  // =========================
-
   const [paginaActual, setPaginaActual] = useState(1);
   const inscripcionesPorPagina = 10;
-
-  // =========================
-  // DATOS
-  // =========================
 
   const [inscripciones, setInscripciones] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [showHelp, setShowHelp] = useState(false);
-
-  // =========================
-  // MENSAJES GENERALES
-  // =========================
-
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("success");
-
-  // =========================
-  // MODAL DE DECISIÓN
-  // =========================
-
   const [inscripcionSeleccionada, setInscripcionSeleccionada] = useState(null);
   const [accionSeleccionada, setAccionSeleccionada] = useState(null);
   const [motivoRechazo, setMotivoRechazo] = useState("");
   const [errorModal, setErrorModal] = useState("");
   const [procesando, setProcesando] = useState(false);
-
   const [inscripcionPlantel, setInscripcionPlantel] = useState(null);
   const [detallePlantel, setDetallePlantel] = useState(null);
   const [cargandoPlantel, setCargandoPlantel] = useState(false);
   const [errorPlantel, setErrorPlantel] = useState("");
-
-  // =========================
-  // CARGAR
-  // =========================
 
   useEffect(() => {
     obtenerInscripciones();
@@ -53,14 +30,9 @@ const AdminInscripciones = () => {
     setPaginaActual(1);
   }, [busqueda]);
 
-  // =========================
-  // OBTENER INSCRIPCIONES
-  // =========================
-
   const obtenerInscripciones = async () => {
     try {
       const token = localStorage.getItem("token");
-
       const response = await fetch(
         "http://localhost:3000/api/v1/admin/inscripciones",
         {
@@ -79,16 +51,10 @@ const AdminInscripciones = () => {
       setInscripciones(data);
     } catch (error) {
       console.error(error);
-
       setTipoMensaje("danger");
-
       setMensaje(error.message || "Error al cargar inscripciones.");
     }
   };
-
-  // =========================
-  // ABRIR MODAL CONFIRMAR
-  // =========================
 
   const abrirModalConfirmar = (inscripcion) => {
     setInscripcionSeleccionada(inscripcion);
@@ -97,20 +63,12 @@ const AdminInscripciones = () => {
     setErrorModal("");
   };
 
-  // =========================
-  // ABRIR MODAL RECHAZAR
-  // =========================
-
   const abrirModalRechazar = (inscripcion) => {
     setInscripcionSeleccionada(inscripcion);
     setAccionSeleccionada("rechazar");
     setMotivoRechazo("");
     setErrorModal("");
   };
-
-  // =========================
-  // CERRAR MODAL
-  // =========================
 
   const cerrarModal = () => {
     if (procesando) {
@@ -122,10 +80,6 @@ const AdminInscripciones = () => {
     setMotivoRechazo("");
     setErrorModal("");
   };
-
-  // =========================
-  // FORMATEAR ERRORES BACKEND
-  // =========================
 
   const obtenerMensajeError = (data) => {
     let texto = data.message || "No fue posible procesar la inscripción.";
@@ -151,31 +105,21 @@ const AdminInscripciones = () => {
     return texto;
   };
 
-  // =========================
-  // CONFIRMAR DECISIÓN
-  // =========================
-
   const procesarDecision = async () => {
     if (!inscripcionSeleccionada || !accionSeleccionada) {
       return;
     }
-
-    // =========================
-    // VALIDAR MOTIVO RECHAZO
-    // =========================
 
     if (accionSeleccionada === "rechazar") {
       const motivo = motivoRechazo.trim();
 
       if (!motivo) {
         setErrorModal("Debe indicar el motivo del rechazo.");
-
         return;
       }
 
       if (motivo.length < 5) {
         setErrorModal("El motivo del rechazo debe ser más descriptivo.");
-
         return;
       }
 
@@ -183,7 +127,6 @@ const AdminInscripciones = () => {
         setErrorModal(
           "El motivo del rechazo no puede superar los 500 caracteres.",
         );
-
         return;
       }
     }
@@ -205,37 +148,23 @@ const AdminInscripciones = () => {
         `http://localhost:3000/api/v1/admin/inscripciones/${inscripcionSeleccionada.id}`,
         {
           method: "PATCH",
-
           headers: {
             "Content-Type": "application/json",
-
             Authorization: `Bearer ${token}`,
           },
-
           body: JSON.stringify(body),
         },
       );
 
       const data = await response.json();
 
-      // =========================
-      // ERROR BACKEND
-      // =========================
-
       if (!response.ok) {
         setErrorModal(obtenerMensajeError(data));
-
         return;
       }
 
-      // =========================
-      // ÉXITO
-      // =========================
-
       const fueConfirmada = accionSeleccionada === "confirmar";
-
       setTipoMensaje("success");
-
       setMensaje(
         fueConfirmada
           ? "Inscripción confirmada correctamente."
@@ -244,41 +173,28 @@ const AdminInscripciones = () => {
 
       // Cerrar modal
       setInscripcionSeleccionada(null);
-
       setAccionSeleccionada(null);
-
       setMotivoRechazo("");
-
       setErrorModal("");
 
       // Recargar listado
       await obtenerInscripciones();
     } catch (error) {
       console.error(error);
-
       setErrorModal("Ocurrió un error al procesar la inscripción.");
     } finally {
       setProcesando(false);
     }
   };
 
-  // =========================
-  // VER PLANTEL HISTÓRICO
-  // =========================
-
   const abrirModalPlantel = async (inscripcion) => {
     try {
       // Abrimos el modal inmediatamente
       setInscripcionPlantel(inscripcion);
-
       setDetallePlantel(null);
-
       setErrorPlantel("");
-
       setCargandoPlantel(true);
-
       const token = localStorage.getItem("token");
-
       const response = await fetch(
         `http://localhost:3000/api/v1/admin/inscripciones/${inscripcion.id}/plantel`,
         {
@@ -299,7 +215,6 @@ const AdminInscripciones = () => {
       setDetallePlantel(data.inscripcion);
     } catch (error) {
       console.error(error);
-
       setErrorPlantel(
         error.message || "No fue posible obtener el plantel histórico.",
       );
@@ -308,10 +223,6 @@ const AdminInscripciones = () => {
     }
   };
 
-  // =========================
-  // CERRAR PLANTEL
-  // =========================
-
   const cerrarModalPlantel = () => {
     setInscripcionPlantel(null);
     setDetallePlantel(null);
@@ -319,21 +230,13 @@ const AdminInscripciones = () => {
     setCargandoPlantel(false);
   };
 
-  // =========================
-  // FILTRO
-  // =========================
-
   const inscripcionesFiltradas = inscripciones.filter((inscripcion) => {
     const texto = busqueda.trim().toLowerCase();
-
     const nombreEquipo = inscripcion.Equipo?.nombre?.toLowerCase() || "";
-
     const nombreTorneo =
       inscripcion.torneoCategoria?.torneo?.nombre?.toLowerCase() || "";
-
     const nombreCategoria =
       inscripcion.torneoCategoria?.categoria?.nombre?.toLowerCase() || "";
-
     const estado = inscripcion.estado?.toLowerCase() || "";
 
     return (
@@ -344,58 +247,37 @@ const AdminInscripciones = () => {
     );
   });
 
-  // =========================
-  // PAGINACIÓN
-  // =========================
-
   const totalPaginas = Math.ceil(
     inscripcionesFiltradas.length / inscripcionesPorPagina,
   );
-
   const indiceInicio = (paginaActual - 1) * inscripcionesPorPagina;
-
   const indiceFin = indiceInicio + inscripcionesPorPagina;
-
   const inscripcionesPaginadas = inscripcionesFiltradas.slice(
     indiceInicio,
     indiceFin,
   );
 
-  // =========================
-  // BADGE ESTADO
-  // =========================
-
   const obtenerBadgeEstado = (estado) => {
     switch (estado) {
       case "confirmado":
         return "badge bg-success";
-
       case "rechazado":
         return "badge bg-danger";
-
       case "cancelado":
         return "badge bg-secondary";
-
       default:
         return "badge bg-warning text-dark";
     }
   };
 
-  // =========================
-  // TEXTO ESTADO
-  // =========================
-
   const obtenerTextoEstado = (estado) => {
     switch (estado) {
       case "confirmado":
         return "Confirmado";
-
       case "rechazado":
         return "Rechazado";
-
       case "cancelado":
         return "Cancelado";
-
       default:
         return "Pendiente";
     }
@@ -407,7 +289,6 @@ const AdminInscripciones = () => {
     }
 
     const fechaLimpia = String(fecha).split("T")[0];
-
     const partes = fechaLimpia.split("-");
 
     if (partes.length !== 3) {
@@ -415,81 +296,75 @@ const AdminInscripciones = () => {
     }
 
     const [anio, mes, dia] = partes;
-
     return `${dia}/${mes}/${anio}`;
   };
 
   return (
     <div className="container mt-5 mb-5">
-      <div className="col-lg-11 mx-auto">
-        {/* =========================
-                    TÍTULO
-                ========================= */}
+      <div className="col-lg-10 mx-auto">
 
-        <div className="d-flex align-items-center mb-2">
-          <h2 className="me-2">Gestión de Inscripciones</h2>
-
-          <span
-            className="text-primary"
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
             style={{
-              cursor: "pointer",
-              fontSize: "1.2rem",
+              fontSize: "0.9rem",
             }}
-            onClick={() => setShowHelp(true)}
           >
-            ❓
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin")}
+            >
+              Panel de Administrador
+            </span>
+
+            {" > "}
+
+            <span className="text-muted">Inscripciones</span>
+          </nav>
+
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Inscripciones</h3>
+
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
         </div>
 
-        {/* =========================
-                    BREADCRUMB
-                ========================= */}
-
-        <nav
-          className="mb-3"
-          style={{
-            fontSize: "0.9rem",
-          }}
-        >
-          <span
-            className="text-primary"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/panel/admin")}
-          >
-            Panel del Administrador
-          </span>
-
-          {" > "}
-
-          <span className="text-muted">Inscripciones</span>
-        </nav>
-
-        {/* =========================
-                    VOLVER
-                ========================= */}
-
+        {/* Volver */}
         <button
           type="button"
           className="btn btn-dark mb-3"
           onClick={() => navigate("/panel/admin")}
         >
-          ← Regresar al panel
+          ← Volver
         </button>
 
-        {/* =========================
-                    MENSAJE
-                ========================= */}
-
+        {/* MENSAJE */}
         {mensaje && (
           <div className={`alert alert-${tipoMensaje}`}>{mensaje}</div>
         )}
 
-        {/* =========================
-                    TABLA
-                ========================= */}
-
+        {/* TABLA */}
         <div className="card shadow-sm">
           <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center gap-3 flex-wrap">
             <strong>Inscripciones recibidas</strong>
@@ -519,13 +394,9 @@ const AdminInscripciones = () => {
                     <thead>
                       <tr>
                         <th>Equipo</th>
-
                         <th>Torneo</th>
-
                         <th>Categoría</th>
-
                         <th>Estado</th>
-
                         <th>Acciones</th>
                       </tr>
                     </thead>
@@ -596,7 +467,6 @@ const AdminInscripciones = () => {
                 </div>
 
                 {/* PAGINACIÓN */}
-
                 {totalPaginas > 1 && (
                   <div className="d-flex justify-content-center align-items-center gap-3 mt-3">
                     <button
@@ -627,10 +497,7 @@ const AdminInscripciones = () => {
           </div>
         </div>
 
-        {/* =====================================================
-                    MODAL CONFIRMAR
-                ===================================================== */}
-
+        {/* MODAL CONFIRMAR */}
         {inscripcionSeleccionada && accionSeleccionada === "confirmar" && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -701,7 +568,6 @@ const AdminInscripciones = () => {
               </div>
 
               {/* BOTONES */}
-
               <div className="border-top p-3 d-flex justify-content-end gap-2">
                 <button
                   type="button"
@@ -725,10 +591,7 @@ const AdminInscripciones = () => {
           </div>
         )}
 
-        {/* =====================================================
-                    MODAL RECHAZAR
-                ===================================================== */}
-
+        {/* MODAL RECHAZAR */}
         {inscripcionSeleccionada && accionSeleccionada === "rechazar" && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -747,7 +610,6 @@ const AdminInscripciones = () => {
               }}
             >
               {/* CABECERA */}
-
               <div className="p-4 pb-2">
                 <div className="text-center">
                   <div
@@ -779,7 +641,6 @@ const AdminInscripciones = () => {
               </div>
 
               {/* MOTIVO */}
-
               <div className="px-4 pb-4">
                 <label className="form-label fw-semibold">
                   Motivo del rechazo
@@ -852,10 +713,7 @@ const AdminInscripciones = () => {
           </div>
         )}
 
-        {/* =====================================================
-                    MODAL AYUDA
-                ===================================================== */}
-
+        {/* MODAL AYUDA */}
         {showHelp && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -906,10 +764,7 @@ const AdminInscripciones = () => {
           </div>
         )}
 
-        {/* =====================================================
-    MODAL PLANTEL HISTÓRICO
-===================================================== */}
-
+        {/* MODAL PLANTEL HISTÓRICO */}
         {inscripcionPlantel && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -928,10 +783,7 @@ const AdminInscripciones = () => {
                 overflowY: "auto",
               }}
             >
-              {/* =========================
-                    CABECERA
-                ========================= */}
-
+              {/* CABECERA */}
               <div className="p-4 border-bottom">
                 <div className="d-flex justify-content-between align-items-start gap-3">
                   <div>
@@ -950,13 +802,10 @@ const AdminInscripciones = () => {
                 </div>
               </div>
 
-              {/* =========================
-                    CONTENIDO
-                ========================= */}
-
+              {/* CONTENIDO */}
               <div className="p-4">
-                {/* CARGANDO */}
 
+                {/* CARGANDO */}
                 {cargandoPlantel && (
                   <div className="text-center py-5">
                     <div className="spinner-border" role="status" />
@@ -966,17 +815,14 @@ const AdminInscripciones = () => {
                 )}
 
                 {/* ERROR */}
-
                 {!cargandoPlantel && errorPlantel && (
                   <div className="alert alert-danger mb-0">{errorPlantel}</div>
                 )}
 
                 {/* DETALLE */}
-
                 {!cargandoPlantel && !errorPlantel && detallePlantel && (
                   <>
                     {/* DATOS COMPETENCIA */}
-
                     <div className="card bg-light border mb-4">
                       <div className="card-body">
                         <div className="row g-3">
@@ -991,7 +837,6 @@ const AdminInscripciones = () => {
                           </div>
 
                           {/* INSCRIPCIÓN */}
-
                           <div className="col-md-6">
                             <small className="text-muted d-block">
                               Fecha de inscripción
@@ -1003,7 +848,6 @@ const AdminInscripciones = () => {
                           </div>
 
                           {/* TORNEO */}
-
                           <div className="col-md-6">
                             <small className="text-muted d-block">Torneo</small>
 
@@ -1014,7 +858,6 @@ const AdminInscripciones = () => {
                           </div>
 
                           {/* CATEGORÍA */}
-
                           <div className="col-md-6">
                             <small className="text-muted d-block">
                               Categoría
@@ -1027,7 +870,6 @@ const AdminInscripciones = () => {
                           </div>
 
                           {/* REQUISITOS */}
-
                           <div className="col-md-6">
                             <small className="text-muted d-block">
                               Requisitos de edad
@@ -1051,7 +893,6 @@ const AdminInscripciones = () => {
                           </div>
 
                           {/* SEXO */}
-
                           <div className="col-md-6">
                             <small className="text-muted d-block">Sexo</small>
 
@@ -1064,10 +905,7 @@ const AdminInscripciones = () => {
                       </div>
                     </div>
 
-                    {/* =========================
-                                    TOTAL
-                                ========================= */}
-
+                    {/* TOTAL */}
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <h5 className="mb-0">Jugadores</h5>
 
@@ -1078,24 +916,16 @@ const AdminInscripciones = () => {
                       </span>
                     </div>
 
-                    {/* =========================
-                                    TABLA JUGADORES
-                                ========================= */}
-
+                    {/* TABLA JUGADORES */}
                     <div className="table-responsive">
                       <table className="table table-hover align-middle mb-0">
                         <thead>
                           <tr>
                             <th>Dorsal</th>
-
                             <th>Jugador</th>
-
                             <th>DNI</th>
-
                             <th>Nacimiento</th>
-
                             <th>Sexo</th>
-
                             <th>Rol</th>
                           </tr>
                         </thead>
@@ -1103,14 +933,13 @@ const AdminInscripciones = () => {
                         <tbody>
                           {(detallePlantel.jugadores || []).map((jugador) => (
                             <tr key={jugador.id}>
-                              {/* DORSAL */}
 
+                              {/* DORSAL */}
                               <td>
                                 <strong>#{jugador.dorsal}</strong>
                               </td>
 
                               {/* NOMBRE */}
-
                               <td>
                                 <strong>
                                   {jugador.nombre} {jugador.apellido}
@@ -1118,23 +947,19 @@ const AdminInscripciones = () => {
                               </td>
 
                               {/* DNI */}
-
                               <td>{jugador.dni}</td>
 
                               {/* NACIMIENTO */}
-
                               <td>
                                 {formatearFecha(jugador.fecha_nacimiento)}
                               </td>
 
                               {/* SEXO */}
-
                               <td className="text-capitalize">
                                 {jugador.sexo || "-"}
                               </td>
 
                               {/* ROL */}
-
                               <td>
                                 {jugador.es_delegado ? (
                                   <span className="badge bg-primary">
@@ -1162,10 +987,7 @@ const AdminInscripciones = () => {
                 )}
               </div>
 
-              {/* =========================
-                    PIE
-                ========================= */}
-
+              {/* PIE */}
               <div className="border-top p-3 d-flex justify-content-end">
                 <button
                   type="button"

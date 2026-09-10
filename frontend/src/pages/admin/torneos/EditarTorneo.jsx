@@ -2,389 +2,324 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditarTorneo = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const [showHelp, setShowHelp] = useState(false);
+  const [mostrarModalBloqueado, setMostrarModalBloqueado] = useState(false);
+  const [error, setError] = useState("");
 
-    const [showHelp, setShowHelp] = useState(false);
-    const [mostrarModalBloqueado, setMostrarModalBloqueado] = useState(false);
-    const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    nombre: "",
+    fechaInicio: "",
+    cierreInscripcion: "",
+    fechaFin: "",
+  });
 
-    const [formData, setFormData] = useState({
-        nombre: "",
-        fechaInicio: "",
-        cierreInscripcion: "",
-        fechaFin: ""
+  useEffect(() => {
+    obtenerTorneo();
+  }, []);
+
+  const obtenerTorneo = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/v1/torneos/${id}`,
+      );
+      const data = await response.json();
+      setFormData({
+        nombre: data.nombre || "",
+        fechaInicio: data.fecha_inicio || "",
+        fechaFin: data.fecha_fin || "",
+        cierreInscripcion: data.fecha_cierre_inscripcion || "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    useEffect(() => {
-        obtenerTorneo();
-    }, []);
+  const validateForm = () => {
+    if (!formData.nombre.trim()) {
+      return "El nombre del torneo es obligatorio.";
+    }
 
-    const obtenerTorneo = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/v1/torneos/${id}`);
-            const data = await response.json();
-            setFormData({
-                nombre: data.nombre || "",
-                fechaInicio: data.fecha_inicio || "",
-                fechaFin: data.fecha_fin || "",
-                cierreInscripcion: data.fecha_cierre_inscripcion || ""
-            });
+    if (!formData.fechaInicio || !formData.fechaFin) {
+      return "Debes ingresar fecha de inicio y fecha fin.";
+    }
 
-        } catch (error) {
-            console.error(error);
+    if (formData.fechaInicio > formData.fechaFin) {
+      return "La fecha de inicio no puede ser posterior a la fecha fin.";
+    }
+
+    if (formData.cierreInscripcion) {
+      if (formData.cierreInscripcion >= formData.fechaInicio) {
+        return "El cierre de inscripción debe ser anterior a la fecha de inicio.";
+      }
+    }
+
+    return "";
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    const validationError = validateForm();
+
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setError("");
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:3000/api/v1/torneos/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            nombre: formData.nombre,
+            fecha_inicio: formData.fechaInicio,
+            fecha_fin: formData.fechaFin,
+            fecha_cierre_inscripcion: formData.cierreInscripcion,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.code === "TORNEO_CON_FIXTURE") {
+          setMostrarModalBloqueado(true);
+          return;
         }
-    };
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+        setError(data.message || "Error al actualizar torneo");
+        return;
+      }
 
-    const validateForm = () => {
+      navigate("/panel/admin/torneos");
+    } catch (error) {
+      console.error(error);
+      setError("Error al actualizar torneo");
+    }
+  };
 
-        if (!formData.nombre.trim()) {
-            return "El nombre del torneo es obligatorio.";
-        }
+  return (
+    <div className="container mt-5 mb-5">
+      <div className="col-md-10 mx-auto">
+        
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
+            style={{
+              fontSize: "0.9rem",
+            }}
+          >
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin")}
+            >
+              Panel de Administrador
+            </span>
 
-        if (!formData.fechaInicio || !formData.fechaFin) {
-            return "Debes ingresar fecha de inicio y fecha fin.";
-        }
+            {" > "}
 
-        if (formData.fechaInicio > formData.fechaFin) {
-            return "La fecha de inicio no puede ser posterior a la fecha fin.";
-        }
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin/torneos")}
+            >
+              Torneos
+            </span>
 
-        if (formData.cierreInscripcion) {
-            if (formData.cierreInscripcion >= formData.fechaInicio) {
-                return "El cierre de inscripción debe ser anterior a la fecha de inicio.";
-            }
-        }
+            {" > "}
 
-        return "";
-    };
+            <span className="text-muted">Editar Torneo</span>
+          </nav>
 
-    const handleUpdate = async (e) => {
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Editar Torneo</h3>
 
-        e.preventDefault();
-        const validationError = validateForm();
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
+        </div>
 
-        if (validationError) {
-            setError(validationError);
-            return;
-        }
+        <button
+          className="btn btn-dark mb-3"
+          onClick={() => navigate("/panel/admin/torneos")}
+        >
+          ← Volver
+        </button>
 
-        setError("");
+        <div className="card shadow-sm">
+          <div className="card-header bg-dark">
+            <strong className="text-white">Formulario de edición</strong>
+          </div>
 
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:3000/api/v1/torneos/${id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        nombre: formData.nombre,
-                        fecha_inicio: formData.fechaInicio,
-                        fecha_fin: formData.fechaFin,
-                        fecha_cierre_inscripcion: formData.cierreInscripcion
-                    })
-                }
-            );
+          <div className="card-body p-3">
+            {error && <div className="alert alert-danger mb-3">{error}</div>}
 
-            const data = await response.json();
+            <form onSubmit={handleUpdate}>
+              <div className="mb-2">
+                <label className="form-label">Nombre</label>
 
-            if (!response.ok) {
-                if (data.code === "TORNEO_CON_FIXTURE") {
-                    setMostrarModalBloqueado(true);
-                    return;
-                }
+                <input
+                  type="text"
+                  name="nombre"
+                  className="form-control"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                />
+              </div>
 
-                setError(data.message || "Error al actualizar torneo");
-                return;
-            }
+              <div className="mb-2">
+                <label className="form-label">Cierre de inscripción</label>
 
-            navigate("/panel/admin/torneos");
+                <input
+                  type="date"
+                  name="cierreInscripcion"
+                  className="form-control"
+                  value={formData.cierreInscripcion}
+                  onChange={handleChange}
+                />
+              </div>
 
-        } catch (error) {
-            console.error(error);
-            setError("Error al actualizar torneo");
-        }
-    };
+              <div className="mb-2">
+                <label className="form-label">Fecha inicio</label>
 
-    return (
-        <div className="container mt-5 mb-5">
-            <div className="col-md-10 mx-auto">
-                <div className="d-flex align-items-center mb-2">
-                    <h2 className="me-2">
-                        Editar Torneo
-                    </h2>
-                    <span
-                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                        className="text-primary"
-                        onClick={() =>
-                            setShowHelp(true)
-                        }
-                        title="Ayuda"
-                    >
-                        ❓
-                    </span>
+                <input
+                  type="date"
+                  name="fechaInicio"
+                  className="form-control"
+                  value={formData.fechaInicio}
+                  onChange={handleChange}
+                />
+              </div>
 
-                </div>
+              <div className="mb-2">
+                <label className="form-label">Fecha fin</label>
 
-                <nav
-                    className="mb-3"
-                    style={{
-                        fontSize: "0.9rem"
-                    }}
-                >
+                <input
+                  type="date"
+                  name="fechaFin"
+                  className="form-control"
+                  value={formData.fechaFin}
+                  onChange={handleChange}
+                />
+              </div>
 
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer"
-                        }}
-                        onClick={() =>
-                            navigate(
-                                "/panel/admin"
-                            )
-                        }
-                    >
-                        Panel del Administrador
-                    </span>
+              <button type="submit" className="btn btn-primary mt-2">
+                Guardar cambios
+              </button>
+            </form>
+          </div>
+        </div>
 
-                    {" > "}
-
-                    <span
-                        className="text-primary"
-                        style={{
-                            cursor: "pointer"
-                        }}
-                        onClick={() =>
-                            navigate(
-                                "/panel/admin/torneos"
-                            )
-                        }
-                    >
-                        Torneos
-                    </span>
-
-                    {" > "}
-
-                    <span className="text-muted">
-                        Editar Torneo
-                    </span>
-
-                </nav>
+        {showHelp && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+            }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow"
+              style={{
+                maxWidth: "500px",
+              }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5>¿Cómo funciona este apartado?</h5>
 
                 <button
-                    className="btn btn-dark mb-3"
-                    onClick={() =>
-                        navigate(-1)
-                    }
-                >
-                    ← Regresar a gestion de torneos
-                </button>
+                  className="btn-close"
+                  onClick={() => setShowHelp(false)}
+                />
+              </div>
 
-                <div className="card shadow-sm">
-
-                    <div className="card-header bg-dark">
-
-                        <strong className="text-white">
-                            Formulario de edición
-                        </strong>
-
-                    </div>
-
-                    <div className="card-body p-3">
-
-                        {
-                            error &&
-                            <div className="alert alert-danger mb-3">
-                                {error}
-                            </div>
-                        }
-
-                        <form onSubmit={handleUpdate}>
-
-                            <div className="mb-2">
-
-                                <label className="form-label">
-                                    Nombre
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="nombre"
-                                    className="form-control"
-                                    value={formData.nombre}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-
-                            <div className="mb-2">
-
-                                <label className="form-label">
-                                    Cierre de inscripción
-                                </label>
-
-                                <input
-                                    type="date"
-                                    name="cierreInscripcion"
-                                    className="form-control"
-                                    value={formData.cierreInscripcion}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-
-                            <div className="mb-2">
-
-                                <label className="form-label">
-                                    Fecha inicio
-                                </label>
-
-                                <input
-                                    type="date"
-                                    name="fechaInicio"
-                                    className="form-control"
-                                    value={formData.fechaInicio}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-
-                            <div className="mb-2">
-
-                                <label className="form-label">
-                                    Fecha fin
-                                </label>
-
-                                <input
-                                    type="date"
-                                    name="fechaFin"
-                                    className="form-control"
-                                    value={formData.fechaFin}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn btn-primary mt-2"
-                            >
-                                Guardar cambios
-                            </button>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-                {
-                    showHelp && (
-                        <div
-                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                            style={{
-                                backgroundColor:
-                                    "rgba(0,0,0,0.5)"
-                            }}
-                        >
-
-                            <div
-                                className="bg-white p-4 rounded shadow"
-                                style={{
-                                    maxWidth: "500px"
-                                }}
-                            >
-
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-
-                                    <h5>
-                                        ¿Cómo funciona este apartado?
-                                    </h5>
-
-                                    <button
-                                        className="btn-close"
-                                        onClick={() =>
-                                            setShowHelp(false)
-                                        }
-                                    />
-
-                                </div>
-
-                                <p>
-                                    En este apartado podés modificar los datos de un torneo existente. Una vez realizados los cambios, presioná el botón <strong>Guardar cambios</strong>.
-                                </p>
-
-                            </div>
-
-                        </div>
-                    )
-                }
-
-                {/* Modal Advertencia Fixture Generado */}
-                {
-                    mostrarModalBloqueado && (
-                        <div
-                            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                            style={{
-                                backgroundColor: "rgba(0,0,0,0.5)",
-                                zIndex: 1050
-                            }}
-                        >
-
-                            <div
-                                className="bg-white p-4 rounded shadow text-center"
-                                style={{
-                                    width: "90%",
-                                    maxWidth: "450px"
-                                }}
-                            >
-
-                                <div
-                                    className="text-warning mb-3"
-                                    style={{ fontSize: "3rem" }}
-                                >
-                                    ⚠
-                                </div>
-
-                                <h4>
-                                    Edición no disponible
-                                </h4>
-
-                                <p className="text-muted">
-                                    No es posible editar este torneo porque
-                                    al menos una de sus competencias ya tiene
-                                    un fixture generado.
-                                </p>
-
-                                <button
-                                    type="button"
-                                    className="btn btn-dark"
-                                    onClick={() =>
-                                        setMostrarModalBloqueado(false)
-                                    }
-                                >
-                                    Aceptar
-                                </button>
-                            </div>
-                        </div>
-                    )
-                }
+              <p>
+                En este apartado podés modificar los datos de un torneo
+                existente. Una vez realizados los cambios, presioná el botón{" "}
+                <strong>Guardar cambios</strong>.
+              </p>
             </div>
+          </div>
+        )}
 
-        </div>
-    );
+        {/* Modal Advertencia Fixture Generado */}
+        {mostrarModalBloqueado && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 1050,
+            }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow text-center"
+              style={{
+                width: "90%",
+                maxWidth: "450px",
+              }}
+            >
+              <div className="text-warning mb-3" style={{ fontSize: "3rem" }}>
+                ⚠
+              </div>
 
+              <h4>Edición no disponible</h4>
+
+              <p className="text-muted">
+                No es posible editar este torneo porque al menos una de sus
+                competencias ya tiene un fixture generado.
+              </p>
+
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={() => setMostrarModalBloqueado(false)}
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default EditarTorneo;

@@ -5,13 +5,9 @@ const AdminTorneoCategorias = () => {
   const navigate = useNavigate();
 
   const [showHelp, setShowHelp] = useState(false);
-
   const [torneoCategorias, setTorneoCategorias] = useState([]);
-
   const [busqueda, setBusqueda] = useState("");
-
   const [mensaje, setMensaje] = useState("");
-
   const [cargando, setCargando] = useState(true);
 
   // =========================
@@ -57,13 +53,9 @@ const AdminTorneoCategorias = () => {
 
   const torneoCategoriasFiltradas = torneoCategorias.filter((tc) => {
     const texto = busqueda.trim().toLowerCase();
-
     const nombreTorneo = tc.torneo?.nombre?.toLowerCase() || "";
-
     const nombreCategoria = tc.categoria?.nombre?.toLowerCase() || "";
-
     const formato = tc.formato_competencia?.toLowerCase() || "";
-
     const estado = tc.estado_competencia?.toLowerCase() || "";
 
     return (
@@ -82,13 +74,10 @@ const AdminTorneoCategorias = () => {
     switch (formato) {
       case "solo_liga":
         return "Solo Liga";
-
       case "playoff_4":
         return "Liga + Playoff Top 4";
-
       case "playoff_8":
         return "Liga + Playoff Top 8";
-
       default:
         return "-";
     }
@@ -102,14 +91,11 @@ const AdminTorneoCategorias = () => {
     switch (estado) {
       case "configuracion":
         return <span className="badge bg-secondary">En Configuración</span>;
-
       case "en_curso":
         return <span className="badge bg-success">En Curso</span>;
-
       case "finalizada":
       case "finalizado":
         return <span className="badge bg-dark">Finalizado</span>;
-
       default:
         return (
           <span className="badge bg-secondary">{estado || "Sin estado"}</span>
@@ -138,62 +124,62 @@ const AdminTorneoCategorias = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-        {/* =========================
-                    TÍTULO
-                ========================= */}
 
-        <div className="d-flex align-items-center mb-2">
-          <h2 className="me-2 mb-0">Competencias</h2>
-
-          <span
-            className="text-primary"
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
             style={{
-              cursor: "pointer",
-              fontSize: "1.2rem",
+              fontSize: "0.9rem",
             }}
-            title="Ayuda"
-            onClick={() => setShowHelp(true)}
           >
-            ❓
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin")}
+            >
+              Panel de Administrador
+            </span>
+
+            {" > "}
+
+            <span className="text-muted">Competencias</span>
+          </nav>
+
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Competencias</h3>
+
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
         </div>
 
-        {/* =========================
-                    BREADCRUMB
-                ========================= */}
-
-        <nav
-          className="mb-3"
-          style={{
-            fontSize: "0.9rem",
-          }}
-        >
-          <span
-            className="text-primary"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/panel/admin")}
-          >
-            Panel del Administrador
-          </span>
-
-          {" > "}
-
-          <span className="text-muted">Competencias</span>
-        </nav>
-
-        {/* =========================
-                    BOTONES SUPERIORES
-                ========================= */}
-
+        {/* Volver */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <button
             type="button"
             className="btn btn-dark"
             onClick={() => navigate("/panel/admin")}
           >
-            ← Regresar al panel
+            ← Volver
           </button>
 
           <button
@@ -349,10 +335,7 @@ const AdminTorneoCategorias = () => {
           </div>
         </div>
 
-        {/* =========================
-                    MODAL AYUDA
-                ========================= */}
-
+        {/* MODAL AYUDA */}
         {showHelp && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"

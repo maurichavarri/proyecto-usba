@@ -25,17 +25,13 @@ const MisEquipos = () => {
           },
         },
       );
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.message || "Error al obtener los equipos.");
       }
-
       setEquipos(data);
     } catch (error) {
       console.error(error);
-
       setMensaje(error.message);
     }
   };
@@ -123,7 +119,6 @@ const MisEquipos = () => {
         <div className="card shadow-sm">
           <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center gap-3 flex-wrap">
             <strong>Equipos</strong>
-
             <input
               type="text"
               className="form-control w-auto"
@@ -160,7 +155,6 @@ const MisEquipos = () => {
                       <tr key={equipo.id}>
                         <td>
                           <strong>{equipo.nombre}</strong>
-
                           {equipo.descripcion && (
                             <>
                               <br />
@@ -171,19 +165,15 @@ const MisEquipos = () => {
                             </>
                           )}
                         </td>
-
                         <td>{equipo.creado_en || "-"}</td>
-
                         <td>
                           <strong>{equipo.cantidad_jugadores ?? 0}</strong>
 
                           {" / 12"}
                         </td>
-
                         <td>{equipo.cantidad_competencias ?? 0}</td>
-
                         <td>
-                          <div className="d-flex gap-2 flex-wrap">
+                          <div className="d-flex gap-2">
                             <Link
                               to={`/panel/delegado/equipos/${equipo.id}/jugadores`}
                               className="btn btn-dark btn-sm"
@@ -193,7 +183,7 @@ const MisEquipos = () => {
 
                             <Link
                               to={`/panel/delegado/equipos/${equipo.id}/historial`}
-                              className="btn btn-outline-secondary btn-sm"
+                              className="btn btn-secondary btn-sm"
                             >
                               Historial
                             </Link>
@@ -209,7 +199,6 @@ const MisEquipos = () => {
         </div>
 
         {/* MODAL AYUDA */}
-
         {showHelp && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
@@ -228,36 +217,19 @@ const MisEquipos = () => {
             >
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">¿Cómo funciona este apartado?</h5>
-
                 <button
                   type="button"
                   className="btn-close"
                   onClick={() => setShowHelp(false)}
                 />
               </div>
-
               <p>
                 Desde esta sección podés consultar y administrar tus equipos.
               </p>
-
               <p>
                 Cada equipo conserva su identidad a lo largo del tiempo y podrá
                 participar en distintas competencias.
               </p>
-
-              <ul className="mb-0">
-                <li>No podés crear dos equipos con el mismo nombre.</li>
-
-                <li>
-                  El plantel puede modificarse cuando el equipo no se encuentra
-                  comprometido en una inscripción.
-                </li>
-
-                <li>
-                  Las participaciones del equipo se conservarán como parte de su
-                  historial.
-                </li>
-              </ul>
             </div>
           </div>
         )}

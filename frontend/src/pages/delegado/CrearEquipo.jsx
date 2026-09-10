@@ -50,7 +50,6 @@ const CrearEquipo = () => {
       setMensaje(errorValidacion);
       return;
     }
-
     try {
       setGuardando(true);
       setMensaje("");
@@ -95,7 +94,7 @@ const CrearEquipo = () => {
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
 
-        {/* BREADCRUMB */}
+        {/* Breadcrumb y Titulo */}
         <div className="mb-3">
           <nav
             className="mb-1"
@@ -154,19 +153,6 @@ const CrearEquipo = () => {
           </div>
         </div>
 
-        {/* MENSAJE */}
-        {mensaje && (
-          <div
-            className={
-              tipoMensaje === "exito"
-                ? "alert alert-success shadow-sm"
-                : "alert alert-danger shadow-sm"
-            }
-          >
-            {mensaje}
-          </div>
-        )}
-
         {/* VOLVER */}
         <div className="d-flex justify-content-between mb-3">
           <button
@@ -181,7 +167,6 @@ const CrearEquipo = () => {
         {/* FORMULARIO */}
         <div className="card border-0 shadow-sm rounded-3 p-4 bg-white">
           <form onSubmit={handleSubmit}>
-
             {/* NOMBRE */}
             <div className="mb-3">
               <label className="form-label fw-semibold text-secondary">
@@ -248,6 +233,19 @@ const CrearEquipo = () => {
               primer jugador utilizando los datos de tu perfil de delegado.
             </div>
 
+            {/* MENSAJE */}
+            {mensaje && (
+              <div
+                className={
+                  tipoMensaje === "exito"
+                    ? "alert alert-success shadow-sm"
+                    : "alert alert-danger shadow-sm"
+                }
+              >
+                {mensaje}
+              </div>
+            )}
+
             {/* BOTONES */}
             <div className="d-flex gap-2">
               <button
@@ -312,6 +310,10 @@ const CrearEquipo = () => {
               <p className="mb-0">
                 Si posteriormente creás otro equipo, también formarás parte
                 obligatoriamente de ese plantel.
+              </p>
+              <br />
+              <p className="mb-0">
+                <b>IMPORTANTE:</b> Una vez creado el equipo <b>NO</b> podrás eliminarlo.
               </p>
             </div>
           </div>

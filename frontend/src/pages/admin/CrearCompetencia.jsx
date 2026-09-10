@@ -4,22 +4,15 @@ import { useNavigate } from "react-router-dom";
 const CrearCompetencia = () => {
   const navigate = useNavigate();
 
+  const [showHelp, setShowHelp] = useState(false);
   const [torneos, setTorneos] = useState([]);
-
   const [categorias, setCategorias] = useState([]);
-
   const [torneoId, setTorneoId] = useState("");
-
   const [categoriaId, setCategoriaId] = useState("");
-
   const [arancel, setArancel] = useState("");
-
   const [formatoCompetencia, setFormatoCompetencia] = useState("solo_liga");
-
   const [mensaje, setMensaje] = useState("");
-
   const [tipoMensaje, setTipoMensaje] = useState("success");
-
   const [guardando, setGuardando] = useState(false);
 
   // =========================
@@ -38,9 +31,7 @@ const CrearCompetencia = () => {
   const obtenerTorneos = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/v1/torneos");
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.message || "Error al obtener los torneos.");
       }
@@ -48,9 +39,7 @@ const CrearCompetencia = () => {
       setTorneos(data);
     } catch (error) {
       console.error(error);
-
       setTipoMensaje("danger");
-
       setMensaje(error.message);
     }
   };
@@ -62,19 +51,14 @@ const CrearCompetencia = () => {
   const obtenerCategorias = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/v1/categorias");
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.message || "Error al obtener las categorías.");
       }
-
       setCategorias(data);
     } catch (error) {
       console.error(error);
-
       setTipoMensaje("danger");
-
       setMensaje(error.message);
     }
   };
@@ -96,20 +80,14 @@ const CrearCompetencia = () => {
         "http://localhost:3000/api/v1/torneo-categorias",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json",
-
             Authorization: `Bearer ${token}`,
           },
-
           body: JSON.stringify({
             torneo_id: torneoId,
-
             categoria_id: categoriaId,
-
             arancel: Number(arancel),
-
             formato_competencia: formatoCompetencia,
           }),
         },
@@ -119,14 +97,10 @@ const CrearCompetencia = () => {
 
       if (!response.ok) {
         setTipoMensaje("danger");
-
         setMensaje(data.message || "No fue posible crear la competencia.");
-
         return;
       }
-
       setTipoMensaje("success");
-
       setMensaje("Competencia creada correctamente.");
 
       // Limpiar formulario
@@ -136,9 +110,7 @@ const CrearCompetencia = () => {
       setFormatoCompetencia("solo_liga");
     } catch (error) {
       console.error(error);
-
       setTipoMensaje("danger");
-
       setMensaje("Ocurrió un error al crear la competencia.");
     } finally {
       setGuardando(false);
@@ -148,89 +120,91 @@ const CrearCompetencia = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-        {/* =========================
-                    BREADCRUMB
-                ========================= */}
 
-        <nav
-          className="mb-2"
-          style={{
-            fontSize: "0.9rem",
-          }}
-        >
-          <span
-            className="text-muted"
+        {/* Breadcrumb y Titulo */}
+        <div className="mb-3">
+          <nav
+            className="mb-1"
             style={{
-              cursor: "pointer",
+              fontSize: "0.9rem",
             }}
-            onClick={() => navigate("/panel/admin")}
           >
-            Panel del Administrador
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin")}
+            >
+              Panel de Administrador
+            </span>
 
-          {" > "}
+            {" > "}
 
-          <span
-            className="text-muted"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={() => navigate("/panel/admin/torneo-categorias")}
-          >
-            Competencias
-          </span>
+            <span
+              className="text-muted"
+              style={{
+                cursor: "pointer",
+              }}
+              onClick={() => navigate("/panel/admin/torneo-categorias")}
+            >
+              Competencias
+            </span>
 
-          {" > "}
+            {" > "}
 
-          <span className="text-muted">Crear Competencia</span>
-        </nav>
+            <span className="text-muted">Crear Competencia</span>
+          </nav>
 
-        {/* =========================
-                    TÍTULO
-                ========================= */}
+          <div className="d-flex align-items-center mb-2">
+            <h3 className="fw-bold me-2 mb-0">Crear Torneo</h3>
 
-        <div className="mb-4">
-          <h2 className="fw-bold mb-1">Crear Competencia</h2>
-
-          <p className="text-muted mb-0">
-            Seleccioná un torneo y una categoría para crear una nueva
-            competencia.
-          </p>
+            <span
+              onClick={() => setShowHelp(true)}
+              style={{
+                cursor: "pointer",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                backgroundColor: "#6c757d",
+                color: "white",
+                fontSize: "1rem",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </span>
+          </div>
         </div>
 
-        {/* =========================
-                    VOLVER
-                ========================= */}
-
+        {/* Volver */}
         <button
           type="button"
           className="btn btn-dark mb-4"
           onClick={() => navigate("/panel/admin/torneo-categorias")}
         >
-          ← Volver a Competencias
+          ← Volver
         </button>
 
-        {/* =========================
-                    FORMULARIO
-                ========================= */}
-
+        {/* FORMULARIO */}
         <div className="card shadow-sm">
           <div className="card-header bg-dark text-white">
-            <strong>Datos de la competencia</strong>
+            <strong>Formulario de creación</strong>
           </div>
 
           <div className="card-body p-4">
-            {/* MENSAJE */}
 
+            {/* MENSAJE */}
             {mensaje && (
               <div className={`alert alert-${tipoMensaje}`}>{mensaje}</div>
             )}
 
             <form onSubmit={handleSubmit}>
-              {/* =========================
-                                TORNEO
-                            ========================= */}
 
+              {/* TORNEO */}
               <div className="mb-3">
                 <label className="form-label fw-semibold">
                   Torneo
@@ -254,10 +228,7 @@ const CrearCompetencia = () => {
                 </select>
               </div>
 
-              {/* =========================
-                                CATEGORÍA
-                            ========================= */}
-
+              {/* CATEGORÍA */}
               <div className="mb-3">
                 <label className="form-label fw-semibold">
                   Categoría
@@ -355,7 +326,15 @@ const CrearCompetencia = () => {
                                 BOTONES
                             ========================= */}
 
-              <div className="d-flex justify-content-end gap-2">
+              <div className="d-flex justify-content gap-2">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={guardando}
+                >
+                  {guardando ? "Creando..." : "Crear Competencia"}
+                </button>
+
                 <button
                   type="button"
                   className="btn btn-secondary"
@@ -364,18 +343,48 @@ const CrearCompetencia = () => {
                 >
                   Cancelar
                 </button>
-
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={guardando}
-                >
-                  {guardando ? "Creando..." : "Crear Competencia"}
-                </button>
               </div>
             </form>
           </div>
         </div>
+
+        {/* MODAL AYUDA */}
+        {showHelp && (
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+            style={{
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 1050,
+              padding: "20px",
+            }}
+          >
+            <div
+              className="bg-white p-4 rounded shadow"
+              style={{
+                maxWidth: "550px",
+                width: "100%",
+              }}
+            >
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">¿Cómo funciona este apartado?</h5>
+
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowHelp(false)}
+                />
+              </div>
+
+              <p>
+                Desde esta sección podés crear una competencia. Esto implica generar
+                una relación torneo-categoría, establecer un arancel que los equipos
+                deberán pagar para poder inscribirse, y por ultimo, el formato de 
+                competencia <br /><br /><b>IMPORTANTE</b>: Una vez creada una COMPETENCIA, 
+                no podrá ser eliminada.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
