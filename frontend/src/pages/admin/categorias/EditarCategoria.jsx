@@ -183,11 +183,11 @@ const EditarCategoria = () => {
 
             {" > "}
 
-            <span className="text-muted">Editar Torneo</span>
+            <span className="text-muted">Editar Categoría</span>
           </nav>
 
           <div className="d-flex align-items-center mb-2">
-            <h3 className="fw-bold me-2 mb-0">Editar Torneo</h3>
+            <h3 className="fw-bold me-2 mb-0">Editar Categoría</h3>
 
             <span
               onClick={() => setShowHelp(true)}
@@ -330,7 +330,7 @@ const EditarCategoria = () => {
 
               {/* BOTÓN */}
 
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary mt-2">
                 Guardar cambios
               </button>
             </form>
@@ -338,7 +338,6 @@ const EditarCategoria = () => {
         </div>
 
         {/* MODAL AYUDA */}
-
         {showHelp && (
           <div
             className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"

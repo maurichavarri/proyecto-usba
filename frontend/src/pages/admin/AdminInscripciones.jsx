@@ -302,7 +302,6 @@ const AdminInscripciones = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-
         {/* Breadcrumb y Titulo */}
         <div className="mb-3">
           <nav
@@ -431,6 +430,16 @@ const AdminInscripciones = () => {
                                 <button
                                   type="button"
                                   className="btn btn-success btn-sm"
+                                  disabled={Boolean(
+                                    inscripcion.torneoCategoria
+                                      ?.fixture_generado,
+                                  )}
+                                  title={
+                                    inscripcion.torneoCategoria
+                                      ?.fixture_generado
+                                      ? "El fixture ya fue generado."
+                                      : ""
+                                  }
                                   onClick={() =>
                                     abrirModalConfirmar(inscripcion)
                                   }
@@ -804,7 +813,6 @@ const AdminInscripciones = () => {
 
               {/* CONTENIDO */}
               <div className="p-4">
-
                 {/* CARGANDO */}
                 {cargandoPlantel && (
                   <div className="text-center py-5">
@@ -933,7 +941,6 @@ const AdminInscripciones = () => {
                         <tbody>
                           {(detallePlantel.jugadores || []).map((jugador) => (
                             <tr key={jugador.id}>
-
                               {/* DORSAL */}
                               <td>
                                 <strong>#{jugador.dorsal}</strong>

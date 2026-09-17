@@ -55,19 +55,20 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
     const { id } = req.params;
     const { estado, motivo_rechazo } = req.body;
 
-    // =========================
+    // =====================================================
     // ESTADO VÁLIDO
-    // =========================
+    // =====================================================
 
     if (estado !== "confirmado" && estado !== "rechazado") {
       return res.status(400).json({
+        code: "ESTADO_INVALIDO",
         message: "Estado inválido.",
       });
     }
 
-    // =========================
+    // =====================================================
     // BUSCAR INSCRIPCIÓN
-    // =========================
+    // =====================================================
 
     const inscripcion = await Inscripcion.findByPk(id);
 
@@ -77,10 +78,9 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
       });
     }
 
-    // =========================
-    // SOLO SE RESUELVEN
-    // INSCRIPCIONES PENDIENTES
-    // =========================
+    // =====================================================
+    // SOLO INSCRIPCIONES PENDIENTES
+    // =====================================================
 
     if (inscripcion.estado !== "pendiente") {
       return res.status(400).json({
@@ -92,11 +92,19 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
     // =====================================================
     // RECHAZAR
     // =====================================================
+    //
+    // IMPORTANTE:
+    // El rechazo sigue permitido aunque el fixture
+    // ya haya sido generado.
+    //
+    // Esto permite desbloquear el equipo que quedó
+    // fuera de la competencia.
+    // =====================================================
 
     if (estado === "rechazado") {
-      // -------------------------
+      // =========================
       // MOTIVO OBLIGATORIO
-      // -------------------------
+      // =========================
 
       if (!motivo_rechazo || !motivo_rechazo.trim()) {
         return res.status(400).json({
@@ -114,13 +122,50 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
         });
       }
 
-      // -------------------------
-      // ACTUALIZAR
-      // -------------------------
+      if (motivo.length > 500) {
+        return res.status(400).json({
+          code: "MOTIVO_INVALIDO",
+          message: "El motivo del rechazo no puede superar los 500 caracteres.",
+        });
+      }
 
-      await inscripcion.update({
-        estado: "rechazado",
-        motivo_rechazo: motivo,
+      // =========================
+      // TRANSACCIÓN DE RECHAZO
+      // =========================
+
+      await sequelize.transaction(async (transaction) => {
+        // Volvemos a leerla bloqueando la fila
+        const inscripcionBloqueada = await Inscripcion.findByPk(id, {
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        });
+
+        if (!inscripcionBloqueada) {
+          const error = new Error("Inscripción no encontrada.");
+          error.code = "INSCRIPCION_NO_ENCONTRADA";
+          throw error;
+        }
+
+        // Evita dos administradores
+        // resolviendo simultáneamente
+
+        if (inscripcionBloqueada.estado !== "pendiente") {
+          const error = new Error("La inscripción ya fue resuelta.");
+          error.code = "INSCRIPCION_YA_RESUELTA";
+          throw error;
+        }
+
+        // RECHAZAR
+
+        await inscripcionBloqueada.update(
+          {
+            estado: "rechazado",
+            motivo_rechazo: motivo,
+          },
+          {
+            transaction,
+          },
+        );
       });
 
       return res.json({
@@ -137,21 +182,12 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
     // CONFIRMAR
     // =====================================================
 
-    // =========================
-    // TORNEO / FECHA CIERRE
-    // =========================
+    // =====================================================
+    // BUSCAR COMPETENCIA
+    // =====================================================
 
     const torneoCategoria = await TorneoCategoria.findByPk(
       inscripcion.torneo_categoria_id,
-      {
-        include: [
-          {
-            model: Torneo,
-            as: "torneo",
-            attributes: ["fecha_inicio", "fecha_cierre_inscripcion"],
-          },
-        ],
-      },
     );
 
     if (!torneoCategoria) {
@@ -160,19 +196,27 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
       });
     }
 
-    const hoy = obtenerFechaActualArgentina();
-    const fechaCierre = torneoCategoria.torneo.fecha_cierre_inscripcion;
+    // =====================================================
+    // IMPEDIR CONFIRMACIÓN SI YA EXISTE FIXTURE
+    // =====================================================
 
-    if (hoy > fechaCierre) {
-      return res.status(400).json({
-        code: "INSCRIPCION_CERRADA",
-        message: "No es posible aceptar. El período de inscripción finalizó.",
+    const partidosExistentes = await Partido.count({
+      where: {
+        torneo_categoria_id: inscripcion.torneo_categoria_id,
+      },
+    });
+
+    if (torneoCategoria.fixture_generado || partidosExistentes > 0) {
+      return res.status(409).json({
+        code: "FIXTURE_YA_GENERADO",
+        message:
+          "No es posible confirmar esta inscripción porque el fixture de la competencia ya fue generado.",
       });
     }
 
-    // =========================
-    // REVALIDAR TODO EL PLANTEL
-    // =========================
+    // =====================================================
+    // REVALIDAR PLANTEL
+    // =====================================================
 
     const validacion = await validarPlantelInscripcion(
       inscripcion.equipo_id,
@@ -189,16 +233,23 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
       });
     }
 
-    // =========================
-    // TRANSACCIÓN:
-    // SNAPSHOT + CONFIRMACIÓN
-    // =========================
+    // =====================================================
+    // TRANSACCIÓN
+    // =====================================================
+    //
+    // Bloqueamos:
+    //
+    // 1. La inscripción
+    // 2. La competencia
+    //
+    // Y volvemos a verificar que el fixture no haya
+    // sido generado mientras se procesaba la solicitud.
+    // =====================================================
 
     await sequelize.transaction(async (transaction) => {
-      // -------------------------
-      // VOLVER A LEER Y BLOQUEAR
-      // INSCRIPCIÓN
-      // -------------------------
+      // =================================================
+      // BLOQUEAR INSCRIPCIÓN
+      // =================================================
 
       const inscripcionBloqueada = await Inscripcion.findByPk(id, {
         transaction,
@@ -206,21 +257,57 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
       });
 
       if (!inscripcionBloqueada) {
-        throw new Error("Inscripción no encontrada.");
+        const error = new Error("Inscripción no encontrada.");
+        error.code = "INSCRIPCION_NO_ENCONTRADA";
+        throw error;
       }
 
-      // Evita doble click o dos
-      // administradores resolviendo
-      // al mismo tiempo
       if (inscripcionBloqueada.estado !== "pendiente") {
         const error = new Error("La inscripción ya fue resuelta.");
         error.code = "INSCRIPCION_YA_RESUELTA";
         throw error;
       }
 
-      // -------------------------
+      // =================================================
+      // BLOQUEAR COMPETENCIA
+      // =================================================
+
+      const competenciaBloqueada = await TorneoCategoria.findByPk(
+        inscripcionBloqueada.torneo_categoria_id,
+        {
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        },
+      );
+
+      if (!competenciaBloqueada) {
+        const error = new Error("Torneo-categoría no encontrado.");
+        error.code = "COMPETENCIA_NO_ENCONTRADA";
+        throw error;
+      }
+
+      // =================================================
+      // VOLVER A COMPROBAR FIXTURE
+      // =================================================
+
+      const cantidadPartidos = await Partido.count({
+        where: {
+          torneo_categoria_id: competenciaBloqueada.id,
+        },
+        transaction,
+      });
+
+      if (competenciaBloqueada.fixture_generado || cantidadPartidos > 0) {
+        const error = new Error(
+          "No es posible confirmar esta inscripción porque el fixture de la competencia ya fue generado.",
+        );
+        error.code = "FIXTURE_YA_GENERADO";
+        throw error;
+      }
+
+      // =================================================
       // CREAR SNAPSHOT HISTÓRICO
-      // -------------------------
+      // =================================================
 
       await crearSnapshotPlantel(
         inscripcionBloqueada.id,
@@ -228,9 +315,9 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
         transaction,
       );
 
-      // -------------------------
+      // =================================================
       // CONFIRMAR
-      // -------------------------
+      // =================================================
 
       await inscripcionBloqueada.update(
         {
@@ -243,14 +330,18 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
       );
     });
 
-    // =========================
+    // =====================================================
     // RESPUESTA
-    // =========================
+    // =====================================================
 
-    res.json({
+    return res.json({
       message: "Inscripción confirmada correctamente.",
     });
   } catch (error) {
+    // =====================================================
+    // INSCRIPCIÓN YA RESUELTA
+    // =====================================================
+
     if (error.code === "INSCRIPCION_YA_RESUELTA") {
       return res.status(400).json({
         code: error.code,
@@ -258,83 +349,39 @@ export const actualizarEstadoInscripcion = async (req, res, next) => {
       });
     }
 
-    next(error);
-  }
-};
+    // =====================================================
+    // FIXTURE YA GENERADO
+    // =====================================================
 
-export const generarFixture = async (req, res, next) => {
-  try {
-    const { torneoCategoriaId } = req.params;
-
-    // Obtener inscripciones confirmadas
-    const inscripciones = await Inscripcion.findAll({
-      where: {
-        torneo_categoria_id: torneoCategoriaId,
-        estado: "confirmado",
-      },
-    });
-
-    // Validar cantidad
-    if (inscripciones.length < 2) {
-      return res.status(400).json({
-        message: "Se necesitan mínimo 2 equipos",
+    if (error.code === "FIXTURE_YA_GENERADO") {
+      return res.status(409).json({
+        code: error.code,
+        message: error.message,
       });
     }
 
-    // Evitar generar duplicados
-    const partidosExistentes = await Partido.count({
-      where: {
-        torneo_categoria_id: torneoCategoriaId,
-      },
-    });
+    // =====================================================
+    // INSCRIPCIÓN NO ENCONTRADA
+    // =====================================================
 
-    if (partidosExistentes > 0) {
-      return res.status(400).json({
-        message: "El fixture ya fue generado",
+    if (error.code === "INSCRIPCION_NO_ENCONTRADA") {
+      return res.status(404).json({
+        code: error.code,
+        message: error.message,
       });
     }
 
-    const partidos = [];
+    // =====================================================
+    // COMPETENCIA NO ENCONTRADA
+    // =====================================================
 
-    // Generar ida/vuelta
-    for (let i = 0; i < inscripciones.length; i++) {
-      for (let j = i + 1; j < inscripciones.length; j++) {
-        const local = inscripciones[i];
-
-        const visitante = inscripciones[j];
-
-        // Ida
-        partidos.push({
-          torneo_categoria_id: torneoCategoriaId,
-
-          inscripcion_local_id: local.id,
-
-          inscripcion_visitante_id: visitante.id,
-
-          estado: "pendiente",
-        });
-
-        // Vuelta
-        partidos.push({
-          torneo_categoria_id: torneoCategoriaId,
-
-          inscripcion_local_id: visitante.id,
-
-          inscripcion_visitante_id: local.id,
-
-          estado: "pendiente",
-        });
-      }
+    if (error.code === "COMPETENCIA_NO_ENCONTRADA") {
+      return res.status(404).json({
+        code: error.code,
+        message: error.message,
+      });
     }
 
-    // Insert masivo
-    await Partido.bulkCreate(partidos);
-
-    res.json({
-      message: "Fixture generado correctamente",
-      partidos_generados: partidos.length,
-    });
-  } catch (error) {
     next(error);
   }
 };

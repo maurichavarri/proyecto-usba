@@ -257,17 +257,11 @@ const AdminTorneoCategorias = () => {
                   <thead>
                     <tr>
                       <th>Torneo</th>
-
                       <th>Categoría</th>
-
                       <th>Equipos</th>
-
                       <th>Formato</th>
-
                       <th>Estado</th>
-
                       <th>Arancel</th>
-
                       <th>Acciones</th>
                     </tr>
                   </thead>
