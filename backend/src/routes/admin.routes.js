@@ -4,7 +4,6 @@ import {
   obtenerInscripcionesAdmin,
   actualizarEstadoInscripcion,
   obtenerPlantelInscripcion,
-  generarFixture,
   obtenerPartidosPorTorneoCategoria,
   actualizarPartido,
 } from "../controllers/admin.controller.js";
@@ -44,13 +43,6 @@ router.get(
 // ========================================================
 // FIXTURE
 // ========================================================
-
-router.post(
-  "/fixture/generar/:torneoCategoriaId",
-  verifyToken,
-  verifyRole("admin"),
-  generarFixture,
-);
 
 router.get(
   "/fixture/:torneoCategoriaId",

@@ -171,7 +171,7 @@ const AdminFixture = () => {
   };
 
   const renderTablaPartidos = (partidos) => (
-    <table className="table table-bordered table-hover">
+    <table className="table table-bordered table-hover align-middle">
       <thead className="table-light">
         <tr>
           <th>Local</th>
@@ -179,47 +179,88 @@ const AdminFixture = () => {
           <th>Resultado</th>
           <th>Sede</th>
           <th>Árbitro</th>
-          <th>Fecha</th>
+          <th>Fecha y hora</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
+
       <tbody>
         {partidos.map((partido) => (
           <tr key={partido.id}>
+            {/* LOCAL */}
             <td>{partido.local?.Equipo?.nombre}</td>
+
+            {/* VISITANTE */}
             <td>{partido.visitante?.Equipo?.nombre}</td>
+
+            {/* RESULTADO */}
             <td>
               {partido.estado === "jugado"
                 ? `${partido.puntaje_local} - ${partido.puntaje_visitante}`
                 : "-"}
             </td>
+
+            {/* SEDE */}
             <td>{partido.sede?.nombre || "Sin asignar"}</td>
+
+            {/* ÁRBITRO */}
             <td>
               {partido.arbitro
                 ? `${partido.arbitro.nombre} ${partido.arbitro.apellido}`
                 : "Sin asignar"}
             </td>
+
+            {/* FECHA Y HORA */}
             <td>
-              {partido.fecha
-                ? new Date(partido.fecha).toLocaleDateString("es-AR")
-                : "-"}
+              {partido.fecha ? (
+                <>
+                  <div>
+                    {new Date(partido.fecha).toLocaleDateString("es-AR")}
+                  </div>
+
+                  <small className="text-muted">
+                    {new Date(partido.fecha).toLocaleTimeString("es-AR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
+                    hs
+                  </small>
+                </>
+              ) : (
+                "-"
+              )}
             </td>
+
+            {/* ESTADO */}
             <td>
               {partido.estado === "pendiente" && (
                 <span className="badge bg-warning text-dark">Pendiente</span>
               )}
+
               {partido.estado === "jugado" && (
                 <span className="badge bg-success">Jugado</span>
               )}
+
               {partido.estado === "suspendido" && (
                 <span className="badge bg-danger">Suspendido</span>
               )}
             </td>
+
+            {/* ACCIONES */}
             <td>
               <Link
                 to={`/panel/admin/partidos/${partido.id}`}
-                className="btn btn-dark btn-sm"
+                className={
+                  partido.estado === "jugado"
+                    ? "btn btn-secondary btn-sm"
+                    : "btn btn-dark btn-sm"
+                }
+                title={
+                  partido.estado === "jugado"
+                    ? "Partido finalizado. Solo lectura."
+                    : "Gestionar partido"
+                }
               >
                 Gestionar
               </Link>
@@ -274,7 +315,6 @@ const AdminFixture = () => {
   return (
     <div className="container mt-5 mb-5">
       <div className="col-lg-10 mx-auto">
-
         {/* Breadcrumb y Titulo */}
         <div className="mb-3">
           <nav
@@ -336,7 +376,10 @@ const AdminFixture = () => {
 
         {/* Botones */}
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <button className="btn btn-dark" onClick={() => navigate("/panel/admin/torneo-categorias/")}>
+          <button
+            className="btn btn-dark"
+            onClick={() => navigate("/panel/admin/torneo-categorias/")}
+          >
             ← Volver
           </button>
 
@@ -543,7 +586,9 @@ const AdminFixture = () => {
         {/* FASE REGULAR */}
         {Object.keys(jornadasRegular).length > 0 && (
           <>
-            <h4 className="mb-3">Fase Regular</h4>
+            <h4 className="mb-3">
+              <b>Fase Regular</b>
+            </h4>
 
             <div className="accordion" id="accordionFixtureRegular">
               {Object.entries(jornadasRegular).map(

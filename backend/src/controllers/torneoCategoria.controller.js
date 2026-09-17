@@ -169,9 +169,7 @@ export const getDetalleAdmin = async (req, res, next) => {
 export const generarFixtureController = async (req, res, next) => {
     try {
         const { id } = req.params;
-
         await generarFixture(id);
-
         res.json({
             message: 'Fixture generado correctamente'
         });
