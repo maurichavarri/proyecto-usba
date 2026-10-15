@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -119,7 +120,7 @@ const Register = () => {
     try {
       setLoading(true);
       setMensaje("");
-      const response = await fetch("http://localhost:3000/api/v1/auth/inscribirse",
+      const response = await fetch(`${API_URL}/api/v1/auth/inscribirse`,
         {
           method: "POST",
           headers: {

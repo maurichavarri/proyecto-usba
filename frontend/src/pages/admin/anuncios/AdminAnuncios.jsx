@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const AdminAnuncios = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const AdminAnuncios = () => {
       setCargando(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/v1/anuncios/admin/todos",
+        `${API_URL}/api/v1/anuncios/admin/todos`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -35,7 +36,7 @@ const AdminAnuncios = () => {
   const cambiarEstado = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:3000/api/v1/anuncios/${id}/estado`, {
+      await fetch(`${API_URL}/api/v1/anuncios/${id}/estado`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -157,7 +158,7 @@ const AdminAnuncios = () => {
                             <td>
                               {anuncio.imagen ? (
                                 <img
-                                  src={`http://localhost:3000${anuncio.imagen}`}
+                                  src={`${API_URL}${anuncio.imagen}`}
                                   alt={anuncio.titulo}
                                   style={{
                                     width: "60px",

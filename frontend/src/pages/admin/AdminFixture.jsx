@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const AdminFixture = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const AdminFixture = () => {
   const obtenerFixture = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneo-categorias/${id}/fixture`,
+        `${API_URL}/api/v1/torneo-categorias/${id}/fixture`,
       );
       const data = await response.json();
       setFixture(data);
@@ -41,7 +42,7 @@ const AdminFixture = () => {
   const obtenerTabla = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneo-categorias/${id}/tabla`,
+        `${API_URL}/api/v1/torneo-categorias/${id}/tabla`,
       );
       const data = await response.json();
       setTabla(data);
@@ -54,7 +55,7 @@ const AdminFixture = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneo-categorias/${id}/fixture`,
+        `${API_URL}/api/v1/torneo-categorias/${id}/fixture`,
         {
           method: "POST",
           headers: {
@@ -82,7 +83,7 @@ const AdminFixture = () => {
   const obtenerResumen = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneo-categorias/${id}/resumen`,
+        `${API_URL}/api/v1/torneo-categorias/${id}/resumen`,
       );
       const data = await response.json();
       setResumen(data);
@@ -95,7 +96,7 @@ const AdminFixture = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/admin/torneo-categorias/${id}`,
+        `${API_URL}/api/v1/admin/torneo-categorias/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -116,7 +117,7 @@ const AdminFixture = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneo-categorias/${id}/playoffs`,
+        `${API_URL}/api/v1/torneo-categorias/${id}/playoffs`,
         {
           method: "POST",
           headers: {
@@ -144,7 +145,7 @@ const AdminFixture = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneo-categorias/${id}/finalizar`,
+        `${API_URL}/api/v1/torneo-categorias/${id}/finalizar`,
         {
           method: "PATCH",
           headers: {

@@ -3,6 +3,7 @@ import { useFetch } from "../hooks/useFetch";
 import Carrusel from "../components/Carrusel";
 import Bienvenida from "../components/Bienvenida";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 const colores = {
   fondo: "#0a0a0a",
@@ -17,7 +18,7 @@ const colores = {
 
 const Home = () => {
   const { data: anuncios = [] } = useFetch(
-    "http://localhost:3000/api/v1/anuncios",
+    `${API_URL}/api/v1/anuncios`,
   );
 
   const [imagenesCarrusel, setImagenesCarrusel] = useState(null);
@@ -25,7 +26,7 @@ const Home = () => {
   useEffect(() => {
     const cargar = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/carrusel");
+        const res = await fetch(`${API_URL}/api/v1/carrusel`);
 
         if (!res.ok) {
           throw new Error();
@@ -36,7 +37,7 @@ const Home = () => {
         const imagenes = Array.isArray(data) ? data : [];
 
         setImagenesCarrusel(
-          imagenes.map((img) => `http://localhost:3000${img.url}`),
+          imagenes.map((img) => `${API_URL}${img.url}`),
         );
       } catch {
         setImagenesCarrusel([]);
@@ -324,7 +325,7 @@ const Home = () => {
                       >
                         {anuncio.imagen ? (
                           <img
-                            src={`http://localhost:3000${anuncio.imagen}`}
+                            src={`${API_URL}${anuncio.imagen}`}
                             alt={anuncio.titulo}
                             style={{
                               width: "100%",

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const EditarAnuncio = () => {
   const { id } = useParams();
@@ -23,7 +24,7 @@ const EditarAnuncio = () => {
   const obtenerAnuncio = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/anuncios/${id}`,
+        `${API_URL}/api/v1/anuncios/${id}`,
       );
       const data = await response.json();
 
@@ -75,7 +76,7 @@ const EditarAnuncio = () => {
       }
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/anuncios/${id}`,
+        `${API_URL}/api/v1/anuncios/${id}`,
         {
           method: "PUT",
           headers: {
@@ -103,7 +104,7 @@ const EditarAnuncio = () => {
   };
 
   const imagenMostrada =
-    preview || (imagenActual ? `http://localhost:3000${imagenActual}` : null);
+    preview || (imagenActual ? `${API_URL}${imagenActual}` : null);
 
   return (
     <div className="container mt-5 mb-5">

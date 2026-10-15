@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 const Login = () => {
     const [correo, setCorreo] = useState("");
@@ -13,7 +14,7 @@ const Login = () => {
         setLoading(true);
         setMensaje("");
         try {
-            const response = await fetch("http://localhost:3000/api/v1/auth/ingresar", {
+            const response = await fetch(`${API_URL}/api/v1/auth/ingresar`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ correo, contraseña }),

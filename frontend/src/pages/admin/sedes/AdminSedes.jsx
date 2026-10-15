@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const AdminSedes = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const AdminSedes = () => {
 
   const obtenerSedes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/sedes");
+      const response = await fetch(`${API_URL}/api/v1/sedes`);
       const data = await response.json();
       setSedes(data);
     } catch (error) {

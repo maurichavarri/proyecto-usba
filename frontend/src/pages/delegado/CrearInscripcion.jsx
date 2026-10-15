@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const CrearInscripcion = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const CrearInscripcion = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/delegado/equipos",
+        `${API_URL}/api/v1/delegado/equipos`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,7 +74,7 @@ const CrearInscripcion = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/torneo-categorias/disponibles",
+        `${API_URL}/api/v1/torneo-categorias/disponibles`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -129,7 +130,7 @@ const CrearInscripcion = () => {
     try {
       setEnviando(true);
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/v1/delegado/inscripciones",
+      const response = await fetch(`${API_URL}/api/v1/delegado/inscripciones`,
         {
           method: "POST",
           headers: {

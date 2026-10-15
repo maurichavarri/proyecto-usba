@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const AdminCarrusel = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const AdminCarrusel = () => {
   const [mensaje, setMensaje] = useState(null); // { texto, tipo }
   const [showHelp, setShowHelp] = useState(false);
 
-  const API_URL = "http://localhost:3000/api/v1/carrusel";
+  const API_URL = `${API_URL}/api/v1/carrusel`;
   const token = localStorage.getItem("token");
 
   const mostrarMensaje = (texto, tipo = "success") => {
@@ -319,7 +320,7 @@ const AdminCarrusel = () => {
                 <div className="col-md-4" key={img.id}>
                   <div className="card h-100 shadow-sm">
                     <img
-                      src={`http://localhost:3000${img.url}`}
+                      src={`${API_URL}${img.url}`}
                       className="card-img-top"
                       alt="Vista carrusel"
                       style={{ height: "200px", objectFit: "cover" }}

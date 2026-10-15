@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const CrearCompetencia = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const CrearCompetencia = () => {
 
   const obtenerTorneos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/torneos");
+      const response = await fetch(`${API_URL}/api/v1/torneos`);
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Error al obtener los torneos.");
@@ -50,7 +51,7 @@ const CrearCompetencia = () => {
 
   const obtenerCategorias = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/categorias");
+      const response = await fetch(`${API_URL}/api/v1/categorias`);
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Error al obtener las categorías.");
@@ -77,7 +78,7 @@ const CrearCompetencia = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/torneo-categorias",
+        `${API_URL}/api/v1/torneo-categorias`,
         {
           method: "POST",
           headers: {

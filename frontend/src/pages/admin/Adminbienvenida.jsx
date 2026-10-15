@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const AdminBienvenida = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const AdminBienvenida = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/v1/bienvenida")
+    fetch(`${API_URL}/api/v1/bienvenida`)
       .then((r) => r.json())
       .then((data) => {
         setTitulo(data.titulo || "");
@@ -45,7 +46,7 @@ const AdminBienvenida = () => {
       formData.append("texto", texto);
       if (nuevaImagen) formData.append("imagen", nuevaImagen);
 
-      const res = await fetch("http://localhost:3000/api/v1/bienvenida", {
+      const res = await fetch(`${API_URL}/api/v1/bienvenida`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -72,7 +73,7 @@ const AdminBienvenida = () => {
   };
 
   const imagenMostrada =
-    preview || (imagenActual ? `http://localhost:3000${imagenActual}` : null);
+    preview || (imagenActual ? `${API_URL}${imagenActual}` : null);
 
   return (
     <div className="container mt-5 mb-5">

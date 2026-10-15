@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 const DEFAULTS = {
   titulo: "Bienvenido a la USBA",
@@ -13,7 +14,7 @@ const Bienvenida = () => {
   useEffect(() => {
     const cargar = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/bienvenida");
+        const res = await fetch(`${API_URL}/api/v1/bienvenida`);
         if (res.ok) {
           const data = await res.json();
           setContenido({
@@ -45,7 +46,7 @@ const Bienvenida = () => {
             <div style={{ position: "relative" }}>
               {contenido.imagen ? (
                 <img
-                  src={`http://localhost:3000${contenido.imagen}`}
+                  src={`${API_URL}${contenido.imagen}`}
                   alt="Bienvenida USBA"
                   style={{
                     width: "100%",

@@ -25,7 +25,7 @@ const FormularioSede = () => {
     const obtenerSede = async () => {
 
         const response = await fetch(
-            `http://localhost:3000/api/v1/sedes/${id}`
+            `${API_URL}/api/v1/sedes/${id}`
         );
 
         const data = await response.json();
@@ -51,8 +51,8 @@ const FormularioSede = () => {
         await fetch(
 
             editando
-                ? `http://localhost:3000/api/v1/sedes/${id}`
-                : "http://localhost:3000/api/v1/sedes",
+                ? `${API_URL}/api/v1/sedes/${id}`
+                : `${API_URL}/api/v1/sedes`,
 
             {
                 method:

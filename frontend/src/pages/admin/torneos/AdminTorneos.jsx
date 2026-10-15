@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../../config";
 import {
   formatearFecha,
   obtenerFechaActual,
@@ -24,7 +25,7 @@ const AdminTorneos = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/v1/torneos/admin/todos",
+        `${API_URL}/api/v1/torneos/admin/todos`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -39,7 +40,7 @@ const AdminTorneos = () => {
   const cambiarEstado = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:3000/api/v1/torneos/${id}/estado`, {
+      await fetch(`${API_URL}/api/v1/torneos/${id}/estado`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });

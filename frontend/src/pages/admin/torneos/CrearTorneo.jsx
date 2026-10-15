@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { API_URL } from "../../../config";
 
 const CrearTorneo = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const CrearTorneo = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/v1/torneos/crear",
+        `${API_URL}/api/v1/torneos/crear`,
         {
           method: "POST",
           headers: {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const EditarTorneo = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const EditarTorneo = () => {
   const obtenerTorneo = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneos/${id}`,
+        `${API_URL}/api/v1/torneos/${id}`,
       );
       const data = await response.json();
       setFormData({
@@ -80,7 +81,7 @@ const EditarTorneo = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/torneos/${id}`,
+        `${API_URL}/api/v1/torneos/${id}`,
         {
           method: "PUT",
           headers: {

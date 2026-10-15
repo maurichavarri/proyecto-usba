@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const JugadoresEquipo = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const JugadoresEquipo = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/delegado/jugadores/equipo/${id}`,
+        `${API_URL}/api/v1/delegado/jugadores/equipo/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -67,7 +68,7 @@ const JugadoresEquipo = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/delegado/jugadores/${jugador.id}/sanciones`,
+        `${API_URL}/api/v1/delegado/jugadores/${jugador.id}/sanciones`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,7 +103,7 @@ const JugadoresEquipo = () => {
       setMensaje("");
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/delegado/jugadores/${jugadorAQuitar.id}/quitar`,
+        `${API_URL}/api/v1/delegado/jugadores/${jugadorAQuitar.id}/quitar`,
         {
           method: "PATCH",
           headers: {

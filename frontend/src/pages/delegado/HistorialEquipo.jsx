@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const HistorialEquipo = () => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ const HistorialEquipo = () => {
       setMensaje("");
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`http://localhost:3000/api/v1/delegado/equipos/${id}/historial`,
+      const response = await fetch(`${API_URL}/api/v1/delegado/equipos/${id}/historial`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

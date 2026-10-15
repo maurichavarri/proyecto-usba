@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const MisEquipos = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const MisEquipos = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/delegado/equipos",
+        `${API_URL}/api/v1/delegado/equipos`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

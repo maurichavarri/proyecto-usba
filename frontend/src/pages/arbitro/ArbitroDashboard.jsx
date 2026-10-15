@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const ArbitroDashboard = () => {
   const [partidos, setPartidos] = useState([]);
@@ -37,7 +38,7 @@ const ArbitroDashboard = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/arbitros/mis-partidos",
+        `${API_URL}/api/v1/arbitros/mis-partidos`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

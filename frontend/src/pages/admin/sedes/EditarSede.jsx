@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const EditarSede = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const EditarSede = () => {
 
   const obtenerSede = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/sedes/${id}`);
+      const response = await fetch(`${API_URL}/api/v1/sedes/${id}`);
       const data = await response.json();
       setFormData({
         nombre: data.nombre || "",
@@ -57,7 +58,7 @@ const EditarSede = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:3000/api/v1/sedes/${id}`, {
+      const response = await fetch(`${API_URL}/api/v1/sedes/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

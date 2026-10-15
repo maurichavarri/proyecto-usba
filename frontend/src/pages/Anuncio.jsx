@@ -1,5 +1,6 @@
 import { useFetch } from "../hooks/useFetch";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 const truncate = (text, max) => {
   if (!text) return "";
@@ -7,7 +8,7 @@ const truncate = (text, max) => {
 };
 
 const Anuncio = () => {
-  const { data = [] } = useFetch("http://localhost:3000/api/v1/anuncios");
+  const { data = [] } = useFetch(`${API_URL}/api/v1/anuncios`);
 
   return (
     <>
@@ -36,7 +37,7 @@ const Anuncio = () => {
                     <div className="anu-card-img-wrap">
                       {anuncio.imagen ? (
                         <img
-                          src={`http://localhost:3000${anuncio.imagen}`}
+                          src={`${API_URL}${anuncio.imagen}`}
                           alt={anuncio.titulo}
                         />
                       ) : (

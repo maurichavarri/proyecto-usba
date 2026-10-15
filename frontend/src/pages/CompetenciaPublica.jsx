@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 const colores = {
     fondo: "#0a0a0a",
@@ -47,7 +48,7 @@ const CompetenciaPublica = () => {
 
     const obtenerFixture = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/fixture`);
+            const response = await fetch(`${API_URL}/api/v1/torneo-categorias/${id}/fixture`);
             const data = await response.json();
             setFixture(data);
         } catch (error) {
@@ -62,7 +63,7 @@ const CompetenciaPublica = () => {
     const verEquipo = async (equipoId) => {
         try {
             setCargandoEquipo(true);
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/equipos/${equipoId}`);
+            const response = await fetch(`${API_URL}/api/v1/torneo-categorias/${id}/equipos/${equipoId}`);
             const data = await response.json();
 
             if (!response.ok) {
@@ -88,7 +89,7 @@ const CompetenciaPublica = () => {
 
     const obtenerTabla = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/tabla`);
+            const response = await fetch(`${API_URL}/api/v1/torneo-categorias/${id}/tabla`);
             const data = await response.json();
             setTabla(data);
         } catch (error) {
@@ -102,7 +103,7 @@ const CompetenciaPublica = () => {
 
     const obtenerResumen = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}/resumen`);
+            const response = await fetch(`${API_URL}/api/v1/torneo-categorias/${id}/resumen`);
             const data = await response.json();
             setResumen(data);
         } catch (error) {
@@ -116,7 +117,7 @@ const CompetenciaPublica = () => {
 
     const obtenerDetalle = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/torneo-categorias/${id}`);
+            const response = await fetch(`${API_URL}/api/v1/torneo-categorias/${id}`);
 
             if (!response.ok) {
                 navigate("/torneos");

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../config";
 
 const FormularioArbitro = () => {
 
@@ -25,7 +26,7 @@ const FormularioArbitro = () => {
     const obtenerArbitro = async () => {
 
         const response = await fetch(
-            `http://localhost:3000/api/v1/arbitros/${id}`
+            `${API_URL}/api/v1/arbitros/${id}`
         );
 
         const data = await response.json();
@@ -51,8 +52,8 @@ const FormularioArbitro = () => {
         await fetch(
 
             editando
-                ? `http://localhost:3000/api/v1/arbitros/${id}`
-                : "http://localhost:3000/api/v1/arbitros",
+                ? `${API_URL}/api/v1/arbitros/${id}`
+                : `${API_URL}/api/v1/arbitros`,
 
             {
                 method:
