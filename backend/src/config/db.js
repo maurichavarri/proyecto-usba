@@ -5,13 +5,20 @@ dotenv.config();
 
 const sequelize = new Sequelize(
     process.env.DB_NAME, // usba
-    process.env.DB_USER, // root
-    process.env.DB_PASS, // password
+    process.env.DB_USER, // avnadmin (en Aiven)
+    process.env.DB_PASS,
     {
         host: process.env.DB_HOST,
+        port: process.env.DB_PORT, // el puerto que muestra Aiven
         dialect: 'mysql',
         timezone: '-03:00',
         logging: false, // Poner true si querés ver SQL en consola
+        dialectOptions: {
+            ssl: {
+                ca: process.env.DB_CA?.replace(/\\n/g, '\n'),
+                rejectUnauthorized: true,
+            },
+        },
     }
 );
 
