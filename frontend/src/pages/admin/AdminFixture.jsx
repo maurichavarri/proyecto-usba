@@ -611,7 +611,7 @@ const AdminFixture = () => {
                       className={`accordion-collapse collapse ${index === 0 ? "show" : ""}`}
                       data-bs-parent="#accordionFixtureRegular"
                     >
-                      <div className="accordion-body">
+                      <div className="table-responsive">
                         {renderTablaPartidos(partidos)}
                       </div>
                     </div>
@@ -657,7 +657,7 @@ const AdminFixture = () => {
                       className={`accordion-collapse collapse ${index === 0 ? "show" : ""}`}
                       data-bs-parent="#accordionPlayoffs"
                     >
-                      <div className="accordion-body">
+                      <div className="table-responsive">
                         {renderTablaPartidos(partidos)}
                       </div>
                     </div>
