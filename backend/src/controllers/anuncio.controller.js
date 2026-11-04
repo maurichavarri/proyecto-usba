@@ -128,3 +128,31 @@ export const estadoAnuncio = async (req, res, next) => {
         next(error);
     }
 };
+
+export const eliminarAnuncio = async (req, res, next) => {
+    try {
+        const anuncio = await Anuncio.findByPk(req.params.id);
+        if (!anuncio) {
+            return res.status(404).json({ message: 'Anuncio no encontrado' });
+        }
+
+        const imagenAnterior = anuncio.imagen;
+
+        await anuncio.destroy();
+
+        // Borrar la imagen del disco, si existe
+        if (imagenAnterior) {
+            try {
+                const ruta = path.join(__dirname, '../../', imagenAnterior);
+                if (fs.existsSync(ruta)) fs.unlinkSync(ruta);
+            } catch (errorArchivo) {
+                console.error('No se pudo borrar la imagen del anuncio:', errorArchivo);
+            }
+        }
+
+        res.json({ message: 'Anuncio eliminado' });
+
+    } catch (error) {
+        next(error);
+    }
+};

@@ -46,6 +46,32 @@ const AdminAnuncios = () => {
     }
   };
 
+  const eliminarAnuncio = async (id, titulo) => {
+    const confirmar = window.confirm(
+      `¿Seguro que querés eliminar el anuncio "${titulo}"? Esta acción no se puede deshacer.`,
+    );
+    if (!confirmar) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/v1/anuncios/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        alert(data.message || "No se pudo eliminar el anuncio");
+        return;
+      }
+
+      obtenerAnuncios();
+    } catch (error) {
+      console.error(error);
+      alert("Error de conexión al eliminar el anuncio");
+    }
+  };
+
   const anunciosFiltrados = anuncios.filter((anuncio) => {
     const texto = busqueda.toLowerCase();
     return (
@@ -211,7 +237,7 @@ const AdminAnuncios = () => {
                               {new Date(anuncio.createdAt).toLocaleDateString()}
                             </td>
                             <td>
-                              <div className="d-flex gap-2">
+                              <div className="d-flex gap-2 flex-wrap">
                                 <Link
                                   to={`/panel/admin/anuncios/editar/${anuncio.id}`}
                                   className="btn btn-primary btn-sm"
@@ -229,6 +255,12 @@ const AdminAnuncios = () => {
                                   {anuncio.estado === "activo"
                                     ? "Ocultar"
                                     : "Mostrar"}
+                                </button>
+                                <button
+                                  className="btn btn-outline-danger btn-sm"
+                                  onClick={() => eliminarAnuncio(anuncio.id, anuncio.titulo)}
+                                >
+                                  Eliminar
                                 </button>
                               </div>
                             </td>

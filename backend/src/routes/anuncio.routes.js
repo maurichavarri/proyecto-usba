@@ -5,7 +5,8 @@ import {
     crearAnuncio,
     actualizarAnuncio,
     estadoAnuncio,
-    getTodosLosAnuncios
+    getTodosLosAnuncios,
+    eliminarAnuncio
 } from '../controllers/anuncio.controller.js';
 
 import verifyToken from '../middlewares/verifyToken.js';
@@ -19,6 +20,7 @@ router.get('/admin/todos', verifyToken, verifyRole('admin'), getTodosLosAnuncios
 router.post('/crear', verifyToken, verifyRole('admin'), upload.single('imagen'), crearAnuncio);
 router.put('/:id', verifyToken, verifyRole('admin'), upload.single('imagen'), actualizarAnuncio);
 router.patch('/:id/estado', verifyToken, verifyRole('admin'), estadoAnuncio);
+router.delete('/:id', verifyToken, verifyRole('admin'), eliminarAnuncio);
 
 // Públicas
 router.get('/', getAnuncios);
