@@ -257,7 +257,7 @@ const AdminAnuncios = () => {
                                     : "Mostrar"}
                                 </button>
                                 <button
-                                  className="btn btn-outline-danger btn-sm"
+                                  className="btn btn-danger btn-sm"
                                   onClick={() => eliminarAnuncio(anuncio.id, anuncio.titulo)}
                                 >
                                   Eliminar
