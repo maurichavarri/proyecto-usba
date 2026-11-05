@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { API_URL } from "../../../config";
+import { API_URL, urlImagen } from "../../../config";
 
 const EditarAnuncio = () => {
   const { id } = useParams();
@@ -104,7 +104,7 @@ const EditarAnuncio = () => {
   };
 
   const imagenMostrada =
-    preview || (imagenActual ? `${API_URL}${imagenActual}` : null);
+    preview || (imagenActual ? urlImagen(imagenActual) : null);
 
   return (
     <div className="container mt-5 mb-5">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../config";
+import { API_URL, urlImagen } from "../../config";
 
 const AdminCarrusel = () => {
   const navigate = useNavigate();
@@ -320,7 +320,7 @@ const AdminCarrusel = () => {
                 <div className="col-md-4" key={img.id}>
                   <div className="card h-100 shadow-sm">
                     <img
-                      src={`${API_URL}${img.url}`}
+                      src={urlImagen(img.url)}
                       className="card-img-top"
                       alt="Vista carrusel"
                       style={{ height: "200px", objectFit: "cover" }}

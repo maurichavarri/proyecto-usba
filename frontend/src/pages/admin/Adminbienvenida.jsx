@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../config";
+import { API_URL, urlImagen } from "../../config";
 
 const AdminBienvenida = () => {
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ const AdminBienvenida = () => {
   };
 
   const imagenMostrada =
-    preview || (imagenActual ? `${API_URL}${imagenActual}` : null);
+    preview || (imagenActual ? urlImagen(imagenActual) : null);
 
   return (
     <div className="container mt-5 mb-5">

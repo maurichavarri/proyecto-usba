@@ -37,7 +37,7 @@ const Home = () => {
         const imagenes = Array.isArray(data) ? data : [];
 
         setImagenesCarrusel(
-          imagenes.map((img) => `${API_URL}${img.url}`),
+          imagenes.map((img) => urlImagen(img.url)),
         );
       } catch {
         setImagenesCarrusel([]);
