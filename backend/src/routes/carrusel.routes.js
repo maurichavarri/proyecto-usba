@@ -10,7 +10,7 @@ import {
 
 import verifyToken from '../middlewares/verifyToken.js';
 import verifyRole from '../middlewares/verifyRole.js';
-import uploadCarrusel from '../middlewares/uploadCarrusel.middleware.js';
+import upload from '../middlewares/upload.middleware.js';
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.get('/', getImagenesPublicas);
 
 // Admin
 router.get('/admin/todas', verifyToken, verifyRole('admin'), getTodasLasImagenes);
-router.post('/crear', verifyToken, verifyRole('admin'), uploadCarrusel.single('imagen'), crearImagen);
+router.post('/crear', verifyToken, verifyRole('admin'), upload.single('imagen'), crearImagen);
 router.patch('/:id/estado', verifyToken, verifyRole('admin'), toggleEstado);
 router.patch('/:id/orden', verifyToken, verifyRole('admin'), actualizarOrden);
 router.delete('/:id', verifyToken, verifyRole('admin'), eliminarImagen);

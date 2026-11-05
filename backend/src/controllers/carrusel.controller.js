@@ -1,10 +1,5 @@
 import { ImagenCarrusel } from '../models/index.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { subirImagen, eliminarImagen as eliminarEnCloudinary } from '../config/cloudinary.js';
 
 // Público: solo imágenes activas ordenadas
 export const getImagenesPublicas = async (req, res, next) => {
@@ -39,13 +34,12 @@ export const crearImagen = async (req, res, next) => {
         }
 
         const orden = parseInt(req.body.orden) || 0;
-        const url = `/uploads/carrusel/${req.file.filename}`;
+        const url = await subirImagen(req.file.buffer, 'usba/carrusel');
 
         const imagen = await ImagenCarrusel.create({ url, orden });
 
         res.status(201).json(imagen);
     } catch (error) {
-        if (req.file) fs.unlinkSync(req.file.path);
         next(error);
     }
 };
@@ -90,7 +84,7 @@ export const actualizarOrden = async (req, res, next) => {
     }
 };
 
-// Eliminar imagen (disco + BD)
+// Eliminar imagen (Cloudinary + BD)
 export const eliminarImagen = async (req, res, next) => {
     try {
         const imagen = await ImagenCarrusel.findByPk(req.params.id);
@@ -99,12 +93,15 @@ export const eliminarImagen = async (req, res, next) => {
             return res.status(404).json({ message: 'Imagen no encontrada' });
         }
 
-        const rutaArchivo = path.join(__dirname, '../../', imagen.url);
-        if (fs.existsSync(rutaArchivo)) {
-            fs.unlinkSync(rutaArchivo);
-        }
+        const urlAnterior = imagen.url;
 
         await imagen.destroy();
+
+        try {
+            await eliminarEnCloudinary(urlAnterior);
+        } catch (errorArchivo) {
+            console.error('No se pudo borrar la imagen en Cloudinary:', errorArchivo);
+        }
 
         res.json({ message: 'Imagen eliminada correctamente' });
     } catch (error) {

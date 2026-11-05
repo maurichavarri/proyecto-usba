@@ -1,10 +1,5 @@
 import Bienvenida from '../models/bienvenida.model.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { subirImagen, eliminarImagen } from '../config/cloudinary.js';
 
 // GET público
 export const getBienvenida = async (req, res, next) => {
@@ -36,22 +31,26 @@ export const actualizarBienvenida = async (req, res, next) => {
             bienvenida = await Bienvenida.create({ titulo, texto });
         }
 
-        let imagen = bienvenida.imagen;
+        const imagenAnterior = bienvenida.imagen;
+        let imagen = imagenAnterior;
 
         if (req.file) {
-            // Borrar imagen anterior si existe
-            if (bienvenida.imagen) {
-                const rutaAnterior = path.join(__dirname, '../../', bienvenida.imagen);
-                if (fs.existsSync(rutaAnterior)) fs.unlinkSync(rutaAnterior);
-            }
-            imagen = `/uploads/bienvenida/${req.file.filename}`;
+            imagen = await subirImagen(req.file.buffer, 'usba/bienvenida');
         }
 
         await bienvenida.update({ titulo, texto, imagen });
 
+        // Si se reemplazó la imagen, borra la anterior de Cloudinary
+        if (req.file && imagenAnterior) {
+            try {
+                await eliminarImagen(imagenAnterior);
+            } catch (errorArchivo) {
+                console.error('No se pudo borrar la imagen anterior:', errorArchivo);
+            }
+        }
+
         res.json({ message: 'Bienvenida actualizada', bienvenida });
     } catch (error) {
-        if (req.file) fs.unlinkSync(req.file.path);
         next(error);
     }
 };
