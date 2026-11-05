@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const AdminTorneoCategorias = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const AdminTorneoCategorias = () => {
       setMensaje("");
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/torneo-categorias",
+        `${API_URL}/api/v1/torneo-categorias`,
       );
 
       const data = await response.json();

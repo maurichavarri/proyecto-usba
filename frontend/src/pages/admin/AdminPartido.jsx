@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const AdminPartido = () => {
   const { id } = useParams();
@@ -73,7 +74,7 @@ const AdminPartido = () => {
   const obtenerPartido = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/partidos/${id}`,
+        `${API_URL}/api/v1/partidos/${id}`,
       );
 
       const data = await response.json();
@@ -105,7 +106,7 @@ const AdminPartido = () => {
 
   const obtenerSedes = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/sedes");
+      const response = await fetch(`${API_URL}/api/v1/sedes`);
       const data = await response.json();
 
       if (!response.ok) {
@@ -124,7 +125,7 @@ const AdminPartido = () => {
 
   const obtenerArbitros = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/arbitros");
+      const response = await fetch(`${API_URL}/api/v1/arbitros`);
       const data = await response.json();
 
       if (!response.ok) {
@@ -223,7 +224,7 @@ const AdminPartido = () => {
       const payload = crearPayload();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/partidos/${id}`,
+        `${API_URL}/api/v1/partidos/${id}`,
         {
           method: "PUT",
           headers: {

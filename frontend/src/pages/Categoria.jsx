@@ -1,9 +1,10 @@
 import { useFetch } from "../hooks/useFetch";
 import img from "../assets/img/pelota-basquet-2.jpeg";
+import { API_URL } from "../config";
 
 const Categoria = () => {
 
-    const { data } = useFetch("http://localhost:3000/api/v1/categorias");
+    const { data } = useFetch(`${API_URL}/api/v1/categorias`);
 
     return (
         <>

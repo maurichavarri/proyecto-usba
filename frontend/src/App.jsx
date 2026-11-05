@@ -47,7 +47,7 @@ import CrearArbitro from "./pages/admin/arbitros/CrearArbitro";
 import EditarArbitro from "./pages/admin/arbitros/EditarArbitro";
 import AdminPartido from "./pages/admin/AdminPartido";
 import AdminCarrusel from "./pages/admin/AdminCarrusel";
-import AdminBienvenida from './pages/admin/AdminBienvenida';
+import AdminBienvenida from './pages/admin/Adminbienvenida';
 
 import ProtectedRoute from "./routes/ProtectedRoute"
 

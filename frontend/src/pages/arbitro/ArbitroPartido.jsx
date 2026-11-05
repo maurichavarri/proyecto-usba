@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const ArbitroPartido = () => {
   const { id } = useParams();
@@ -44,7 +45,7 @@ const ArbitroPartido = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/arbitros/mis-partidos/${id}`,
+        `${API_URL}/api/v1/arbitros/mis-partidos/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -144,7 +145,7 @@ const ArbitroPartido = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/arbitros/partidos/${id}/sanciones`,
+        `${API_URL}/api/v1/arbitros/partidos/${id}/sanciones`,
         {
           method: "POST",
 

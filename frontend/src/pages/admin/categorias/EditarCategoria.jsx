@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const EditarCategoria = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const EditarCategoria = () => {
   const obtenerCategoria = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${id}`,
+        `${API_URL}/api/v1/categorias/${id}`,
       );
 
       const data = await response.json();
@@ -116,7 +117,7 @@ const EditarCategoria = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${id}`,
+        `${API_URL}/api/v1/categorias/${id}`,
         {
           method: "PUT",
           headers: {

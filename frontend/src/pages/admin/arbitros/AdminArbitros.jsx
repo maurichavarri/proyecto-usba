@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const AdminArbitros = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const AdminArbitros = () => {
 
   const obtenerArbitros = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/arbitros");
+      const response = await fetch(`${API_URL}/api/v1/arbitros`);
       const data = await response.json();
       setArbitros(data);
     } catch (error) {

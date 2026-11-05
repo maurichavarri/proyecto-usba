@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const CrearJugador = () => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const CrearJugador = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/v1/delegado/jugadores",
+        `${API_URL}/api/v1/delegado/jugadores`,
         {
           method: "POST",
           headers: {

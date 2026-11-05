@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const EditarJugador = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const EditarJugador = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/delegado/jugadores/${jugadorId}`,
+        `${API_URL}/api/v1/delegado/jugadores/${jugadorId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -111,7 +112,7 @@ const EditarJugador = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/delegado/jugadores/${jugadorId}`,
+        `${API_URL}/api/v1/delegado/jugadores/${jugadorId}`,
         {
           method: "PUT",
           headers: {

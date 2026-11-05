@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL, urlImagen } from "../../../config";
 
 const AdminAnuncios = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const AdminAnuncios = () => {
       setCargando(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/v1/anuncios/admin/todos",
+        `${API_URL}/api/v1/anuncios/admin/todos`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -35,13 +36,39 @@ const AdminAnuncios = () => {
   const cambiarEstado = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:3000/api/v1/anuncios/${id}/estado`, {
+      await fetch(`${API_URL}/api/v1/anuncios/${id}/estado`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
       obtenerAnuncios();
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const eliminarAnuncio = async (id, titulo) => {
+    const confirmar = window.confirm(
+      `¿Seguro que querés eliminar el anuncio "${titulo}"? Esta acción no se puede deshacer.`,
+    );
+    if (!confirmar) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_URL}/api/v1/anuncios/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        alert(data.message || "No se pudo eliminar el anuncio");
+        return;
+      }
+
+      obtenerAnuncios();
+    } catch (error) {
+      console.error(error);
+      alert("Error de conexión al eliminar el anuncio");
     }
   };
 
@@ -157,7 +184,7 @@ const AdminAnuncios = () => {
                             <td>
                               {anuncio.imagen ? (
                                 <img
-                                  src={`http://localhost:3000${anuncio.imagen}`}
+                                  src={urlImagen(anuncio.imagen)}
                                   alt={anuncio.titulo}
                                   style={{
                                     width: "60px",
@@ -210,7 +237,7 @@ const AdminAnuncios = () => {
                               {new Date(anuncio.createdAt).toLocaleDateString()}
                             </td>
                             <td>
-                              <div className="d-flex gap-2">
+                              <div className="d-flex gap-2 flex-wrap">
                                 <Link
                                   to={`/panel/admin/anuncios/editar/${anuncio.id}`}
                                   className="btn btn-primary btn-sm"
@@ -228,6 +255,12 @@ const AdminAnuncios = () => {
                                   {anuncio.estado === "activo"
                                     ? "Ocultar"
                                     : "Mostrar"}
+                                </button>
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => eliminarAnuncio(anuncio.id, anuncio.titulo)}
+                                >
+                                  Eliminar
                                 </button>
                               </div>
                             </td>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const EditarArbitro = () => {
   const { id } = useParams();
@@ -19,7 +20,7 @@ const EditarArbitro = () => {
   const obtenerArbitro = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/arbitros/${id}`,
+        `${API_URL}/api/v1/arbitros/${id}`,
       );
       const data = await response.json();
 
@@ -70,7 +71,7 @@ const EditarArbitro = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/arbitros/${id}`,
+        `${API_URL}/api/v1/arbitros/${id}`,
         {
           method: "PUT",
           headers: {

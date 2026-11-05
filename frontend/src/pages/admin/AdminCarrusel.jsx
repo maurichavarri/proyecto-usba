@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const AdminCarrusel = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const AdminCarrusel = () => {
   const [mensaje, setMensaje] = useState(null); // { texto, tipo }
   const [showHelp, setShowHelp] = useState(false);
 
-  const API_URL = "http://localhost:3000/api/v1/carrusel";
+  const CARRUSEL_URL = `${API_URL}/api/v1/carrusel`;
   const token = localStorage.getItem("token");
 
   const mostrarMensaje = (texto, tipo = "success") => {
@@ -24,7 +25,7 @@ const AdminCarrusel = () => {
   const cargarImagenes = async () => {
     try {
       setCargando(true);
-      const res = await fetch(`${API_URL}/admin/todas`, {
+      const res = await fetch(`${CARRUSEL_URL}/admin/todas`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -73,7 +74,7 @@ const AdminCarrusel = () => {
     formData.append("orden", orden);
 
     try {
-      const res = await fetch(`${API_URL}/crear`, {
+      const res = await fetch(`${CARRUSEL_URL}/crear`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -102,7 +103,7 @@ const AdminCarrusel = () => {
   // 3. Cambiar estado activo/inactivo
   const handleToggleEstado = async (id) => {
     try {
-      const res = await fetch(`${API_URL}/${id}/estado`, {
+      const res = await fetch(`${CARRUSEL_URL}/${id}/estado`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -120,7 +121,7 @@ const AdminCarrusel = () => {
   // 4. Actualizar orden
   const handleActualizarOrden = async (id, nuevoOrden) => {
     try {
-      const res = await fetch(`${API_URL}/${id}/orden`, {
+      const res = await fetch(`${CARRUSEL_URL}/${id}/orden`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -149,7 +150,7 @@ const AdminCarrusel = () => {
       return;
 
     try {
-      const res = await fetch(`${API_URL}/${id}`, {
+      const res = await fetch(`${CARRUSEL_URL}/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -319,7 +320,7 @@ const AdminCarrusel = () => {
                 <div className="col-md-4" key={img.id}>
                   <div className="card h-100 shadow-sm">
                     <img
-                      src={`http://localhost:3000${img.url}`}
+                      src={`${API_URL}${img.url}`}
                       className="card-img-top"
                       alt="Vista carrusel"
                       style={{ height: "200px", objectFit: "cover" }}

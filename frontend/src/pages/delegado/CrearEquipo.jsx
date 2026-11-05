@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 const CrearEquipo = () => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const CrearEquipo = () => {
       setGuardando(true);
       setMensaje("");
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/v1/delegado/equipos",
+      const response = await fetch(`${API_URL}/api/v1/delegado/equipos`,
         {
           method: "POST",
           headers: {

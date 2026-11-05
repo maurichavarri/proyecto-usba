@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 import img from "../assets/img/pelota-basquet.jpeg";
+import { API_URL } from "../config";
 
 const ESTADO_LABEL = {
     configuracion: "Configuración",
@@ -17,7 +18,7 @@ const FORMATO_LABEL = {
 
 const Torneo = () => {
 
-    const { data } = useFetch("http://localhost:3000/api/v1/torneos");
+    const { data } = useFetch(`${API_URL}/api/v1/torneos`);
     const [torneoExpandido, setTorneoExpandido] = useState(null);
     const toggleTorneo = (id) => {
         setTorneoExpandido(torneoExpandido === id ? null : id);

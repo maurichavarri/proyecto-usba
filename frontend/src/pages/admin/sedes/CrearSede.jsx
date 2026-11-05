@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../../config";
 
 const CrearSede = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const CrearSede = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/v1/sedes", {
+      const response = await fetch(`${API_URL}/api/v1/sedes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
