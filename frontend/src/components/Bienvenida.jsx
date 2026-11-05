@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { API_URL } from "../config";
+import { API_URL, urlImagen } from "../config";
 
 const DEFAULTS = {
   titulo: "Bienvenido a la USBA",
@@ -46,7 +46,7 @@ const Bienvenida = () => {
             <div style={{ position: "relative" }}>
               {contenido.imagen ? (
                 <img
-                  src={`${API_URL}${contenido.imagen}`}
+                  src={urlImagen(contenido.imagen)}
                   alt="Bienvenida USBA"
                   style={{
                     width: "100%",

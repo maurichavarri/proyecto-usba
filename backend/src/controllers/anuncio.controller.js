@@ -1,10 +1,5 @@
 import { Anuncio } from '../models/index.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { subirImagen, eliminarImagen } from '../config/cloudinary.js';
 
 export const getAnuncios = async (req, res, next) => {
     try {
@@ -46,25 +41,23 @@ export const crearAnuncio = async (req, res, next) => {
         const { titulo, contenido } = req.body;
 
         if (!titulo || !contenido) {
-            if (req.file) fs.unlinkSync(req.file.path);
             return res.status(400).json({ message: 'Todos los campos son obligatorios' });
         }
 
         const existe = await Anuncio.findOne({ where: { titulo } });
         if (existe) {
-            if (req.file) fs.unlinkSync(req.file.path);
             return res.status(400).json({ message: 'Ya existe un anuncio con ese título' });
         }
 
-        // Lee la imagen si fue subida
-        const imagen = req.file ? `/uploads/anuncios/${req.file.filename}` : null;
+        const imagen = req.file
+            ? await subirImagen(req.file.buffer, 'usba/anuncios')
+            : null;
 
         const anuncio = await Anuncio.create({ titulo, contenido, imagen });
 
         res.status(201).json(anuncio);
 
     } catch (error) {
-        if (req.file) fs.unlinkSync(req.file.path);
         next(error);
     }
 };
@@ -76,38 +69,39 @@ export const actualizarAnuncio = async (req, res, next) => {
 
         const anuncio = await Anuncio.findByPk(id);
         if (!anuncio) {
-            if (req.file) fs.unlinkSync(req.file.path);
             return res.status(404).json({ message: 'Anuncio no encontrado' });
         }
 
         if (!titulo || !contenido) {
-            if (req.file) fs.unlinkSync(req.file.path);
             return res.status(400).json({ message: 'Todos los campos son obligatorios' });
         }
 
         const existe = await Anuncio.findOne({ where: { titulo } });
         if (existe && existe.id !== anuncio.id) {
-            if (req.file) fs.unlinkSync(req.file.path);
             return res.status(400).json({ message: 'Ya existe un anuncio con ese título' });
         }
 
         let imagen = anuncio.imagen;
+        const imagenAnterior = anuncio.imagen;
 
         if (req.file) {
-            // Borrar imagen anterior del disco
-            if (anuncio.imagen) {
-                const rutaAnterior = path.join(__dirname, '../../', anuncio.imagen);
-                if (fs.existsSync(rutaAnterior)) fs.unlinkSync(rutaAnterior);
-            }
-            imagen = `/uploads/anuncios/${req.file.filename}`;
+            imagen = await subirImagen(req.file.buffer, 'usba/anuncios');
         }
 
         await anuncio.update({ titulo, contenido, imagen });
 
+        // Si se reemplazó la imagen, borra la anterior de Cloudinary
+        if (req.file && imagenAnterior) {
+            try {
+                await eliminarImagen(imagenAnterior);
+            } catch (errorArchivo) {
+                console.error('No se pudo borrar la imagen anterior:', errorArchivo);
+            }
+        }
+
         res.json({ message: 'Anuncio actualizado', anuncio });
 
     } catch (error) {
-        if (req.file) fs.unlinkSync(req.file.path);
         next(error);
     }
 };
@@ -140,11 +134,9 @@ export const eliminarAnuncio = async (req, res, next) => {
 
         await anuncio.destroy();
 
-        // Borrar la imagen del disco, si existe
         if (imagenAnterior) {
             try {
-                const ruta = path.join(__dirname, '../../', imagenAnterior);
-                if (fs.existsSync(ruta)) fs.unlinkSync(ruta);
+                await eliminarImagen(imagenAnterior);
             } catch (errorArchivo) {
                 console.error('No se pudo borrar la imagen del anuncio:', errorArchivo);
             }

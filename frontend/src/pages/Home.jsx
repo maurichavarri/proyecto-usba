@@ -3,7 +3,7 @@ import { useFetch } from "../hooks/useFetch";
 import Carrusel from "../components/Carrusel";
 import Bienvenida from "../components/Bienvenida";
 import { Link } from "react-router-dom";
-import { API_URL } from "../config";
+import { API_URL, urlImagen } from "../config";
 
 const colores = {
   fondo: "#0a0a0a",
@@ -325,7 +325,7 @@ const Home = () => {
                       >
                         {anuncio.imagen ? (
                           <img
-                            src={`${API_URL}${anuncio.imagen}`}
+                            src={urlImagen(anuncio.imagen)}
                             alt={anuncio.titulo}
                             style={{
                               width: "100%",

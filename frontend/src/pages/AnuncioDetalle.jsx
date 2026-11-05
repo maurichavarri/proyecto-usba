@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
-import { API_URL } from "../config";
+import { API_URL, urlImagen } from "../config";
 
 const colores = {
   fondo: "#0a0a0a",
@@ -248,7 +248,7 @@ const AnuncioDetalle = () => {
 
                 <img
                   src={
-                    `${API_URL}${data.imagen}`
+                    urlImagen(data.imagen)
                   }
                   alt={data.titulo}
                   style={{

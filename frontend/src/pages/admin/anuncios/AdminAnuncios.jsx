@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../../config";
+import { API_URL, urlImagen } from "../../../config";
 
 const AdminAnuncios = () => {
   const navigate = useNavigate();
@@ -184,7 +184,7 @@ const AdminAnuncios = () => {
                             <td>
                               {anuncio.imagen ? (
                                 <img
-                                  src={`${API_URL}${anuncio.imagen}`}
+                                  src={urlImagen(anuncio.imagen)}
                                   alt={anuncio.titulo}
                                   style={{
                                     width: "60px",
