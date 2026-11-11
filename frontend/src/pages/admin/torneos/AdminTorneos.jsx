@@ -16,6 +16,7 @@ const AdminTorneos = () => {
   const [torneos, setTorneos] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
   const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     obtenerTorneos();
@@ -23,6 +24,7 @@ const AdminTorneos = () => {
 
   const obtenerTorneos = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
         `${API_URL}/api/v1/torneos/admin/todos`,
@@ -34,6 +36,8 @@ const AdminTorneos = () => {
       setTorneos(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -163,7 +167,15 @@ const AdminTorneos = () => {
           </div>
 
           <div className="card-body">
-            {torneos.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando competencias...</p>
+              </div>
+            ) : torneos.length === 0 ? (
               <div className="alert alert-info mb-0">
                 No existen torneos registrados.
               </div>
@@ -195,7 +207,7 @@ const AdminTorneos = () => {
                           <td>{formatearFecha(torneo.fecha_fin)}</td>
                           <td>
                             {new Date() <=
-                            new Date(torneo.fecha_cierre_inscripcion) ? (
+                              new Date(torneo.fecha_cierre_inscripcion) ? (
                               <span className="badge bg-success">Abiertas</span>
                             ) : (
                               <span className="badge bg-danger">Cerradas</span>
