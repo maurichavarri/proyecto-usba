@@ -200,7 +200,7 @@ const AdminPartido = () => {
 
   const crearPayload = () => {
     return {
-      fecha: formData.fecha || null,
+      fecha: formData.fecha ? `${formData.fecha}:00` : null,
       sede_id: formData.sede_id === "" ? null : Number(formData.sede_id),
       arbitro_id:
         formData.arbitro_id === "" ? null : Number(formData.arbitro_id),
