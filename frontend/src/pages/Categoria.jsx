@@ -4,7 +4,7 @@ import { API_URL } from "../config";
 
 const Categoria = () => {
 
-    const { data } = useFetch(`${API_URL}/api/v1/categorias`);
+    const { data, loading, error } = useFetch(`${API_URL}/api/v1/categorias`);
 
     return (
         <>
@@ -26,7 +26,21 @@ const Categoria = () => {
             {/* GRID */}
             <section className="cat-grid-section">
                 <div className="container">
-                    {data.length === 0 ? (
+                    {/* CARGANDO */}
+                    {loading ? (
+                        <div className="d-flex flex-column align-items-center justify-content-center py-5">
+                            <div
+                                className="spinner-border"
+                                role="status"
+                                style={{ color: "#e8500a", width: "3rem", height: "3rem" }}
+                            >
+                                <span className="visually-hidden">Cargando categorías...</span>
+                            </div>
+                            <p className="text-muted mt-3 mb-0">Cargando categorías...</p>
+                        </div>
+                    ) : error ? (
+                        <p className="text-danger">No se pudieron cargar las categorías.</p>
+                    ) : data.length === 0 ? (
                         <p className="text-muted">No hay categorías disponibles.</p>
                     ) : (
                         <div className="row g-4">

@@ -18,7 +18,7 @@ const FORMATO_LABEL = {
 
 const Torneo = () => {
 
-    const { data } = useFetch(`${API_URL}/api/v1/torneos`);
+    const { data, loading, error } = useFetch(`${API_URL}/api/v1/torneos`);
     const [torneoExpandido, setTorneoExpandido] = useState(null);
     const toggleTorneo = (id) => {
         setTorneoExpandido(torneoExpandido === id ? null : id);
@@ -80,7 +80,22 @@ const Torneo = () => {
             {/* LISTA */}
             <section className="tor-section">
                 <div className="container">
-                    {data.length === 0 ? (
+
+                    {/* CARGANDO */}
+                    {loading ? (
+                        <div className="d-flex flex-column align-items-center justify-content-center py-5">
+                            <div
+                                className="spinner-border"
+                                role="status"
+                                style={{ color: "#e8500a", width: "3rem", height: "3rem" }}
+                            >
+                                <span className="visually-hidden">Cargando torneos...</span>
+                            </div>
+                            <p className="text-muted mt-3 mb-0">Cargando torneos...</p>
+                        </div>
+                    ) : error ? (
+                        <p className="text-danger">No se pudieron cargar los torneos.</p>
+                    ) : data.length === 0 ? (
                         <p className="text-muted">No hay torneos disponibles.</p>
                     ) : (
                         <div className="d-flex flex-column gap-3">
@@ -145,11 +160,10 @@ const Torneo = () => {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
-                                                            className={`tor-cat-row ${
-                                                                categoria.estado === "configuracion"
+                                                            className={`tor-cat-row ${categoria.estado === "configuracion"
                                                                     ? "disabled"
                                                                     : ""
-                                                            }`}
+                                                                }`}
                                                         >
                                                             <div>
                                                                 <div className="tor-cat-name">
@@ -182,6 +196,5 @@ const Torneo = () => {
         </>
     );
 };
-
 
 export default Torneo;

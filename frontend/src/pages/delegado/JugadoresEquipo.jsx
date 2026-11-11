@@ -14,6 +14,7 @@ const JugadoresEquipo = () => {
   const [cargandoHistorial, setCargandoHistorial] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [showHelp, setShowHelp] = useState(false);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     obtenerJugadores();
@@ -21,6 +22,7 @@ const JugadoresEquipo = () => {
 
   const obtenerJugadores = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
         `${API_URL}/api/v1/delegado/jugadores/equipo/${id}`,
@@ -41,6 +43,8 @@ const JugadoresEquipo = () => {
     } catch (error) {
       console.error(error);
       setMensaje(error.message);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -232,7 +236,15 @@ const JugadoresEquipo = () => {
           </div>
 
           <div className="card-body">
-            {jugadores.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando jugadores...</p>
+              </div>
+            ) : jugadores.length === 0 ? (
               <div className="alert alert-info mb-0">
                 No existen jugadores registrados.
               </div>

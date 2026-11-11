@@ -10,20 +10,12 @@ const MisInscripciones = () => {
   // =========================
 
   const [paginaActual, setPaginaActual] = useState(1);
-
   const inscripcionesPorPagina = 10;
-
-  // =========================
-  // DATOS
-  // =========================
-
   const [inscripciones, setInscripciones] = useState([]);
-
   const [showHelp, setShowHelp] = useState(false);
-
   const [mensaje, setMensaje] = useState("");
-
   const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   // =========================
   // MODAL MOTIVO RECHAZO
@@ -49,6 +41,7 @@ const MisInscripciones = () => {
 
   const obtenerInscripciones = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -71,6 +64,8 @@ const MisInscripciones = () => {
       console.error(error);
 
       setMensaje(error.message || "Error al obtener inscripciones.");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -303,7 +298,15 @@ const MisInscripciones = () => {
           </div>
 
           <div className="card-body">
-            {inscripciones.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando inscripciones...</p>
+              </div>
+            ) : inscripciones.length === 0 ? (
               <div className="alert alert-info mb-0">
                 <p className="mb-2">No tenés inscripciones registradas.</p>
               </div>

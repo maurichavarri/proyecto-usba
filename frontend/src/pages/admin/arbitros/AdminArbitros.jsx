@@ -7,6 +7,7 @@ const AdminArbitros = () => {
   const [arbitros, setArbitros] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
   const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     obtenerArbitros();
@@ -14,11 +15,14 @@ const AdminArbitros = () => {
 
   const obtenerArbitros = async () => {
     try {
+      setCargando(true);
       const response = await fetch(`${API_URL}/api/v1/arbitros`);
       const data = await response.json();
       setArbitros(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -109,7 +113,15 @@ const AdminArbitros = () => {
           </div>
 
           <div className="card-body">
-            {arbitros.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando arbitros...</p>
+              </div>
+            ) : arbitros.length === 0 ? (
               <div className="alert alert-info mb-0">
                 No hay arbitros registrados.
               </div>

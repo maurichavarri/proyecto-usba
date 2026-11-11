@@ -47,11 +47,6 @@ const AdminAnuncios = () => {
   };
 
   const eliminarAnuncio = async (id, titulo) => {
-    const confirmar = window.confirm(
-      `¿Seguro que querés eliminar el anuncio "${titulo}"? Esta acción no se puede deshacer.`,
-    );
-    if (!confirmar) return;
-
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/api/v1/anuncios/${id}`, {
@@ -158,8 +153,14 @@ const AdminAnuncios = () => {
             </div>
 
             <div className="card-body p-0">
+              {/* CARGANDO */}
+
               {cargando ? (
-                <p className="text-muted p-3">Cargando anuncios...</p>
+                <div className="text-center py-4">
+                  <div className="spinner-border" role="status" />
+
+                  <p className="text-muted mt-3 mb-0">Cargando anuncios...</p>
+                </div>
               ) : anuncios.length === 0 ? (
                 <div className="alert alert-info m-3">
                   No existen anuncios registrados.

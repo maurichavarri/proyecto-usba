@@ -8,6 +8,7 @@ const AdminCategorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
   const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     obtenerCategorias();
@@ -19,6 +20,7 @@ const AdminCategorias = () => {
 
   const obtenerCategorias = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -39,6 +41,8 @@ const AdminCategorias = () => {
       setCategorias(data);
     } catch (error) {
       console.error("Error al obtener categorías:", error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -229,7 +233,15 @@ const AdminCategorias = () => {
           </div>
 
           <div className="card-body">
-            {categorias.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando categorías...</p>
+              </div>
+            ) : categorias.length === 0 ? (
               <div className="alert alert-info mb-0">
                 No existen categorías registradas.
               </div>

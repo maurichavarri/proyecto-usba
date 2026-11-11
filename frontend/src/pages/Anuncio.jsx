@@ -8,7 +8,7 @@ const truncate = (text, max) => {
 };
 
 const Anuncio = () => {
-  const { data = [] } = useFetch(`${API_URL}/api/v1/anuncios`);
+  const { data = [], loading, error } = useFetch(`${API_URL}/api/v1/anuncios`);
 
   return (
     <>
@@ -27,7 +27,21 @@ const Anuncio = () => {
       {/* GRID */}
       <section className="anu-section">
         <div className="container">
-          {data.length === 0 ? (
+          {/* CARGANDO */}
+          {loading ? (
+            <div className="d-flex flex-column align-items-center justify-content-center py-5">
+              <div
+                className="spinner-border"
+                role="status"
+                style={{ color: "#e8500a", width: "3rem", height: "3rem" }}
+              >
+                <span className="visually-hidden">Cargando anuncios...</span>
+              </div>
+              <p className="text-muted mt-3 mb-0">Cargando anuncios...</p>
+            </div>
+          ) : error ? (
+            <p className="text-danger">No se pudieron cargar los anuncios.</p>
+          ) : data.length === 0 ? (
             <p className="text-muted">No hay anuncios disponibles.</p>
           ) : (
             <div className="row g-4">

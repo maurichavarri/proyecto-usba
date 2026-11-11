@@ -12,6 +12,7 @@ const AdminInscripciones = () => {
   const [busqueda, setBusqueda] = useState("");
   const [showHelp, setShowHelp] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [cargando, setCargando] = useState(true);
   const [tipoMensaje, setTipoMensaje] = useState("success");
   const [inscripcionSeleccionada, setInscripcionSeleccionada] = useState(null);
   const [accionSeleccionada, setAccionSeleccionada] = useState(null);
@@ -33,6 +34,7 @@ const AdminInscripciones = () => {
 
   const obtenerInscripciones = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
         `${API_URL}/api/v1/admin/inscripciones`,
@@ -54,6 +56,8 @@ const AdminInscripciones = () => {
       console.error(error);
       setTipoMensaje("danger");
       setMensaje(error.message || "Error al cargar inscripciones.");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -379,7 +383,15 @@ const AdminInscripciones = () => {
           </div>
 
           <div className="card-body">
-            {inscripciones.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando inscripciones...</p>
+              </div>
+            ) : inscripciones.length === 0 ? (
               <div className="alert alert-info mb-0">
                 No existen inscripciones registradas.
               </div>

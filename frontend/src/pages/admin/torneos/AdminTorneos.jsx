@@ -173,7 +173,7 @@ const AdminTorneos = () => {
               <div className="text-center py-4">
                 <div className="spinner-border" role="status" />
 
-                <p className="text-muted mt-3 mb-0">Cargando competencias...</p>
+                <p className="text-muted mt-3 mb-0">Cargando torneos...</p>
               </div>
             ) : torneos.length === 0 ? (
               <div className="alert alert-info mb-0">

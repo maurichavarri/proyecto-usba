@@ -8,6 +8,7 @@ const AdminSedes = () => {
   const [sedes, setSedes] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
   const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     obtenerSedes();
@@ -15,11 +16,14 @@ const AdminSedes = () => {
 
   const obtenerSedes = async () => {
     try {
+      setCargando(true);
       const response = await fetch(`${API_URL}/api/v1/sedes`);
       const data = await response.json();
       setSedes(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -109,7 +113,15 @@ const AdminSedes = () => {
           </div>
 
           <div className="card-body">
-            {sedes.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando sedes...</p>
+              </div>
+            ) : sedes.length === 0 ? (
               <div className="alert alert-info mb-0">
                 No hay sedes registradas.
               </div>

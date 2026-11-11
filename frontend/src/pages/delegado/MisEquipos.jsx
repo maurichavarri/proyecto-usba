@@ -9,6 +9,7 @@ const MisEquipos = () => {
   const [equipos, setEquipos] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     obtenerEquipos();
@@ -16,6 +17,7 @@ const MisEquipos = () => {
 
   const obtenerEquipos = async () => {
     try {
+      setCargando(true);
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -34,6 +36,8 @@ const MisEquipos = () => {
     } catch (error) {
       console.error(error);
       setMensaje(error.message);
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -130,7 +134,15 @@ const MisEquipos = () => {
           </div>
 
           <div className="card-body">
-            {equipos.length === 0 ? (
+            {/* CARGANDO */}
+
+            {cargando ? (
+              <div className="text-center py-4">
+                <div className="spinner-border" role="status" />
+
+                <p className="text-muted mt-3 mb-0">Cargando equipos...</p>
+              </div>
+            ) : equipos.length === 0 ? (
               <div className="alert alert-info mb-0">
                 <p className="mb-2">No existen equipos creados.</p>
               </div>
