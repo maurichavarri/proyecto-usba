@@ -84,7 +84,6 @@ export const updatePartido = async (req, res, next) => {
       });
     }
 
-    // Partido cerrado
     if (partido.estado === "jugado") {
       return res.status(400).json({
         message: "El partido ya fue finalizado y no puede modificarse.",
@@ -100,10 +99,24 @@ export const updatePartido = async (req, res, next) => {
       puntaje_visitante,
     } = req.body;
 
+    // La fecha llega como hora local de Buenos Aires, sin zona.
+    // Se le agrega el offset para que no dependa de la zona del servidor.
+    let fechaFinal;
+    if (fecha) {
+      fechaFinal = new Date(`${fecha}-03:00`);
+      if (isNaN(fechaFinal.getTime())) {
+        return res.status(400).json({
+          message: "Formato de fecha inválido",
+        });
+      }
+    } else {
+      fechaFinal = null;
+    }
+
     const estadoAnterior = partido.estado;
 
     await partido.update({
-      fecha,
+      fecha: fechaFinal,
       sede_id,
       arbitro_id,
       estado,
