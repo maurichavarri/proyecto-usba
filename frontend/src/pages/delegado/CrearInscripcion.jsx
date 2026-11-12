@@ -427,7 +427,7 @@ const CrearInscripcion = () => {
                 <div className="alert alert-light border text-start">
                   Para abonar el arancel en
                   <strong> efectivo o mediante transferencia</strong>,
-                  contactate al número informado en el pie de la página.
+                  contactate al número informado en el pie de la página, acompañado de tu <strong>NOMBRE y APELLIDO, NOMBRE del EQUIPO, TORNEO y CATEGORÍA.</strong>
                   <br />
                   <br />
                   Una vez realizado el pago, deberás esperar la aprobación del
